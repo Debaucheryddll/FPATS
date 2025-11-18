@@ -18,27 +18,16 @@ class TPFCTrackerService(threading.Thread):
     """
     独立的 TPFC 跟踪服务，周期性执行卡尔曼滤波并更新 PID 目标。
     """
-    def __init__(self, device,kalman_params,loop_interval_s=0.1):
+    def __init__(self, device, kalman_params, loop_interval_s=0.1):
         # loop_interval_s 决定了 Kalman Filter 的更新频率（例如 10 Hz）
         super().__init__()
         self.device = device
         self.loop_interval = loop_interval_s
-        self.params = kalman_params
+        self.params = dict(kalman_params)
+        self.params.setdefault("dt", self.loop_interval)
 
         self._stop_event = threading.Event()
-
-        # --- I. CSR 输入 (读取误差信号和功率) ---
-        # 确保 FPGA 模块名称 'error_calc' 与您在 linien_module.py 中的命名一致
-        self.csr_error_signal = device.csr.error_calc.error_signal
-        self.csr_power_signal = device.csr.error_calc.power_signal
-
-        # --- II. CSR 输出 (写入 PID/相位目标的寄存器) ---
-        # 【重要】这些寄存器（例如 kalman_targets.x_target_cmd）必须先在 FPGA 端定义 (CSRStorage)
-        self.csr_x_target_cmd = device.csr.kalman_targets.x_target_cmd
-        self.csr_f_target_cmd = device.csr.kalman_targets.f_target_cmd
-        self.csr_t_target_cmd = device.csr.kalman_targets.t_target_cmd
-        self.csr_power_threshold_cmd = device.csr.kalman_targets.power_threshold_target_cmd
-
+        # 关于寄存器读写操作在registers中进行定义，在卡尔曼线程中只需要调用即可
         self.registers = device
 
         # --- III. 卡尔曼滤波器实例化 ---
@@ -90,21 +79,40 @@ class TPFCTrackerService(threading.Thread):
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
+    def _read_measurements(self):
+        """从 CSR 读取并转换误差/功率测量值，返回浮点物理量。"""
+
+        raw_e = self.registers.read_error_signal()
+        raw_p = self.registers.read_power_signal()
+
+        z_measurement = FixedPointConverter.fixed_to_float(
+            raw_e, self.FP_WIDTH, self.FP_FRAC_BITS
+        ) * self.scale_factor_E
+        P_received_power = FixedPointConverter.fixed_to_float(
+            raw_p, self.FP_WIDTH, self.FP_FRAC_BITS
+        ) * self.scale_factor_P
+
+        return z_measurement, P_received_power
+
+
     def process_tracking_step(self):
         """执行一次完整的读-滤波-写循环"""
         # 1. 读取 FPGA 输入
         # raw_e = self.csr_error_signal.read()
-        # raw_p = self.csr_power_signal.read()
-        raw_e = self.registers.read_error_signal()
-        raw_p = self.registers.read_power_signal()
+        try:
+            z_measurement, P_received_power = self._read_measurements()
+        except Exception:  # 读取或转换异常时跳过本周期
+            logger.exception("读取误差/功率寄存器失败，跳过本周期。")
+            return
 
-        # 2. 转换定点数到物理量
-        z_measurement = FixedPointConverter.fixed_to_float(
-            raw_e,self.FP_WIDTH,self.FP_FRAC_BITS
-        )*self.scale_factor_E
-        P_received_power = FixedPointConverter.fixed_to_float(
-            raw_p,self.FP_WIDTH,self.FP_FRAC_BITS
-        )*self.scale_factor_P
+        # 保护：如果测量或功率值为 NaN/Inf，则不更新滤波器，避免破坏状态矩阵
+        if not np.isfinite(z_measurement) or not np.isfinite(P_received_power):
+            logger.warning(
+                "检测到非有限测量值(z=%s, P=%s)，跳过本周期。",
+                z_measurement,
+                P_received_power,
+            )
+            return
 
         # 3. 卡尔曼滤波运算
         self.kf.predict()
@@ -114,9 +122,7 @@ class TPFCTrackerService(threading.Thread):
         estimated_X_offset = self.kf.x[0, 0]  # 最优时间偏移估计 (s)
         estimated_F_offset = self.kf.x[1, 0]  # 最优频率偏移估计 (Hz)
 
-        time_variance = self.kf.P[0, 0]       # 提取时间偏移的【方差】(Variance)
-        if time_variance < 0:
-            time_variance = 0
+        time_variance = max(self.kf.P[0, 0], 0)  # 提取时间偏移的方差并裁剪负值
         time_uncertainty = np.sqrt(time_variance)  # 单位：秒
         power_threshold = self.kf.power_threshold
 

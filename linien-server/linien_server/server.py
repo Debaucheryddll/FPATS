@@ -175,51 +175,9 @@ class RedPitayaControlService(BaseService, LinienControlService):
             daemon=True,
         )
 
-        # --- TPFC Kalman Tracker 服务的实例化与启动 ---
-        try:
-            # 从 parameters 中读取 Kalman 配置参数
-            kal = self.parameters  # （变量名缩短，便于使用）
+        self.tracker_service = None
+        self._start_tpfc_tracker()
 
-            # 组合 initial_state（卡尔曼滤波器状态：[t, f, drift]）
-            initial_state = [
-                kal.tpfc_kalman_init_t.value,
-                kal.tpfc_kalman_init_f.value,
-                kal.tpfc_kalman_init_d.value,
-            ]
-
-            # 组合 initial_covariance（对角线）
-            initial_cov_diag = [
-                kal.tpfc_kalman_init_cov_t.value,
-                kal.tpfc_kalman_init_cov_f.value,
-                kal.tpfc_kalman_init_cov_d.value,
-            ]
-
-            # 组合 Kalman 参数字典，传入 TPFCTrackerService
-            kalman_params = dict(
-                dt=kal.tpfc_kalman_dt.value,
-                process_noise_std_t=kal.tpfc_kalman_proc_noise_t.value,
-                process_noise_std_f=kal.tpfc_kalman_proc_noise_f.value,
-                process_noise_std_drift=kal.tpfc_kalman_proc_noise_drift.value,
-                base_measurement_noise_std=kal.tpfc_kalman_meas_noise_base.value,
-                fade_measurement_noise_std=kal.tpfc_kalman_meas_noise_fade.value,
-                power_threshold=kal.tpfc_kalman_power_threshold.value,
-                initial_state=initial_state,
-                initial_covariance_diag=initial_cov_diag,
-            )
-
-            # 实例化 TPFCTrackerService，并将 self.registers (即 device 代理) 传递给它
-            # 循环频率设置为 1M Hz (0.001秒)
-            self.tracker_service = TPFCTrackerService(
-                device=self.registers,            # 此处需要在registers中添加对应的寄存器变量定义。
-                loop_interval_s=0.001,
-                kalman_params = kalman_params
-            )
-            self.tracker_service.start()
-            logger.info("TPFC Kalman Tracker Service 启动成功。")
-        except Exception as e:
-            logger.error(f"TPFC Kalman Tracker Service 启动失败: {e}")
-            self.tracker_service = None
-        # -----------------------------------------------------
 
         self.ping_thread.start()
         self.data_pusher_thread.start()
@@ -291,6 +249,76 @@ class RedPitayaControlService(BaseService, LinienControlService):
                     self.parameters.acquisition_raw_data.value = new_data
             sleep(0.05)
 
+    def _build_kalman_params(self) -> dict:
+        """Assemble Kalman filter parameters from ``self.parameters``."""
+
+        kal = self.parameters
+
+        initial_state = [
+            kal.tpfc_kalman_init_t.value,
+            kal.tpfc_kalman_init_f.value,
+            kal.tpfc_kalman_init_d.value,
+        ]
+
+        initial_cov_diag = [
+            kal.tpfc_kalman_init_cov_t.value,
+            kal.tpfc_kalman_init_cov_f.value,
+            kal.tpfc_kalman_init_cov_d.value,
+        ]
+
+        return dict(
+            dt=kal.tpfc_kalman_dt.value,
+            process_noise_std_t=kal.tpfc_kalman_proc_noise_t.value,
+            process_noise_std_f=kal.tpfc_kalman_proc_noise_f.value,
+            process_noise_std_drift=kal.tpfc_kalman_proc_noise_drift.value,
+            base_measurement_noise_std=kal.tpfc_kalman_meas_noise_base.value,
+            fade_measurement_noise_std=kal.tpfc_kalman_meas_noise_fade.value,
+            power_threshold=kal.tpfc_kalman_power_threshold.value,
+            initial_state=initial_state,
+            initial_covariance_diag=initial_cov_diag,
+        )
+
+    def _start_tpfc_tracker(self) -> None:
+        """(Re)start the TPFC Kalman tracker thread with current parameters."""
+
+        if self.tracker_service is not None and self.tracker_service.is_alive():
+            logger.info("已有 TPFC Kalman Tracker 线程在运行，先停止后重启。")
+            self._stop_tpfc_tracker()
+
+        try:
+            kalman_params = self._build_kalman_params()
+            loop_interval = kalman_params.get("dt", 0.001) or 0.001
+
+            self.tracker_service = TPFCTrackerService(
+                device=self.registers,
+                kalman_params=kalman_params,
+                loop_interval_s=loop_interval,
+            )
+            self.tracker_service.daemon = True
+            self.tracker_service.start()
+            logger.info(
+                "TPFC Kalman Tracker Service 启动成功 (loop_interval=%ss)",
+                loop_interval,
+            )
+        except Exception:
+            logger.exception("TPFC Kalman Tracker Service 启动失败")
+            self.tracker_service = None
+
+    def _stop_tpfc_tracker(self) -> None:
+        """Stop the tracker thread if it is running."""
+
+        if self.tracker_service is None:
+            return
+
+        if self.tracker_service.is_alive():
+            logger.info("正在停止 TPFC Kalman Tracker Service...")
+            self.tracker_service.stop()
+            self.tracker_service.join()
+            logger.info("TPFC Kalman Tracker Service 已停止。")
+
+        self.tracker_service = None
+
+
     def _task_running(self):
         return (
             self.parameters.autolock_running.value
@@ -356,14 +384,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
     def exposed_shutdown(self):
 
-        # --- 安全停止卡尔曼跟踪服务 ---
-        if self.tracker_service is not None:
-            logger.info("正在停止 TPFC Kalman Tracker Service...")
-            self.tracker_service.stop()  # 调用您在 TPFCTrackerService 中定义的 stop 方法
-            self.tracker_service.join()  # 等待线程安全退出
-            logger.info("TPFC Kalman Tracker Service 已停止。")
-        # ----------------------------------------
-
+        self._stop_tpfc_tracker()
         self.stop_event.set()
         self.ping_thread.join()
         self.data_pusher_thread.join()
