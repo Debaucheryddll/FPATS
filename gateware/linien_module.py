@@ -156,6 +156,8 @@ class LinienModule(Module, AutoCSR):
             "scopegen": 6,
             "noise": 7,
             "logic": 8,
+            "kalman_targets": 10,
+            "scan_tracker": 11,
         }
 
         self.submodules.csrbanks = csr_bus.CSRBankArray(
@@ -201,7 +203,6 @@ class LinienModule(Module, AutoCSR):
             self.scan_tracker.power_level.eq(self.err_calc.csr_power_signal.status),
 
             # 4. 连接功率阈值 (来自 PS)
-            # 【注意】您需要在 KalmanTargets.py 中添加这个 CSR
             self.scan_tracker.power_threshold_acquire.eq(self.kalman_targets.power_threshold_target_cmd.storage),
         ]
 

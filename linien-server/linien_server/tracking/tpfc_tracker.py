@@ -39,6 +39,8 @@ class TPFCTrackerService(threading.Thread):
         self.csr_t_target_cmd = device.csr.kalman_targets.t_target_cmd
         self.csr_power_threshold_cmd = device.csr.kalman_targets.power_threshold_target_cmd
 
+        self.registers = device
+
         # --- III. 卡尔曼滤波器实例化 ---
         self.kf = KalmanFilterTimeFrequency(
             **self.params             # 使用参数传递来配置
@@ -61,6 +63,18 @@ class TPFCTrackerService(threading.Thread):
     def stop(self):
         self._stop_event.set()
 
+    def read_scan_tracking_status(self) -> dict[str, int]:
+        """Return PL scan-tracking status (FSM + time-command output).
+
+        The values originate from the ``ScanTrackingController`` CSRs exposed as
+        ``scan_tracker_fsm_state`` and ``scan_tracker_time_command_out`` in the
+        CSR map. This allows PS-side services or diagnostics to observe PL scan
+        behavior without touching the gateware directly.
+        """
+
+        return self.registers.read_scan_tracker_status()
+
+
     def run(self):
         logger.info(f"TPFC 跟踪服务启动，更新频率: {1 / self.loop_interval} Hz")
         while not self._stop_event.is_set():
@@ -79,12 +93,18 @@ class TPFCTrackerService(threading.Thread):
     def process_tracking_step(self):
         """执行一次完整的读-滤波-写循环"""
         # 1. 读取 FPGA 输入
-        raw_e = self.csr_error_signal.read()
-        raw_p = self.csr_power_signal.read()
+        # raw_e = self.csr_error_signal.read()
+        # raw_p = self.csr_power_signal.read()
+        raw_e = self.registers.read_error_signal()
+        raw_p = self.registers.read_power_signal()
 
         # 2. 转换定点数到物理量
-        z_measurement = FixedPointConverter.fixed_to_float(raw_e,self.FP_WIDTH,self.FP_FRAC_BITS)*self.scale_factor_E
-        P_received_power = FixedPointConverter.fixed_to_float(raw_p,self.FP_WIDTH,self.FP_FRAC_BITS)*self.scale_factor_P
+        z_measurement = FixedPointConverter.fixed_to_float(
+            raw_e,self.FP_WIDTH,self.FP_FRAC_BITS
+        )*self.scale_factor_E
+        P_received_power = FixedPointConverter.fixed_to_float(
+            raw_p,self.FP_WIDTH,self.FP_FRAC_BITS
+        )*self.scale_factor_P
 
         # 3. 卡尔曼滤波运算
         self.kf.predict()
@@ -103,13 +123,22 @@ class TPFCTrackerService(threading.Thread):
 
         # 5. 转换为 FPGA 定点数 (写入目标值)
         # 确保输出的定点数能被 PID 正确解析
-        raw_x_target = FixedPointConverter.float_to_fixed(estimated_X_offset,self.FP_WIDTH,self.FP_FRAC_BITS)
-        raw_f_target = FixedPointConverter.float_to_fixed(estimated_F_offset,self.FP_WIDTH,self.FP_FRAC_BITS)
-        raw_time_uncertain_target =  FixedPointConverter.float_to_fixed(time_uncertainty,self.FP_WIDTH,self.FP_FRAC_BITS)
-        raw_power_threshold_target = FixedPointConverter.float_to_fixed(power_threshold,self.FP_WIDTH,self.FP_FRAC_BITS)
-
+        raw_x_target = FixedPointConverter.float_to_fixed(
+            estimated_X_offset, self.FP_WIDTH, self.FP_FRAC_BITS
+        )
+        raw_f_target = FixedPointConverter.float_to_fixed(
+            estimated_F_offset, self.FP_WIDTH, self.FP_FRAC_BITS
+        )
+        raw_time_uncertain_target = FixedPointConverter.float_to_fixed(
+            time_uncertainty, self.FP_WIDTH, self.FP_FRAC_BITS
+        )
+        raw_power_threshold_target = FixedPointConverter.float_to_fixed(
+            power_threshold, self.FP_WIDTH, self.FP_FRAC_BITS
+        )
         # 6. 写入 CSR Storage，更新 PID 的目标设定值
-        self.csr_x_target_cmd.write(raw_x_target)
-        self.csr_f_target_cmd.write(raw_f_target)
-        self.csr_t_target_cmd.write(raw_time_uncertain_target)
-        self.csr_power_threshold_cmd.write(raw_power_threshold_target)
+        self.registers.write_kalman_targets(
+            raw_x_target,
+            raw_f_target,
+            raw_time_uncertain_target,
+            raw_power_threshold_target,
+        )

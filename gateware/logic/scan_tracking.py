@@ -1,4 +1,6 @@
 from migen import *
+from misoc.interconnect.csr import AutoCSR, CSRStatus
+
 
 FPGA_CLOCK_FREQ = 125000000
 FP_WIDTH = 25
@@ -11,7 +13,7 @@ SLEW_RATE_VAL = 40.0
 FULL_RANGE_VAL = 5.0
 # 500 fs 不确定性
 LOCK_UNCERTAINTY_VAL = 500.0
-class ScanTrackingController(Module):
+class ScanTrackingController(Module, AutoCSR):
     """
     扫描跟踪控制器 (Migen FPGA 模块)
 
@@ -37,6 +39,14 @@ class ScanTrackingController(Module):
 
         # 输出到PS（通过AXI/中断）
         self.fsm_state = Signal(2)  # 0=BROAD_SEARCH, 1=NARROW_SEARCH, 2=LOCKED
+
+        # --- CSR 映射 ---
+        self.fsm_state_status = CSRStatus(
+            2, name="fsm_state", description="扫描跟踪状态机状态"
+        )
+        self.time_command_out_status = CSRStatus(
+            width, name="time_command_out", description="扫描跟踪输出的时间命令"
+        )
 
         # --- 内部逻辑 (Internal Logic) ---
         current_output_time = Signal((width, True), reset=0)  # 内部当前输出时间寄存器
@@ -124,4 +134,8 @@ class ScanTrackingController(Module):
         ]
 
         # 最终输出（组合逻辑）
-        self.comb += self.time_command_out.eq(current_output_time)
+        self.comb += [
+            self.time_command_out.eq(current_output_time),
+            self.fsm_state_status.status.eq(self.fsm_state),
+            self.time_command_out_status.status.eq(self.time_command_out),
+        ]

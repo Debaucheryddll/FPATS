@@ -285,6 +285,9 @@ class AcquisitionService(Service):
     def exposed_set_dual_channel(self, dual_channel):
         self.dual_channel = dual_channel
 
+    def exposed_get_csr(self, key: str) -> int:
+        return int(self.csr.get(key))
+
     def exposed_set_csr(self, key: str, value: int) -> None:
         self.csr_queue.append((key, value))
 
