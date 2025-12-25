@@ -424,7 +424,6 @@ class Registers:
         ``time_command_out_status`` in ``gateware/logic/scan_tracking.py``),
         allowing PS services to monitor PL tracking behavior.
         """
-
         return {
             "fsm_state": self.read_scan_tracker_fsm_state(),
             "time_command_out": self.read_scan_tracker_time_command(),

@@ -2,6 +2,8 @@ from migen import *
 from gateware.logic.divider_1 import PipelinedFloatDivider
 from gateware.logic.cordic import Cordic
 
+
+# 无法计算浮点数，只能计算整数的误差信号计算器
 class ErrorSignalCalculator(Module):
     """
     E = (|V1| - |V2|) / (|V1| + |V2|)

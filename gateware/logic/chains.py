@@ -20,7 +20,7 @@ from misoc.interconnect.csr import CSR, AutoCSR, CSRStatus, CSRStorage
 
 from .iir import Iir
 from .limit import LimitCSR
-from .modulate import Demodulate
+from .demodulate_01 import Demodulate
 from .pid import PID
 
 
@@ -59,6 +59,7 @@ class FastChain(Module, AutoCSR):
             x.eq(self.adc << s),
             self.demod.x.eq(self.adc),
             self.demod.phase.eq(mod.phase),
+            self.demod.freq_base.eq(mod.freq.storage),
         ]
         ya = Signal((width + 3, True))
         self.sync += (ya.eq(((dy >> s))),)

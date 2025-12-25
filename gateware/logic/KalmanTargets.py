@@ -9,17 +9,17 @@ class KalmanTargets(Module, AutoCSR):
     def __init__(self, width=25):
         # 目标 1: 最优时间偏移估计 X(t)
         self.x_target_cmd = CSRStorage(
-            width, name="x_target_cmd", description="Kalman: 最优时间偏移目标 (X)"
+            width, name="x_target_cmd"
         )
         # 目标 2: 最优频率偏移估计 Delta f
         self.f_target_cmd = CSRStorage(
-            width, name="f_target_cmd", description="Kalman: 最优频率偏移目标 (Delta f)"
+            width, name="f_target_cmd"
         )
         # 目标 3: 对估计的不确定度
         self.t_target_cmd = CSRStorage(
-            width, name="t_target_cmd", description="Kalman: 不确定度"
+            width, name="t_target_cmd"
         )
         # 目标 4： 功率阈值
         self.power_threshold_target_cmd = CSRStorage(
-            width,name="power_threshold_target_cmd",description="功率阈值"
+            width,name="power_threshold_target_cmd"
         )

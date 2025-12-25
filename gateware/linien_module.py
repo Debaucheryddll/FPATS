@@ -52,6 +52,7 @@ from gateware.lowlevel.scopegen import ScopeGen
 from gateware.lowlevel.xadc import XADC
 
 
+
 class LinienLogic(Module, AutoCSR):
     def __init__(self, width=14, signal_width=25, chain_factor_width=8, coeff_width=25):
         self.init_csr(width, chain_factor_width)
@@ -59,10 +60,29 @@ class LinienLogic(Module, AutoCSR):
 
     def init_csr(self, width, chain_factor_width):
         self.pid_only_mode = CSRStorage(1,name="pid_only_mode")
+        # we use chain_factor_width + 1 for the single channel mode
+        factor_reset = 1 << (chain_factor_width - 1)
+        self.chain_a_factor = CSRStorage(chain_factor_width + 1, reset=factor_reset,name="chain_a_factor")
+        self.chain_b_factor = CSRStorage(chain_factor_width + 1, reset=factor_reset,name="chain_b_factor")
+        self.chain_a_offset = CSRStorage(width,name="chain_a_offset")
+        self.chain_b_offset = CSRStorage(width,name="chain_b_offset")
+        self.combined_offset = CSRStorage(width,name="combined_offset")
+        self.combined_offset_signed = Signal((width, True),name="combined_offset_signed")
+        self.out_offset = CSRStorage(width,name="out_offset")
+        self.slow_decimation = CSRStorage(bits_for(16),name="slow_decimation")
+        for i in range(1, 4):
+            setattr(self, f"analog_out_{i}", CSRStorage(15, name=f"analog_out_{i}"))
+        self.slow_value = CSRStatus(width,name="slow_value")
+        self.chain_a_offset_signed = Signal((width, True))
+        self.chain_b_offset_signed = Signal((width, True))
+        self.out_offset_signed = Signal((width, True))
 
     def init_submodules(self, width, signal_width):
+        self.submodules.mod = Modulate(width=width)
+        self.submodules.limit_error_signal = LimitCSR(width=signal_width, guard=4)
+        self.submodules.limit_fast1 = LimitCSR(width=width, guard=5)
+        self.submodules.limit_fast2 = LimitCSR(width=width, guard=5)
         self.submodules.pid = PID(width=signal_width)
-
 
 
 class LinienModule(Module, AutoCSR):
@@ -127,7 +147,6 @@ class LinienModule(Module, AutoCSR):
         # self.clock_domains.cd_decimated_clock = ClockDomain()
         # decimated_clock = ClockDomainsRenamer("decimated_clock")
         # self.submodules.slow_chain = decimated_clock(SlowChain())
-
         self.submodules.err_calc = ErrorSignalCalculator(width=signal_width)
         # 实例化 KalmanTargets 模块
         self.submodules.kalman_targets = KalmanTargets(width=signal_width)

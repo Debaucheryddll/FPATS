@@ -42,10 +42,10 @@ class ScanTrackingController(Module, AutoCSR):
 
         # --- CSR 映射 ---
         self.fsm_state_status = CSRStatus(
-            2, name="fsm_state", description="扫描跟踪状态机状态"
+            2, name="fsm_state"
         )
         self.time_command_out_status = CSRStatus(
-            width, name="time_command_out", description="扫描跟踪输出的时间命令"
+            width, name="time_command_out"
         )
 
         # --- 内部逻辑 (Internal Logic) ---

@@ -1,6 +1,6 @@
 #
 # 误差信号计算器模块
-#
+#可以计算浮点数的误差信号计算器
 from migen import Module, Signal, Cat, If
 from misoc.interconnect.csr import AutoCSR, CSRStatus
 
