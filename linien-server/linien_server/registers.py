@@ -186,9 +186,10 @@ class Registers:
             new.update(
                 {
                     "scopegen_adc_a_sel": csrmap.signals.index(
-                        "logic_combined_error_signal"
-                        if not self.parameters.acquisition_raw_filter_enabled.value
-                        else "logic_combined_error_signal_filtered"
+                        # "logic_combined_error_signal"
+                        # if not self.parameters.acquisition_raw_filter_enabled.value
+                        # else "logic_combined_error_signal_filtered"
+                        "scan_tracker_time_command_out"
                     ),
                     "scopegen_adc_a_q_sel": csrmap.signals.index("fast_b_x"),
                     "scopegen_adc_b_sel": csrmap.signals.index("logic_control_signal"),
@@ -200,7 +201,8 @@ class Registers:
             # demodulated error signal 1 + monitor signal
             new.update(
                 {
-                    "scopegen_adc_a_sel": csrmap.signals.index("fast_a_out_i"),
+                    # "scopegen_adc_a_sel": csrmap.signals.index("fast_a_out_i"),
+                    "scopegen_adc_a_sel": csrmap.signals.index("err_calc_out_e"),
                     "scopegen_adc_a_q_sel": csrmap.signals.index("fast_a_out_q"),
                     "scopegen_adc_b_sel": csrmap.signals.index(
                         "fast_b_out_i"

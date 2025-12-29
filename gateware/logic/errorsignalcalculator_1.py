@@ -22,6 +22,11 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.q_b = Signal((width, True))
         self.out_e = Signal((width, True))  # 最终的误差信号 E
 
+        self.signal_in = []
+        self.signal_out = [self.out_e]
+        self.state_in = []
+        self.state_out = []
+
         # --- 为 PS 创建两个只读寄存器 ---
         # 寄存器 1: 误差信号 E
         self.csr_error_signal = CSRStatus(width, name="error_signal")

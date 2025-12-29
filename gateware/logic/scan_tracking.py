@@ -40,6 +40,11 @@ class ScanTrackingController(Module, AutoCSR):
         # 输出到PS（通过AXI/中断）
         self.fsm_state = Signal(2)  # 0=BROAD_SEARCH, 1=NARROW_SEARCH, 2=LOCKED
 
+        self.signal_in = []
+        self.signal_out = [self.time_command_out]
+        self.state_in = []
+        self.state_out = []
+
         # --- CSR 映射 ---
         self.fsm_state_status = CSRStatus(
             2, name="fsm_state"

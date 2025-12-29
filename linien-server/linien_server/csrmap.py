@@ -323,4 +323,4 @@ csr = {
     'xadc_d': (29, 0x00a, 12, False),
 }
 states = ['force', 'di0', 'di1', 'di2', 'di3', 'di4', 'di5', 'di6', 'di7', 'robustwatching', 'robustturn_on_lock', 'robustsign_equal', 'robustover_threshold', 'robustwaited_long_enough']
-signals = ['zero', 'fast_a_x', 'fast_a_out_i', 'fast_a_out_q', 'fast_b_x', 'fast_b_out_i', 'fast_b_out_q', 'slow_chain_out', 'scopegen_dac_a', 'scopegen_dac_b', 'logic_control_signal', 'logic_combined_error_signal', 'logic_combined_error_signal_filtered']
+signals = ['zero', 'fast_a_x', 'fast_a_out_i', 'fast_a_out_q', 'fast_b_x', 'fast_b_out_i', 'fast_b_out_q', 'slow_chain_out', 'scopegen_dac_a', 'scopegen_dac_b', 'logic_control_signal', 'logic_combined_error_signal', 'logic_combined_error_signal_filtered', 'err_calc_out_e']

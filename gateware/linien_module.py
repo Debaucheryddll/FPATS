@@ -158,9 +158,10 @@ class LinienModule(Module, AutoCSR):
             [
                 ("fast_a", self.fast_a),
                 ("fast_b", self.fast_b),
-                ("err_calc",self.err_calc),
+                ("err_calc", self.err_calc),
                 ("scopegen", self.scopegen),
                 ("logic", self.logic),
+                ("scan_tracker", self.scan_tracker),
             ],
         )
 
