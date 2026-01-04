@@ -390,48 +390,48 @@ class Registers:
             return int(self.acquisition.csr.get(key))
         return int(self.acquisition.exposed_get_csr(key))
 
-
-
-    def read_error_signal(self) -> int:
-        """Return the latest error-signal sample from ``err_calc.error_signal`` CSR.
-
-        The CSR is defined by ``ErrorSignalCalculator`` in
-        ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
-        ``err_calc_error_signal``.
-        """
-
-        return self.read_csr("err_calc_error_signal")
-
-    def read_power_signal(self) -> int:
-        """Return the latest power sample from ``err_calc.power_signal`` CSR.
-        The CSR is defined by ``ErrorSignalCalculator`` in
-        ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
-        ``err_calc_power_signal``.
-        """
-        return self.read_csr("err_calc_power_signal")
-
-    def read_scan_tracker_fsm_state(self) -> int:
-        """Return the current scan-tracking FSM state."""
-
-        return self.read_csr("scan_tracker_fsm_state")
-
-    def read_scan_tracker_time_command(self) -> int:
-        """Return the latest scan-tracking time command output."""
-
-        return self.read_csr("scan_tracker_time_command_out")
-
-    def read_scan_tracker_status(self) -> dict[str, int]:
-        """Return a snapshot of the scan-tracking controller status.
-
-        This helper fetches the FSM state and the time-command output exposed by
-        the PL-side ``ScanTrackingController`` CSRs (``fsm_state_status`` and
-        ``time_command_out_status`` in ``gateware/logic/scan_tracking.py``),
-        allowing PS services to monitor PL tracking behavior.
-        """
-        return {
-            "fsm_state": self.read_scan_tracker_fsm_state(),
-            "time_command_out": self.read_scan_tracker_time_command(),
-        }
+    #
+    #
+    # def read_error_signal(self) -> int:
+    #     """Return the latest error-signal sample from ``err_calc.error_signal`` CSR.
+    #
+    #     The CSR is defined by ``ErrorSignalCalculator`` in
+    #     ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
+    #     ``err_calc_error_signal``.
+    #     """
+    #
+    #     return self.read_csr("err_calc_error_signal")
+    #
+    # def read_power_signal(self) -> int:
+    #     """Return the latest power sample from ``err_calc.power_signal`` CSR.
+    #     The CSR is defined by ``ErrorSignalCalculator`` in
+    #     ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
+    #     ``err_calc_power_signal``.
+    #     """
+    #     return self.read_csr("err_calc_power_signal")
+    #
+    # def read_scan_tracker_fsm_state(self) -> int:
+    #     """Return the current scan-tracking FSM state."""
+    #
+    #     return self.read_csr("scan_tracker_fsm_state")
+    #
+    # def read_scan_tracker_time_command(self) -> int:
+    #     """Return the latest scan-tracking time command output."""
+    #
+    #     return self.read_csr("scan_tracker_time_command_out")
+    #
+    # def read_scan_tracker_status(self) -> dict[str, int]:
+    #     """Return a snapshot of the scan-tracking controller status.
+    #
+    #     This helper fetches the FSM state and the time-command output exposed by
+    #     the PL-side ``ScanTrackingController`` CSRs (``fsm_state_status`` and
+    #     ``time_command_out_status`` in ``gateware/logic/scan_tracking.py``),
+    #     allowing PS services to monitor PL tracking behavior.
+    #     """
+    #     return {
+    #         "fsm_state": self.read_scan_tracker_fsm_state(),
+    #         "time_command_out": self.read_scan_tracker_time_command(),
+    #     }
 
     def write_csr(self, key: str, value: int) -> None:
         if hasattr(self.acquisition, "csr"):
