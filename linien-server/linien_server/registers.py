@@ -186,10 +186,10 @@ class Registers:
             new.update(
                 {
                     "scopegen_adc_a_sel": csrmap.signals.index(
-                        # "logic_combined_error_signal"
-                        # if not self.parameters.acquisition_raw_filter_enabled.value
-                        # else "logic_combined_error_signal_filtered"
-                        "scan_tracker_time_command_out"
+                        "logic_combined_error_signal"
+                        if not self.parameters.acquisition_raw_filter_enabled.value
+                        else "logic_combined_error_signal_filtered"
+                        # "scan_tracker_time_command_out"
                     ),
                     "scopegen_adc_a_q_sel": csrmap.signals.index("fast_b_x"),
                     "scopegen_adc_b_sel": csrmap.signals.index("logic_control_signal"),
@@ -390,6 +390,8 @@ class Registers:
             return int(self.acquisition.csr.get(key))
         return int(self.acquisition.exposed_get_csr(key))
 
+
+
     def read_error_signal(self) -> int:
         """Return the latest error-signal sample from ``err_calc.error_signal`` CSR.
 
@@ -437,19 +439,19 @@ class Registers:
         else:
             self.acquisition.exposed_set_csr(key, int(value))
 
-    def write_kalman_targets(
-            self,
-            x_target: int,
-            f_target: int,
-            time_uncertainty: int,
-            power_threshold: int,
-    ) -> None:
-        """Store Kalman-derived setpoints into the PL CSRs."""
-
-        self.write_csr("kalman_targets_x_target_cmd", x_target)
-        self.write_csr("kalman_targets_f_target_cmd", f_target)
-        self.write_csr("kalman_targets_t_target_cmd", time_uncertainty)
-        self.write_csr("kalman_targets_power_threshold_target_cmd", power_threshold)
+    # def write_kalman_targets(
+    #         self,
+    #         x_target: int,
+    #         f_target: int,
+    #         time_uncertainty: int,
+    #         power_threshold: int,
+    # ) -> None:
+    #     """Store Kalman-derived setpoints into the PL CSRs."""
+    #
+    #     self.write_csr("kalman_targets_x_target_cmd", x_target)
+    #     self.write_csr("kalman_targets_f_target_cmd", f_target)
+    #     self.write_csr("kalman_targets_t_target_cmd", time_uncertainty)
+    #     self.write_csr("kalman_targets_power_threshold_target_cmd", power_threshold)
 
 
     def set(self, key, value):

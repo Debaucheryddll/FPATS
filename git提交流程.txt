@@ -1,0 +1,5 @@
+cd /e/testlinien/FPATS
+git remote set-url origin https://github.com/Debaucheryddll/FPATS.git || git remote add origin https://github.com/Debaucheryddll/FPATS.git
+git add .
+git commit -m "Update FPATS code" //这个名字每次都要换一下
+git push -u origin main
