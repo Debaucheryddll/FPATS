@@ -595,50 +595,50 @@ class Parameters:
         # ------------------- TPFC KALMAN PARAMETERS ----------------------------------
         # These parameters configure the Kalman Filter for FPATS time transfer.
         # They are used only in the PS-side TPFCTrackerService and do not interact with FPGA.
-        #
-        # self.tpfc_kalman_dt = Parameter(start=0.001, min_=1e-6, max_=1.0, restorable=True)
-        # """
-        # Kalman filter update interval dt in seconds.
-        # Typically matches TPFCTrackerService loop interval.
-        # """
-        #
-        # self.tpfc_kalman_proc_noise_t = Parameter(start=1e-4, min_=0, max_=1, restorable=True)
-        # """Process noise (time dimension)."""
-        #
-        # self.tpfc_kalman_proc_noise_f = Parameter(start=1e-2, min_=0, max_=10, restorable=True)
-        # """Process noise (frequency dimension)."""
-        #
-        # self.tpfc_kalman_proc_noise_drift = Parameter(start=1e-6, min_=0, max_=1, restorable=True)
-        # """Process noise (frequency drift dimension)."""
-        #
-        # self.tpfc_kalman_meas_noise_base = Parameter(start=5e-12, min_=0, max_=1e-6, restorable=True)
-        # """Base measurement noise std dev (seconds)."""
-        #
-        # self.tpfc_kalman_meas_noise_fade = Parameter(start=1e-11, min_=0, max_=1e-6, restorable=True)
-        # """Noise during low-power fading conditions."""
-        #
-        # self.tpfc_kalman_power_threshold = Parameter(start=2000, min_=0, max_=65535, restorable=True)
-        # """Power threshold used to detect fading for dynamic R."""
-        #
-        # # ------------- Initial State (x = [t, f, drift]) ------------------
-        # self.tpfc_kalman_init_t = Parameter(start=0.0, restorable=True)
-        # """Initial time offset estimate in seconds."""
-        #
-        # self.tpfc_kalman_init_f = Parameter(start=0.0, restorable=True)
-        # """Initial frequency offset estimate in Hz."""
-        #
-        # self.tpfc_kalman_init_d = Parameter(start=0.0, restorable=True)
-        # """Initial frequency drift estimate."""
-        #
-        # # ------------- Initial Covariance Matrix diagonal ------------------
-        # self.tpfc_kalman_init_cov_t = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
-        # """Initial covariance for time offset."""
-        #
-        # self.tpfc_kalman_init_cov_f = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
-        # """Initial covariance for frequency offset."""
-        #
-        # self.tpfc_kalman_init_cov_d = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
-        # """Initial covariance for frequency drift."""
+
+        self.tpfc_kalman_dt = Parameter(start=0.001, min_=1e-6, max_=1.0, restorable=True)
+        """
+        Kalman filter update interval dt in seconds.
+        Typically matches TPFCTrackerService loop interval.
+        """
+
+        self.tpfc_kalman_proc_noise_t = Parameter(start=1e-4, min_=0, max_=1, restorable=True)
+        """Process noise (time dimension)."""
+
+        self.tpfc_kalman_proc_noise_f = Parameter(start=1e-2, min_=0, max_=10, restorable=True)
+        """Process noise (frequency dimension)."""
+
+        self.tpfc_kalman_proc_noise_drift = Parameter(start=1e-6, min_=0, max_=1, restorable=True)
+        """Process noise (frequency drift dimension)."""
+
+        self.tpfc_kalman_meas_noise_base = Parameter(start=5e-12, min_=0, max_=1e-6, restorable=True)
+        """Base measurement noise std dev (seconds)."""
+
+        self.tpfc_kalman_meas_noise_fade = Parameter(start=1e-11, min_=0, max_=1e-6, restorable=True)
+        """Noise during low-power fading conditions."""
+
+        self.tpfc_kalman_power_threshold = Parameter(start=2000, min_=0, max_=65535, restorable=True)
+        """Power threshold used to detect fading for dynamic R."""
+
+        # ------------- Initial State (x = [t, f, drift]) ------------------
+        self.tpfc_kalman_init_t = Parameter(start=0.0, restorable=True)
+        """Initial time offset estimate in seconds."""
+
+        self.tpfc_kalman_init_f = Parameter(start=0.0, restorable=True)
+        """Initial frequency offset estimate in Hz."""
+
+        self.tpfc_kalman_init_d = Parameter(start=0.0, restorable=True)
+        """Initial frequency drift estimate."""
+
+        # ------------- Initial Covariance Matrix diagonal ------------------
+        self.tpfc_kalman_init_cov_t = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
+        """Initial covariance for time offset."""
+
+        self.tpfc_kalman_init_cov_f = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
+        """Initial covariance for frequency offset."""
+
+        self.tpfc_kalman_init_cov_d = Parameter(start=1.0, min_=0, max_=1e6, restorable=True)
+        """Initial covariance for frequency drift."""
 
         self.scan_slew_rate = Parameter(start=40.0, min_=0, max_=500.0, restorable=True)
         self.scan_full_range = Parameter(start=5.0, min_=0, max_=50.0, restorable=True)
