@@ -38,7 +38,7 @@ from linien_common.communication import (
 from linien_common.config import SERVER_PORT
 from linien_common.influxdb import InfluxDBCredentials, restore_credentials
 from linien_server import __version__
-from linien_server.autolock.autolock import Autolock
+# from linien_server.autolock.autolock import Autolock
 from linien_server.influxdb import InfluxDBLogger
 from linien_server.noise_analysis import PIDOptimization, PSDAcquisition
 from linien_server.optimization.optimization import OptimizeSpectroscopy
@@ -175,14 +175,13 @@ class RedPitayaControlService(BaseService, LinienControlService):
             daemon=True,
         )
 
-        self.tracker_service = None
-        self._start_tpfc_tracker()
-
-
         self.ping_thread.start()
         self.data_pusher_thread.start()
 
         self.exposed_write_registers()
+
+        self.tracker_service = None
+        self._start_tpfc_tracker()
 
     def _send_ping_loop(self, stop_event: Event):
         MAX_PING = 3
@@ -321,8 +320,9 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
     def _task_running(self):
         return (
-            self.parameters.autolock_running.value
-            or self.parameters.optimization_running.value
+            # self.parameters.autolock_running.value
+            # or self.parameters.optimization_running.value
+             self.parameters.optimization_running.value
             or self.parameters.psd_acquisition_running.value
             or self.parameters.psd_optimization_running.value
         )
@@ -332,26 +332,31 @@ class RedPitayaControlService(BaseService, LinienControlService):
         self.registers.write_registers()
 
     def exposed_start_autolock(self, x0, x1, spectrum, additional_spectra=None):
-        spectrum = pickle.loads(spectrum)
-        # start_watching = self.parameters.watch_lock.value
-        start_watching = False
-        auto_offset = self.parameters.autolock_determine_offset.value
-
-        if not self._task_running():
-            autolock = Autolock(self, self.parameters)
-            self.parameters.task.value = autolock
-            autolock.run(
-                x0,
-                x1,
-                spectrum,
-                should_watch_lock=start_watching,
-                auto_offset=auto_offset,
-                additional_spectra=(
-                    pickle.loads(additional_spectra)
-                    if additional_spectra is not None
-                    else None
-                ),
-            )
+        # spectrum = pickle.loads(spectrum)
+        # # start_watching = self.parameters.watch_lock.value
+        # start_watching = False
+        # auto_offset = self.parameters.autolock_determine_offset.value
+        #
+        # if not self._task_running():
+        #     autolock = Autolock(self, self.parameters)
+        #     self.parameters.task.value = autolock
+        #     autolock.run(
+        #         x0,
+        #         x1,
+        #         spectrum,
+        #         should_watch_lock=start_watching,
+        #         auto_offset=auto_offset,
+        #         additional_spectra=(
+        #             pickle.loads(additional_spectra)
+        #             if additional_spectra is not None
+        #             else None
+        #         ),
+        #     )
+        logger.warning(
+            "Autolock is disabled in FPATS; ignoring start_autolock request."
+        )
+        self.parameters.autolock_running.value = False
+        self.parameters.autolock_preparing.value = False
 
     def exposed_start_optimization(self, x0, x1, spectrum):
         if not self._task_running():

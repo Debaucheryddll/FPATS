@@ -37,6 +37,7 @@ from gateware.logic.KalmanTargets import KalmanTargets
 from gateware.logic.delta_sigma import DeltaSigma
 from gateware.logic.errorsignalcalculator_1 import ErrorSignalCalculator
 from gateware.logic.scan_tracking import ScanTrackingController
+from gateware.logic.sine_source import SineSource
 
 from gateware.logic.iir import Iir
 from gateware.logic.limit import LimitCSR
@@ -152,6 +153,7 @@ class LinienModule(Module, AutoCSR):
         self.submodules.kalman_targets = KalmanTargets(width=signal_width)
         self.submodules.scan_tracker = ScanTrackingController(width=signal_width)
         self.submodules.scopegen = ScopeGen(signal_width)
+        self.submodules.sine_source = SineSource(width=width, amplitude_scale=0.5)
 
         self.state_names, self.signal_names = cross_connect(
             self.gpio_n,
@@ -251,7 +253,8 @@ class LinienModule(Module, AutoCSR):
         self.comb +=[
             self.logic.limit_fast1.x.eq(pid_out),
             # DAC 输出来自限幅后的信号
-            self.analog.dac_a.eq(self.logic.limit_fast1.y)
+            self.analog.dac_a.eq(self.logic.limit_fast1.y),
+            self.analog.dac_b.eq(self.sine_source.output),
         ]
 
 
