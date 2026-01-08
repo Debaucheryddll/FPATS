@@ -127,7 +127,7 @@ class Parameters:
         The `to_plot` parameter is a pickled dictionary that contains signals that may
         be plotted. Depending on the locking state, it may contain these signals:
         Unlocked state:
-          - `error_signal_1` and `error_signal_1_quadrature`:
+          - `error_signal` and `error_signal_quadrature`:
               IQ-demodulated and low-pass-filtered error signals from ANALOG IN 0
           - `error_signal_2` and `error_signal_2_quadrature`:
               IQ-demodulated and low-pass-filtered error signals from ANALOG IN 1. These

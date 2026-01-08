@@ -180,7 +180,7 @@ def check_plot_data(is_locked: bool, plot_data: Dict[str, np.ndarray]) -> bool:
         if "error_signal" not in plot_data or "control_signal" not in plot_data:
             return False
     else:
-        if "error_signal_1" not in plot_data:
+        if "error_signal" not in plot_data:
             return False
     return True
 

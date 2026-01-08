@@ -180,7 +180,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
         self.exposed_write_registers()
 
         self.tracker_service = None
-        self._start_tpfc_tracker()
+        logger.info("TPFC Kalman Tracker Service 未自动启动，等待显式启动。")
 
     def _send_ping_loop(self, stop_event: Event):
         MAX_PING = 3
@@ -335,6 +335,14 @@ class RedPitayaControlService(BaseService, LinienControlService):
         self.parameters.lock.value = False
         self.exposed_write_registers()
         self.exposed_continue_acquisition()
+
+    def exposed_start_tpfc_tracker(self) -> None:
+        """Explicitly start the TPFC Kalman tracker thread."""
+        self._start_tpfc_tracker()
+
+    def exposed_stop_tpfc_tracker(self) -> None:
+        """Explicitly stop the TPFC Kalman tracker thread."""
+        self._stop_tpfc_tracker()
 
     def exposed_start_lock(self):
         self.exposed_pause_acquisition()

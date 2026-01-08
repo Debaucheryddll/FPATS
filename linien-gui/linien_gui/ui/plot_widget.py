@@ -350,7 +350,7 @@ class PlotWidget(pg.PlotWidget):
                 dual_channel = self.parameters.dual_channel.value
                 monitor_signal = to_plot.get("monitor_signal")
                 error_signal_2 = to_plot.get("error_signal_2")
-                error_signal_1 = to_plot["error_signal_1"]
+                error_signal_1 = to_plot["error_signal"]
                 monitor_or_error_signal_2 = (
                     error_signal_2 if error_signal_2 is not None else monitor_signal
                 )
@@ -398,7 +398,7 @@ class PlotWidget(pg.PlotWidget):
                     not self.parameters.pid_only_mode.value
                 ):
                     # check whether to plot signal strengths using quadratures
-                    error_1_quadrature = to_plot.get("error_signal_1_quadrature")
+                    error_1_quadrature = to_plot.get("error_signal_quadrature")
                     error_2_quadrature = to_plot.get("error_signal_2_quadrature")
 
                     self.signalStrengthA.setVisible(error_1_quadrature is not None)

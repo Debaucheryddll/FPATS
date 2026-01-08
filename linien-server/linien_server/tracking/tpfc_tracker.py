@@ -48,6 +48,7 @@ class TPFCTrackerService(threading.Thread):
         # 实际校准因子应通过实验确定
         self.scale_factor_E = 1.0  # 误差信号定点数到时间(s)的转换因子
         self.scale_factor_P = 1.0  # 功率定点数到功率(W)的转换因子
+        self._initialized_from_fpga = False
 
     def stop(self):
         self._stop_event.set()
@@ -113,6 +114,15 @@ class TPFCTrackerService(threading.Thread):
                 P_received_power,
             )
             return
+        if not self._initialized_from_fpga:
+            # 使用 FPGA 误差信号作为初始时间偏移估计，等待下一周期再预测/更新
+            self.kf.x[0, 0] = z_measurement
+            self._initialized_from_fpga = True
+            logger.info(
+                "TPFC Kalman 初始状态已根据 FPGA 误差信号初始化: z=%s",
+                z_measurement,
+            )
+            return
 
         # 3. 卡尔曼滤波运算
         self.kf.predict()
@@ -147,4 +157,5 @@ class TPFCTrackerService(threading.Thread):
             raw_f_target,
             raw_time_uncertain_target,
             raw_power_threshold_target,
+
         )

@@ -362,18 +362,17 @@ class Registers:
 
         The CSR is defined by ``ErrorSignalCalculator`` in
         ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
-        ``err_calc_error_signal``.
+        ``err_calc_out_e``.
         """
-
-        return self.read_csr("err_calc_error_signal")
+        return self.read_csr("err_calc_out_e")
 
     def read_power_signal(self) -> int:
-        """Return the latest power sample from ``err_calc.power_signal`` CSR.
+        """Return the latest power sample from ``err_calc.power_signal_out`` CSR.
         The CSR is defined by ``ErrorSignalCalculator`` in
         ``gateware/logic/errorsignalcalculator_1.py`` and exposed in the map as
-        ``err_calc_power_signal``.
+        ``err_calc_power_signal_out``.
         """
-        return self.read_csr("err_calc_power_signal")
+        return self.read_csr("err_calc_power_signal_out")
 
     def read_scan_tracker_fsm_state(self) -> int:
         """Return the current scan-tracking FSM state."""

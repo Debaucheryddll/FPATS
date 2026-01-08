@@ -147,10 +147,10 @@ class AcquisitionService(Service):
         signals_named = {}
 
         if not self.locked:
-            signals_named["error_signal_1"] = signals[0]
+            signals_named["error_signal"] = signals[0]
 
             if self.fetch_additional_signals and len(signals) >= 3:
-                signals_named["error_signal_1_quadrature"] = signals[2]
+                signals_named["error_signal_quadrature"] = signals[2]
 
             if self.dual_channel:
                 signals_named["error_signal_2"] = signals[1]

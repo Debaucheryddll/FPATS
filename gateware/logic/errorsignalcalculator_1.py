@@ -30,9 +30,9 @@ class ErrorSignalCalculator(Module, AutoCSR):
 
         # --- 为 PS 创建两个只读寄存器 ---
         # 寄存器 1: 误差信号 E
-        self.csr_error_signal = CSRStatus(width, name="error_signal")
+        self.csr_out_e = CSRStatus(width, name="out_e")
         # 寄存器 2: 功率信号 P (我们使用 'denominator' 作为代理)
-        self.csr_power_signal = CSRStatus(width, name="power_signal")
+        self.csr_power_signal_out = CSRStatus(width, name="power_signal_out")
         # --- 2. 内部信号 ---
         mag_a = Signal((width, True))
         mag_b = Signal((width, True))
@@ -118,8 +118,8 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.sync += denominator_reg.eq(denominator)
         self.comb += [
             # 将最终的 E 连接到 PS
-            self.csr_error_signal.status.eq(self.out_e),
+            self.csr_out_e.status.eq(self.out_e),
             # 将 P (即 'denominator') 连接到 PS
-            self.csr_power_signal.status.eq(denominator_reg),
+            self.csr_power_signal_out.status.eq(denominator_reg),
             self.power_signal_out.eq(denominator_reg),
         ]

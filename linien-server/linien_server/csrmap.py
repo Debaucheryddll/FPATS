@@ -51,8 +51,8 @@ csr_constants = {
 
 csr = {
     'dna_dna': (28, 0x000, 64, False),
-    'err_calc_error_signal': (9, 0x000, 25, False),
-    'err_calc_power_signal': (9, 0x004, 25, False),
+    'err_calc_out_e': (9, 0x000, 25, False),
+    'err_calc_power_signal_out': (9, 0x004, 25, False),
     'err_calc_out_e_clr': (9, 0x008, 1, True),
     'err_calc_out_e_max': (9, 0x009, 25, False),
     'err_calc_out_e_min': (9, 0x00d, 25, False),
