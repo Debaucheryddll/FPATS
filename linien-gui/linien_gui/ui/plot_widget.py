@@ -17,6 +17,7 @@
 
 import pickle
 from time import time
+from collections import deque
 
 import numpy as np
 import pyqtgraph as pg
@@ -24,9 +25,6 @@ from linien_common.common import (
     DECIMATION,
     N_POINTS,
     check_plot_data,
-    combine_error_signal,
-    get_signal_strength_from_i_q,
-    update_signal_history,
 )
 from linien_gui.config import DEFAULT_PLOT_RATE_LIMIT, N_COLORS, Color
 from linien_gui.utils import get_linien_app_instance
@@ -49,10 +47,6 @@ V = 8192
 
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000
-
-
-def peak_voltage_to_dBm(voltage):
-    return 10 + 20 * np.log10(voltage)
 
 
 class TimeXAxis(pg.AxisItem):
@@ -197,6 +191,7 @@ class PlotWidget(pg.PlotWidget):
         self.plot_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
         self._should_reposition_reset_view_button = False
+        self.error_signal_history = deque(maxlen=N_POINTS)
 
     def on_connection_established(self):
         self.parameters = self.app.parameters
@@ -215,6 +210,23 @@ class PlotWidget(pg.PlotWidget):
         self.parameters.to_plot.add_callback(self.on_new_plot_data_received)
         self.parameters.automatic_mode.add_callback(self.on_automatic_mode_changed)
         self.parameters.lock.add_callback(self.on_lock_changed)
+
+        self._configure_simple_view()
+
+        def _configure_simple_view(self) -> None:
+            self.errorSignal1.setVisible(False)
+            self.errorSignal2.setVisible(False)
+            self.monitorSignal.setVisible(False)
+            self.controlSignal.setVisible(False)
+            self.controlSignalHistory.setVisible(False)
+            self.slowHistory.setVisible(False)
+            self.monitorSignalHistory.setVisible(False)
+            self.signalStrengthA.setVisible(False)
+            self.signalStrengthB.setVisible(False)
+            self.signalStrengthA2.setVisible(False)
+            self.signalStrengthB2.setVisible(False)
+            self.signalStrengthAFill.setVisible(False)
+            self.signalStrengthBFill.setVisible(False)
 
     def _to_data_coords(self, event):
         pos = self.plotItem.vb.mapSceneToView(event.pos())
@@ -285,186 +297,27 @@ class PlotWidget(pg.PlotWidget):
 
             if not check_plot_data(self.parameters.lock.value, to_plot):
                 return
+            error_signal = to_plot.get("error_signal")
+            power_signal = to_plot.get("power_signal")
 
-            # we also call this if the laser is not locked because it resets the history
-            # in this case
-            update_signal_history(
-                self.control_signal_history_data,
-                self.monitor_signal_history_data,
-                to_plot,
-                self.parameters.lock.value,
-                self.parameters.control_signal_history_length.value,
-            )
-
-            if self.parameters.lock.value:
-                dual_channel = self.parameters.dual_channel.value
-                timescale = self.parameters.control_signal_history_length.value
-
-                self.errorSignal1.setVisible(False)
-                self.errorSignal2.setVisible(False)
-                self.monitorSignal.setVisible(False)
-                self.signalStrengthA.setVisible(False)
-                self.signalStrengthB.setVisible(False)
-                self.signalStrengthA2.setVisible(False)
-                self.signalStrengthB2.setVisible(False)
-                self.signalStrengthAFill.setVisible(False)
-                self.signalStrengthBFill.setVisible(False)
-
-                self.combinedErrorSignal.setVisible(True)
-                self.combinedErrorSignal.setData(
-                    list(range(len(to_plot["error_signal"]))),
-                    to_plot["error_signal"] / V,
-                )
-
-                self.controlSignal.setVisible(True)
-                self.controlSignal.setData(
-                    list(range(len(to_plot["control_signal"]))),
-                    to_plot["control_signal"] / V,
-                )
-
-                self.controlSignalHistory.setVisible(True)
-                self.controlSignalHistory.setData(
-                    scale_history_times(
-                        self.control_signal_history_data["times"], timescale
-                    ),
-                    np.array(self.control_signal_history_data["values"]) / V,
-                )
-
-                self.slowHistory.setVisible(self.parameters.pid_on_slow_enabled.value)
-                self.slowHistory.setData(
-                    scale_history_times(
-                        self.control_signal_history_data["slow_times"], timescale
-                    ),
-                    np.array(self.control_signal_history_data["slow_values"]) / V,
-                )
-
-                self.monitorSignalHistory.setVisible(not dual_channel)
-                if not dual_channel:
-                    self.monitorSignalHistory.setData(
-                        scale_history_times(
-                            self.monitor_signal_history_data["times"], timescale
-                        ),
-                        np.array(self.monitor_signal_history_data["values"]) / V,
-                    )
+            if isinstance(error_signal, np.ndarray) and error_signal.size > 1:
+                error_series = error_signal
+                self.error_signal_history.clear()
             else:
-                dual_channel = self.parameters.dual_channel.value
-                monitor_signal = to_plot.get("monitor_signal")
-                error_signal_2 = to_plot.get("error_signal_2")
-                error_signal_1 = to_plot["error_signal"]
-                monitor_or_error_signal_2 = (
-                    error_signal_2 if error_signal_2 is not None else monitor_signal
-                )
+                if error_signal is None:
+                    return
+                self.error_signal_history.append(float(np.mean(error_signal)))
+                error_series = np.array(self.error_signal_history)
 
-                combined_error_signal = combine_error_signal(
-                    (error_signal_1, monitor_or_error_signal_2),
-                    dual_channel,
-                    self.parameters.channel_mixing.value,
-                    self.parameters.combined_offset.value if dual_channel else 0,
-                )
-
-                self.last_plot_data = [error_signal_1, monitor_or_error_signal_2] + [
-                    combined_error_signal
-                ]
-
-                self.controlSignal.setVisible(False)
-                self.controlSignalHistory.setVisible(False)
-                self.slowHistory.setVisible(False)
-                self.monitorSignalHistory.setVisible(False)
-
-                self.combinedErrorSignal.setVisible(True)
-                self.combinedErrorSignal.setData(
-                    list(range(len(error_signal_1))), error_signal_1 / V
-                )
-
-                self.errorSignal1.setVisible(dual_channel)
-                if error_signal_1 is not None:
-                    self.errorSignal1.setData(
-                        list(range(len(error_signal_1))), error_signal_1 / V
-                    )
-
-                self.errorSignal2.setVisible(dual_channel)
-                if error_signal_2 is not None:
-                    self.errorSignal2.setData(
-                        list(range(len(error_signal_2))), error_signal_2 / V
-                    )
-
-                self.monitorSignal.setVisible(not dual_channel)
-                if monitor_signal is not None:
-                    self.monitorSignal.setData(
-                        list(range(len(monitor_signal))), monitor_signal / V
-                    )
-
-                if (self.parameters.modulation_frequency.value != 0) and (
-                    not self.parameters.pid_only_mode.value
-                ):
-                    # check whether to plot signal strengths using quadratures
-                    error_1_quadrature = to_plot.get("error_signal_quadrature")
-                    error_2_quadrature = to_plot.get("error_signal_2_quadrature")
-
-                    self.signalStrengthA.setVisible(error_1_quadrature is not None)
-                    self.signalStrengthA2.setVisible(error_1_quadrature is not None)
-                    self.signalStrengthAFill.setVisible(error_1_quadrature is not None)
-                    self.signalStrengthB.setVisible(error_2_quadrature is not None)
-                    self.signalStrengthB2.setVisible(error_2_quadrature is not None)
-                    self.signalStrengthBFill.setVisible(error_2_quadrature is not None)
-
-                    if error_1_quadrature is not None:
-
-                        if self.parameters.dual_channel.value:
-                            color = Color.ERROR1.value
-                        else:
-                            color = Color.ERROR_COMBINED.value
-                        max_signal_strength_V = (
-                            self.plot_signal_strength(
-                                error_signal_1,
-                                error_1_quadrature,
-                                self.signalStrengthA,
-                                self.signalStrengthA2,
-                                self.signalStrengthAFill,
-                                self.parameters.offset_a.value,
-                                getattr(self.app.settings, f"plot_color_{color}").value,
-                            )
-                            / V
-                        )
-
-                        self.signal_power1.emit(
-                            peak_voltage_to_dBm(max_signal_strength_V)
-                        )
-                    else:
-                        self.signal_power1.emit(INVALID_POWER)
-
-                    if error_2_quadrature is not None:
-                        max_signal_strength2_V = (
-                            self.plot_signal_strength(
-                                monitor_or_error_signal_2,
-                                error_2_quadrature,
-                                self.signalStrengthB,
-                                self.signalStrengthB2,
-                                self.signalStrengthBFill,
-                                self.parameters.offset_b.value,
-                                getattr(
-                                    self.app.settings,
-                                    f"plot_color_{Color.ERROR2.value}",
-                                ).value,
-                            )
-                            / V
-                        )
-
-                        self.signal_power2.emit(
-                            peak_voltage_to_dBm(max_signal_strength2_V)
-                        )
-                    else:
-                        self.signal_power2.emit(INVALID_POWER)
-                else:
-                    self.signalStrengthA.setVisible(False)
-                    self.signalStrengthB.setVisible(False)
-                    self.signalStrengthA2.setVisible(False)
-                    self.signalStrengthB2.setVisible(False)
-                    self.signalStrengthAFill.setVisible(False)
-                    self.signalStrengthBFill.setVisible(False)
-
-                    self.signal_power1.emit(INVALID_POWER)
-                    self.signal_power2.emit(INVALID_POWER)
+            self.last_plot_data = [error_series]
+            self.combinedErrorSignal.setVisible(True)
+            self.combinedErrorSignal.setData(
+                list(range(len(error_series))), error_series / V
+            )
+            if power_signal is not None:
+                self.signal_power1.emit(float(np.mean(power_signal)))
+            else:
+                self.signal_power1.emit(INVALID_POWER)
 
         time_end = time()
         time_diff = time_end - time_beginning
@@ -474,29 +327,6 @@ class PlotWidget(pg.PlotWidget):
             new_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
         self.plot_rate_limit = new_rate_limit
-
-    def plot_signal_strength(
-        self, i, q, signal, neg_signal, fill, channel_offset, color
-    ):
-        # we have to subtract channel offset here and will add it back in the end
-        i -= int(round(channel_offset))
-        q -= int(round(channel_offset))
-        signal_strength = get_signal_strength_from_i_q(i, q)
-
-        r, g, b, *_ = color
-
-        x = list(range(len(signal_strength)))
-        signal_strength_scaled = signal_strength / V
-        upper = (channel_offset / V) + signal_strength_scaled
-        lower = (channel_offset / V) - 1 * signal_strength_scaled
-
-        brush = pg.mkBrush(r, g, b, self.app.settings.plot_fill_opacity.value)
-        fill.setBrush(brush)
-
-        invisible_pen = pg.mkPen("k", width=0.00001)
-        signal.setData(x, upper, pen=invisible_pen)
-        neg_signal.setData(x, lower, pen=invisible_pen)
-        return np.max([np.max(upper), -1 * np.min(lower)]) * V
 
 
     # called when widget is resized

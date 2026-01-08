@@ -1,0 +1,37 @@
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
+| Date         : Thu Jan  8 13:34:33 2026
+| Host         : goblin-virtual-machine running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -hierarchical -file top_utilization_hierarchical_place.rpt
+| Design       : top
+| Device       : 7z010clg400-1
+| Design State : Physopt postPlace
+-----------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-------------------------------------+--------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|               Instance              |                   Module                   | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++-------------------------------------+--------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| top                                 |                                      (top) |      11888 |      11866 |       0 |   22 | 10750 |     28 |      1 |         67 |
+|   (top)                             |                                      (top) |      10604 |      10583 |       0 |   21 |  9622 |      0 |      1 |         67 |
+|   axi_slave                         |                                  axi_slave |         36 |         36 |       0 |    0 |   148 |      0 |      0 |          0 |
+|   bus_clk_bridge                    |                             bus_clk_bridge |          2 |          2 |       0 |    0 |    31 |      0 |      0 |          0 |
+|   red_pitaya_scope                  |                           red_pitaya_scope |       1239 |       1238 |       0 |    1 |   949 |     28 |      0 |          0 |
+|     (red_pitaya_scope)              |                           red_pitaya_scope |        995 |        994 |       0 |    1 |   887 |     28 |      0 |          0 |
+|     i_bridge                        |                           bus_clk_bridge_0 |        245 |        245 |       0 |    0 |    62 |      0 |      0 |          0 |
+|   system_processing_system7_0_0     |              system_processing_system7_0_0 |          8 |          8 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     (system_processing_system7_0_0) |              system_processing_system7_0_0 |          8 |          8 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     inst                            | processing_system7_v5_4_processing_system7 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
++-------------------------------------+--------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

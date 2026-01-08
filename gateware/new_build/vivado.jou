@@ -1,0 +1,34 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Jan  8 15:41:48 2026
+# Process ID: 29300
+# Current directory: E:/new_build
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent25472 E:\new_build\top.xpr
+# Log file: E:/new_build/vivado.log
+# Journal file: E:/new_build\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project E:/new_build/top.xpr
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/axi_slave.v -to_files E:/verilog/axi_slave.v -filesets [get_filesets *]
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/bus_clk_bridge.v -to_files E:/verilog/bus_clk_bridge.v -filesets [get_filesets *]
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/processing_system7_v5_4_processing_system7.v -to_files E:/verilog/processing_system7_v5_4_processing_system7.v -filesets [get_filesets *]
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/red_pitaya_scope.v -to_files E:/verilog/red_pitaya_scope.v -filesets [get_filesets *]
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.v -to_files E:/verilog/system_processing_system7_0_0.v -filesets [get_filesets *]
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.xdc -to_files E:/verilog/system_processing_system7_0_0.xdc -filesets [get_filesets *]
+open_hw_manager
+connect_hw_server -allow_non_jtag
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag

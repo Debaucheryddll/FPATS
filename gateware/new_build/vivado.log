@@ -1,0 +1,90 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Jan  8 15:41:48 2026
+# Process ID: 29300
+# Current directory: E:/new_build
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent25472 E:\new_build\top.xpr
+# Log file: E:/new_build/vivado.log
+# Journal file: E:/new_build\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project E:/new_build/top.xpr
+INFO: [Project 1-313] Project file moved from '/home/goblin/projects/projects/linien/linien/gateware/build' since last save.
+WARNING: [filemgmt 56-2] Default IP Output Path : Could not find the directory 'E:/new_build/top.gen/sources_1', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/build/top.gen/sources_1'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/red_pitaya_scope.v', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/red_pitaya_scope.v'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/axi_slave.v', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/axi_slave.v'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/system_processing_system7_0_0.v', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/system_processing_system7_0_0.v'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/processing_system7_v5_4_processing_system7.v', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/processing_system7_v5_4_processing_system7.v'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/bus_clk_bridge.v', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/bus_clk_bridge.v'.
+CRITICAL WARNING: [Project 1-311] Could not find the file 'E:/verilog/system_processing_system7_0_0.xdc', nor could it be found using path 'E:/home/goblin/projects/projects/linien/linien/gateware/verilog/system_processing_system7_0_0.xdc'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/vivado2020/Vivado/2020.2/data/ip'.
+open_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:07 . Memory (MB): peak = 1117.961 ; gain = 0.000
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/axi_slave.v -to_files E:/verilog/axi_slave.v -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/axi_slave.v' with file 'E:/testlinien/FPATS/gateware/verilog/axi_slave.v'.
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/bus_clk_bridge.v -to_files E:/verilog/bus_clk_bridge.v -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/bus_clk_bridge.v' with file 'E:/testlinien/FPATS/gateware/verilog/bus_clk_bridge.v'.
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/processing_system7_v5_4_processing_system7.v -to_files E:/verilog/processing_system7_v5_4_processing_system7.v -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/processing_system7_v5_4_processing_system7.v' with file 'E:/testlinien/FPATS/gateware/verilog/processing_system7_v5_4_processing_system7.v'.
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/red_pitaya_scope.v -to_files E:/verilog/red_pitaya_scope.v -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/red_pitaya_scope.v' with file 'E:/testlinien/FPATS/gateware/verilog/red_pitaya_scope.v'.
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.v -to_files E:/verilog/system_processing_system7_0_0.v -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/system_processing_system7_0_0.v' with file 'E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.v'.
+update_compile_order -fileset sources_1
+update_files -from_files E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.xdc -to_files E:/verilog/system_processing_system7_0_0.xdc -filesets [get_filesets *]
+INFO: [filemgmt 20-762] Replacing file 'E:/verilog/system_processing_system7_0_0.xdc' with file 'E:/testlinien/FPATS/gateware/verilog/system_processing_system7_0_0.xdc'.
+open_hw_manager
+connect_hw_server -allow_non_jtag
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-2222] Launching hw_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+****** Xilinx hw_server v2020.2
+  **** Build date : Nov 18 2020 at 10:01:48
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:3042
+INFO: [Labtools 27-3417] Launching cs_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+
+******** Xilinx cs_server v2020.2
+  ****** Build date   : Nov 04 2020-05:02:56
+    **** Build number : 2020.2.1604437376
+      ** Copyright 2017-2020 Xilinx, Inc. All Rights Reserved.
+
+
+
+connect_hw_server: Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 1117.961 ; gain = 0.000
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:3042
+INFO: [Labtools 27-3414] Connected to existing cs_server.
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:3042
+INFO: [Labtools 27-3414] Connected to existing cs_server.
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:3042
+INFO: [Labtools 27-3414] Connected to existing cs_server.
+disconnect_hw_server localhost:3121
+connect_hw_server -allow_non_jtag
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:3042
+INFO: [Labtools 27-3414] Connected to existing cs_server.
+exit
+INFO: [Common 17-206] Exiting Vivado at Thu Jan  8 15:56:11 2026...

@@ -20,7 +20,7 @@ from misoc.interconnect.csr import CSR, AutoCSR, CSRStatus, CSRStorage
 
 from .iir import Iir
 from .limit import LimitCSR
-from .demodulate_01 import Demodulate
+from .modulate import Demodulate
 from .pid import PID
 
 

@@ -105,6 +105,8 @@ def update_signal_history(
         return control_history
 
     if is_locked:
+        if "control_signal" not in to_plot:
+            return control_history, monitor_history
         control_history["values"].append(np.mean(to_plot["control_signal"]))
         control_history["times"].append(time())
 
@@ -176,12 +178,9 @@ def combine_error_signal(
 
 
 def check_plot_data(is_locked: bool, plot_data: Dict[str, np.ndarray]) -> bool:
-    if is_locked:
-        if "error_signal" not in plot_data or "control_signal" not in plot_data:
-            return False
-    else:
-        if "error_signal" not in plot_data:
-            return False
+
+    if "error_signal" not in plot_data:
+        return False
     return True
 
 

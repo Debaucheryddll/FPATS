@@ -25,7 +25,7 @@ from time import sleep
 from typing import Any, Optional
 
 import numpy as np
-from linien_common.common import DECIMATION, MAX_N_POINTS, N_POINTS
+from linien_common.common import DECIMATION, MAX_N_POINTS
 from linien_common.config import ACQUISITION_PORT
 from linien_server.csr import PythonCSR
 from pyrp3.board import RedPitaya  # type: ignore
@@ -61,6 +61,7 @@ class AcquisitionService(Service):
         self.raw_acquisition_decimation = 0
 
         self.dual_channel = False
+        self.read_from_csr = True
 
         self.stop_event = Event()
         self.pause_event = Event()
@@ -94,20 +95,26 @@ class AcquisitionService(Service):
                 sleep(0.05)
                 continue
 
-            # check that scope is triggered; copied from
-            # https://github.com/RedPitaya/RedPitaya/blob/14cca62dd58f29826ee89f4b28901602f5cdb1d8/api/src/oscilloscope.c#L115  # noqa: E501
-            if not (self.red_pitaya.scope.read(0x1 << 2) & 0x4) <= 0:
-                sleep(0.05)
-                continue
-
-            if self.raw_acquisition_enabled:
-                data_raw = self.read_data_raw(
-                    0x10000, self.red_pitaya.scope.write_pointer_trigger, MAX_N_POINTS
-                )
-                is_raw = True
-            else:
+            if self.read_from_csr:
                 data = self.read_data()
                 is_raw = False
+            else:
+                # check that scope is triggered; copied from
+                # https://github.com/RedPitaya/RedPitaya/blob/14cca62dd58f29826ee89f4b28901602f5cdb1d8/api/src/oscilloscope.c#L115  # noqa: E501
+                if not (self.red_pitaya.scope.read(0x1 << 2) & 0x4) <= 0:
+                    sleep(0.05)
+                    continue
+
+                if self.raw_acquisition_enabled:
+                    data_raw = self.read_data_raw(
+                        0x10000,
+                        self.red_pitaya.scope.write_pointer_trigger,
+                        MAX_N_POINTS,
+                    )
+                    is_raw = True
+                else:
+                    data = self.read_data()
+                    is_raw = False
 
             if pause_event.is_set():
                 # it may seem strange that we check this here a second time. Reason:
@@ -127,51 +134,14 @@ class AcquisitionService(Service):
 
             self.program_acquisition_and_rearm()
 
-    def read_data(self) -> dict[str, np.ndarray]:
-        signals = []
+        def read_data(self) -> dict[str, int]:
+            error_signal = int(self.csr.get("err_calc_out_e"))
+            power_signal = int(self.csr.get("err_calc_power_signal_out"))
 
-        channel_offsets = [0x10000]
-        if self.fetch_additional_signals or self.locked:
-            channel_offsets.append(0x20000)
-
-        for channel_offset in channel_offsets:
-            channel_data = self.read_data_raw(
-                channel_offset,
-                self.red_pitaya.scope.write_pointer_trigger,
-                N_POINTS,
-            )
-
-            for sub_channel_idx in (0, 1):
-                signals.append(channel_data[sub_channel_idx])
-
-        signals_named = {}
-
-        if not self.locked:
-            signals_named["error_signal"] = signals[0]
-
-            if self.fetch_additional_signals and len(signals) >= 3:
-                signals_named["error_signal_quadrature"] = signals[2]
-
-            if self.dual_channel:
-                signals_named["error_signal_2"] = signals[1]
-                if self.fetch_additional_signals and len(signals) >= 3:
-                    signals_named["error_signal_2_quadrature"] = signals[3]
-            else:
-                signals_named["monitor_signal"] = signals[1]
-
-        else:
-            signals_named["error_signal"] = signals[0]
-            signals_named["control_signal"] = signals[1]
-
-            if not self.dual_channel and len(signals) >= 3:
-                signals_named["power_signal"] = signals[2]
-
-        slow_out = self.csr.get("logic_slow_value")
-        slow_out = slow_out if slow_out <= 8191 else slow_out - 16384
-        signals_named["slow_control_signal"] = slow_out
-
-        return signals_named
-
+            return {
+                "error_signal": error_signal,
+                "power_signal": power_signal,
+            }
     def read_data_raw(
         self, offset: int, addr: int, data_length: int
     ) -> tuple[Any, ...]:

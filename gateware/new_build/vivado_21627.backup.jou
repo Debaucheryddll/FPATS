@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Jan  8 12:23:32 2026
+# Process ID: 21627
+# Current directory: /home/goblin/projects/projects/linien/linien/gateware/build
+# Command line: vivado -mode batch -source top.tcl
+# Log file: /home/goblin/projects/projects/linien/linien/gateware/build/vivado.log
+# Journal file: /home/goblin/projects/projects/linien/linien/gateware/build/vivado.jou
+#-----------------------------------------------------------
+source top.tcl
