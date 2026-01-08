@@ -164,7 +164,7 @@ class AcquisitionService(Service):
             signals_named["control_signal"] = signals[1]
 
             if not self.dual_channel and len(signals) >= 3:
-                signals_named["monitor_signal"] = signals[2]
+                signals_named["power_signal"] = signals[2]
 
         slow_out = self.csr.get("logic_slow_value")
         slow_out = slow_out if slow_out <= 8191 else slow_out - 16384

@@ -87,7 +87,8 @@ class LinienLogic(Module, AutoCSR):
         self.submodules.limit_fast1 = LimitCSR(width=width, guard=5)
         self.submodules.limit_fast2 = LimitCSR(width=width, guard=5)
         self.submodules.pid = PID(width=signal_width)
-
+        self.control_signal = Signal((width, True), name="control_signal")
+        self.signal_out = [self.control_signal]
 
 class LinienModule(Module, AutoCSR):
     def __init__(self, platform):
@@ -255,6 +256,7 @@ class LinienModule(Module, AutoCSR):
         # PID 输出接入限幅器
         self.comb +=[
             self.logic.limit_fast1.x.eq(pid_out),
+            self.logic.control_signal.eq(self.logic.limit_fast1.y),
             # DAC 输出来自限幅后的信号
             self.analog.dac_a.eq(self.logic.limit_fast1.y),
             self.analog.dac_b.eq(self.sine_source.output),

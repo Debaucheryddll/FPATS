@@ -21,9 +21,10 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.i_b = Signal((width, True))
         self.q_b = Signal((width, True))
         self.out_e = Signal((width, True))  # 最终的误差信号 E
+        self.power_signal_out = Signal((width, True), name="power_signal_out")
 
         self.signal_in = []
-        self.signal_out = [self.out_e]
+        self.signal_out = [self.out_e, self.power_signal_out]
         self.state_in = []
         self.state_out = []
 
@@ -119,5 +120,6 @@ class ErrorSignalCalculator(Module, AutoCSR):
             # 将最终的 E 连接到 PS
             self.csr_error_signal.status.eq(self.out_e),
             # 将 P (即 'denominator') 连接到 PS
-            self.csr_power_signal.status.eq(denominator_reg)
+            self.csr_power_signal.status.eq(denominator_reg),
+            self.power_signal_out.eq(denominator_reg),
         ]

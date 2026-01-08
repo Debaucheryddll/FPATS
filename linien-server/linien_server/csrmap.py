@@ -56,6 +56,9 @@ csr = {
     'err_calc_out_e_clr': (9, 0x008, 1, True),
     'err_calc_out_e_max': (9, 0x009, 25, False),
     'err_calc_out_e_min': (9, 0x00d, 25, False),
+    'err_calc_power_signal_out_clr': (9, 0x011, 1, True),
+    'err_calc_power_signal_out_max': (9, 0x012, 25, False),
+    'err_calc_power_signal_out_min': (9, 0x016, 25, False),
     'fast_a_y_tap': (0, 0x000, 2, True),
     'fast_a_invert': (0, 0x001, 1, True),
     'fast_a_demod_delay': (0, 0x002, 32, True),
@@ -187,6 +190,9 @@ csr = {
     'logic_pid_ki': (8, 0x032, 14, True),
     'logic_pid_reset': (8, 0x034, 1, True),
     'logic_pid_kd': (8, 0x035, 14, True),
+    'logic_control_signal_clr': (8, 0x037, 1, True),
+    'logic_control_signal_max': (8, 0x038, 14, False),
+    'logic_control_signal_min': (8, 0x03a, 14, False),
     'scan_tracker_fsm_state': (11, 0x000, 2, False),
     'scan_tracker_time_command_out': (11, 0x001, 25, False),
     'scan_tracker_time_command_out_clr': (11, 0x005, 1, True),
@@ -211,4 +217,4 @@ csr = {
     'xadc_d': (29, 0x00a, 12, False),
 }
 states = ['force', 'di0', 'di1', 'di2', 'di3', 'di4', 'di5', 'di6', 'di7']
-signals = ['zero', 'fast_a_x', 'fast_a_out_i', 'fast_a_out_q', 'fast_b_x', 'fast_b_out_i', 'fast_b_out_q', 'err_calc_out_e', 'scopegen_dac_a', 'scopegen_dac_b', 'scan_tracker_time_command_out']
+signals = ['zero', 'fast_a_x', 'fast_a_out_i', 'fast_a_out_q', 'fast_b_x', 'fast_b_out_i', 'fast_b_out_q', 'err_calc_out_e', 'err_calc_power_signal_out', 'scopegen_dac_a', 'scopegen_dac_b', 'logic_control_signal', 'scan_tracker_time_command_out']
