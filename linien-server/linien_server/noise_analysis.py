@@ -23,7 +23,6 @@ from time import sleep, time
 
 import numpy as np
 from linien_common.common import PSDAlgorithm
-from linien_server.optimization.engine import MultiDimensionalOptimizationEngine
 from pylpsd import lpsd
 from scipy import signal
 
@@ -226,64 +225,3 @@ class PSDAcquisition:
     def exposed_stop(self):
         self.cleanup()
 
-
-class PIDOptimization:
-    parameters: Parameters
-
-    def __init__(self, control, parameters):
-        self.control = control
-        self.parameters = parameters
-
-        self.engine = MultiDimensionalOptimizationEngine(
-            [[100, 4000], [100, 4000]], x0=[2000, 2000]
-        )
-
-    def run(self):
-        try:
-            self.parameters.psd_data_complete.add_callback(
-                self.psd_data_received, call_immediately=False
-            )
-            self.parameters.psd_optimization_running.value = True
-            self.start_single_psd_measurement()
-        except Exception as e:
-            self.cleanup()
-            raise e
-
-    def start_single_psd_measurement(self):
-        new_params = self.engine.ask()
-        self.parameters.p.value = int(new_params[0])
-        self.parameters.i.value = int(new_params[1])
-
-        self.psd_acquisition = PSDAcquisition(
-            self.control, self.parameters, is_child=True
-        )
-        self.psd_acquisition.run()
-
-    def cleanup(self):
-        self.parameters.psd_optimization_running.value = False
-        self.parameters.psd_data_complete.remove_callback(self.psd_data_received)
-
-    def psd_data_received(self, psd_data_pickled):
-        try:
-            # psd data doesn't have to be stored here as a client that is interested
-            # in it may listen to parameters.psd_data change events
-            psd_data = pickle.loads(psd_data_pickled)
-
-            params = (psd_data["p"], psd_data["i"])
-            logger.debug(f"Received fitness {psd_data['fitness']}, {params}")
-
-            self.engine.tell(psd_data["fitness"], params)
-
-            self.start_single_psd_measurement()
-
-            done = self.engine.finished()
-            if done:
-                # FIXME: implement use of optimized pid parameters
-                self.cleanup()
-
-        except Exception as e:
-            self.cleanup()
-            raise e
-
-    def exposed_stop(self):
-        self.cleanup()

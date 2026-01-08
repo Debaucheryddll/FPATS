@@ -23,11 +23,8 @@ import pyqtgraph as pg
 from linien_common.common import (
     DECIMATION,
     N_POINTS,
-    SpectrumUncorrelatedException,
     check_plot_data,
     combine_error_signal,
-    determine_shift_by_correlation,
-    get_lock_point,
     get_signal_strength_from_i_q,
     update_signal_history,
 )
@@ -193,37 +190,12 @@ class PlotWidget(pg.PlotWidget):
         self.last_plot_data = None
         self.plot_max = 0
         self.plot_min = np.inf
-        self.touch_start = None
-        self.autolock_ref_spectrum = None
 
-        self.selection_running = False
-        self.selection_boundaries = None
-
-        self.overlay = pg.LinearRegionItem(values=(0, 0), movable=False)
-        self.overlay.setVisible(False)
-        self.addItem(self.overlay)
-
-        self.boundary_overlays = [
-            pg.LinearRegionItem(values=(0, 0), movable=False, brush=(0, 0, 0, 200))
-            for _ in range(2)
-        ]
-        for i, overlay in enumerate(self.boundary_overlays):
-            overlay.setVisible(False)
-            # make outer borders invisible, see
-            # https://github.com/pyqtgraph/pyqtgraph/issues/462
-            overlay.lines[i].setPen((0, 0, 0, 0))
-            self.addItem(overlay)
-
-        self.lock_target_line = pg.InfiniteLine(movable=False)
-        self.lock_target_line.setValue(1000)
-        self.addItem(self.lock_target_line)
         self._fixed_opengl_bug = False
 
         self.last_plot_time = 0
         self.plot_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
-        self.plot_paused = False
-        self.cached_plot_data = []
         self._should_reposition_reset_view_button = False
 
     def on_connection_established(self):
@@ -241,12 +213,6 @@ class PlotWidget(pg.PlotWidget):
         self.monitor_signal_history_data = self.parameters.monitor_signal_history.value
 
         self.parameters.to_plot.add_callback(self.on_new_plot_data_received)
-        self.parameters.autolock_selection.add_callback(
-            self.on_autolock_selection_changed
-        )
-        self.parameters.optimization_selection.add_callback(
-            self.on_optimization_selection_changed
-        )
         self.parameters.automatic_mode.add_callback(self.on_automatic_mode_changed)
         self.parameters.lock.add_callback(self.on_lock_changed)
 
@@ -255,91 +221,11 @@ class PlotWidget(pg.PlotWidget):
         x, y = pos.x(), pos.y()
         return x, y
 
-    def _within_boundaries(self, x):
-        boundaries = (
-            self.selection_boundaries if self.selection_running else [0, N_POINTS]
-        )
-
-        if x < boundaries[0]:
-            return boundaries[0]
-        if x > boundaries[1]:
-            return boundaries[1]
-        return x
-
     def keyPressEvent(self, event):
         # we listen here in addition to the main window because some events are only
         # caught here
         self.keyPressed.emit(event.key())
 
-    def mouseMoveEvent(self, event):
-        if not self.selection_running:
-            super().mouseMoveEvent(event)
-        else:
-            if self.touch_start is None:
-                return
-
-            x0, y0 = self.touch_start
-
-            x, y = self._to_data_coords(event)
-            x = self._within_boundaries(x)
-            self.set_selection_overlay(x0, x - x0)
-
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-
-        if self.selection_running:
-            if self.touch_start is None:
-                return
-
-            x, y = self._to_data_coords(event)
-            x = self._within_boundaries(x)
-            x0, y0 = self.touch_start
-            xdiff = np.abs(x0 - x)
-            xmax = len(self.last_plot_data[0]) - 1
-            if xdiff / xmax < 0.01:
-                # it was a click
-                pass
-            else:
-                # it was a selection
-                if self.selection_running:
-                    if self.parameters.autolock_selection.value:
-                        last_combined_error_signal = self.last_plot_data[2]
-                        self.parameters.autolock_selection.value = False
-
-                        self.control.start_autolock(
-                            # we pickle it here because otherwise a netref is
-                            # transmitted which blocks the autolock
-                            *sorted([x0, x]),
-                            pickle.dumps(last_combined_error_signal),
-                            additional_spectra=pickle.dumps(self.cached_plot_data),
-                        )
-
-                        (
-                            mean_signal,
-                            target_slope_rising,
-                            target_zoom,
-                            rolled_error_signal,
-                            line_width,
-                            peak_idxs,
-                        ) = get_lock_point(
-                            last_combined_error_signal, *sorted((int(x0), int(x)))
-                        )
-                        self.autolock_ref_spectrum = rolled_error_signal
-                    elif self.parameters.optimization_selection.value:
-                        channel = self.parameters.optimization_channel.value
-                        spectrum = self.last_plot_data[
-                            (
-                                0
-                                if not self.parameters.dual_channel.value
-                                else (0, 1)[channel]
-                            )
-                        ]
-                        self.parameters.optimization_selection.value = False
-                        points = sorted([int(x0), int(x)])
-                        self.control.start_optimization(*points, pickle.dumps(spectrum))
-
-            self.overlay.setVisible(False)
-            self.touch_start = None
 
     def on_plot_settings_changed(self, *args):
         pen_width = self.app.settings.plot_line_width.value
@@ -358,53 +244,12 @@ class PlotWidget(pg.PlotWidget):
             a = self.app.settings.plot_line_opacity.value
             curve.setPen(pg.mkPen((r, g, b, a), width=pen_width))
 
-    def on_autolock_selection_changed(self, value):
-        if value:
-            self.parameters.optimization_selection.value = False
-            self.enable_area_selection(selectable_width=0.99)
-            self.pause_plot()
-        elif not self.parameters.optimization_selection.value:
-            self.disable_area_selection()
-            self.resume_plot_and_clear_cache()
-
-    def on_optimization_selection_changed(self, value):
-        if value:
-            self.parameters.autolock_selection.value = False
-            self.enable_area_selection(selectable_width=0.75)
-            self.pause_plot()
-        elif not self.parameters.autolock_selection.value:
-            self.disable_area_selection()
-            self.resume_plot_and_clear_cache()
-
-    def on_automatic_mode_changed(self, automatic_mode: bool) -> None:
-        """Show or hide crosshair"""
-        self.crosshair.setVisible(not automatic_mode)
-
     def on_lock_changed(self, lock: bool) -> None:
         if not lock:
             self.setLabel("bottom", "sweep voltage", units="V")
         else:
             self.setLabel("bottom", "time", units="µs")
 
-    def set_selection_overlay(self, x_start, width):
-        self.overlay.setRegion((x_start, x_start + width))
-
-    def mousePressEvent(self, event):
-        super().mousePressEvent(event)
-
-        if self.selection_running:
-            if event.button() == QtCore.Qt.RightButton:
-                return
-
-            x, y = self._to_data_coords(event)
-
-            if self.selection_running:
-                if x < self.selection_boundaries[0] or x > self.selection_boundaries[1]:
-                    return
-
-            self.touch_start = x, y
-            self.set_selection_overlay(x, 0)
-            self.overlay.setVisible(True)
 
     def on_new_plot_data_received(self, to_plot):
         time_beginning = time()
@@ -413,13 +258,8 @@ class PlotWidget(pg.PlotWidget):
             self._should_reposition_reset_view_button = False
             self.position_reset_view_button()
 
-        if (
-            time_beginning - self.last_plot_time <= self.plot_rate_limit
-            and not self.plot_paused
-        ):
-            # don't plot too often as it only causes unnecessary load this does not
-            # apply if plot is paused, because in this case we want to collect all the
-            # data that we can get in order to pass it to the autolock
+        if time_beginning - self.last_plot_time <= self.plot_rate_limit:
+            # don't plot too often as it only causes unnecessary load
             return
 
         self.last_plot_time = time_beginning
@@ -506,7 +346,6 @@ class PlotWidget(pg.PlotWidget):
                         ),
                         np.array(self.monitor_signal_history_data["values"]) / V,
                     )
-                self.plot_autolock_target_line(None)
             else:
                 dual_channel = self.parameters.dual_channel.value
                 monitor_signal = to_plot.get("monitor_signal")
@@ -522,12 +361,6 @@ class PlotWidget(pg.PlotWidget):
                     self.parameters.channel_mixing.value,
                     self.parameters.combined_offset.value if dual_channel else 0,
                 )
-
-                if self.plot_paused:
-                    self.cached_plot_data.append(combined_error_signal)
-                    # don't save too much
-                    self.cached_plot_data = self.cached_plot_data[-20:]
-                    return
 
                 self.last_plot_data = [error_signal_1, monitor_or_error_signal_2] + [
                     combined_error_signal
@@ -560,8 +393,6 @@ class PlotWidget(pg.PlotWidget):
                     self.monitorSignal.setData(
                         list(range(len(monitor_signal))), monitor_signal / V
                     )
-
-                self.plot_autolock_target_line(combined_error_signal)
 
                 if (self.parameters.modulation_frequency.value != 0) and (
                     not self.parameters.pid_only_mode.value
@@ -667,70 +498,6 @@ class PlotWidget(pg.PlotWidget):
         neg_signal.setData(x, lower, pen=invisible_pen)
         return np.max([np.max(upper), -1 * np.min(lower)]) * V
 
-    def plot_autolock_target_line(self, combined_error_signal):
-        if (
-            self.autolock_ref_spectrum is not None
-            and self.parameters.autolock_preparing.value
-        ):
-            sweep_amplitude = self.parameters.sweep_amplitude.value
-            zoom_factor = 1 / sweep_amplitude
-            initial_zoom_factor = (
-                1 / self.parameters.autolock_initial_sweep_amplitude.value
-            )
-
-            try:
-                shift, _1, _2 = determine_shift_by_correlation(
-                    zoom_factor / initial_zoom_factor,
-                    self.autolock_ref_spectrum,
-                    combined_error_signal,
-                )
-                shift *= zoom_factor / initial_zoom_factor
-                length = len(combined_error_signal)
-                shift = (length / 2) - (shift / 2 * length)
-
-                self.lock_target_line.setVisible(True)
-                self.lock_target_line.setValue(shift)
-
-            except SpectrumUncorrelatedException:
-                self.lock_target_line.setVisible(False)
-        else:
-            self.lock_target_line.setVisible(False)
-
-    def enable_area_selection(self, selectable_width=0.5):
-        self.selection_running = True
-
-        # there are some glitches if the width of the overlay is exactly right.
-        # Therefore we make it a little wider.
-        extra_width = N_POINTS / 100
-        boundary_width = (N_POINTS * (1 - selectable_width)) / 2.0
-
-        self.selection_boundaries = (boundary_width, N_POINTS - boundary_width)
-
-        self.boundary_overlays[0].setRegion((-extra_width, boundary_width))
-        self.boundary_overlays[1].setRegion(
-            (N_POINTS - boundary_width, N_POINTS + extra_width)
-        )
-
-        for overlay in self.boundary_overlays:
-            overlay.setVisible(True)
-
-    def disable_area_selection(self):
-        self.selection_running = False
-
-        for overlay in self.boundary_overlays:
-            overlay.setVisible(False)
-
-    def pause_plot(self):
-        """
-        Pauses plot updates. All incoming data is cached though. This is useful for
-        letting the user select a line that is then used in the autolock.
-        """
-        self.plot_paused = True
-
-    def resume_plot_and_clear_cache(self):
-        """Resume plotting again."""
-        self.plot_paused = False
-        self.cached_plot_data = []
 
     # called when widget is resized
     def position_reset_view_button(self):

@@ -38,10 +38,9 @@ from linien_common.communication import (
 from linien_common.config import SERVER_PORT
 from linien_common.influxdb import InfluxDBCredentials, restore_credentials
 from linien_server import __version__
-# from linien_server.autolock.autolock import Autolock
+
 from linien_server.influxdb import InfluxDBLogger
-from linien_server.noise_analysis import PIDOptimization, PSDAcquisition
-from linien_server.optimization.optimization import OptimizeSpectroscopy
+from linien_server.noise_analysis import PSDAcquisition
 from linien_server.parameters import Parameters, restore_parameters, save_parameters
 from linien_server.registers import Registers
 from rpyc.core.protocol import Connection
@@ -319,59 +318,15 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
 
     def _task_running(self):
-        return (
-            # self.parameters.autolock_running.value
-            # or self.parameters.optimization_running.value
-             self.parameters.optimization_running.value
-            or self.parameters.psd_acquisition_running.value
-            or self.parameters.psd_optimization_running.value
-        )
+        return self.parameters.task.value is not None
 
     def exposed_write_registers(self) -> None:
         """Sync the parameters with the FPGA registers."""
         self.registers.write_registers()
 
-    def exposed_start_autolock(self, x0, x1, spectrum, additional_spectra=None):
-        # spectrum = pickle.loads(spectrum)
-        # # start_watching = self.parameters.watch_lock.value
-        # start_watching = False
-        # auto_offset = self.parameters.autolock_determine_offset.value
-        #
-        # if not self._task_running():
-        #     autolock = Autolock(self, self.parameters)
-        #     self.parameters.task.value = autolock
-        #     autolock.run(
-        #         x0,
-        #         x1,
-        #         spectrum,
-        #         should_watch_lock=start_watching,
-        #         auto_offset=auto_offset,
-        #         additional_spectra=(
-        #             pickle.loads(additional_spectra)
-        #             if additional_spectra is not None
-        #             else None
-        #         ),
-        #     )
-        logger.warning(
-            "Autolock is disabled in FPATS; ignoring start_autolock request."
-        )
-        self.parameters.autolock_running.value = False
-        self.parameters.autolock_preparing.value = False
-
-    def exposed_start_optimization(self, x0, x1, spectrum):
-        if not self._task_running():
-            optim = OptimizeSpectroscopy(self, self.parameters)
-            self.parameters.task.value = optim
-            optim.run(x0, x1, spectrum)
-
     def exposed_start_psd_acquisition(self):
         if not self._task_running():
             self.parameters.task.value = PSDAcquisition(self, self.parameters)
-            self.parameters.task.value.run()
-
-    def exposed_start_pid_optimization(self):
-        if not self._task_running():
-            self.parameters.task.value = PIDOptimization(self, self.parameters)
             self.parameters.task.value.run()
 
     def exposed_start_sweep(self):
@@ -457,13 +412,6 @@ class FakeRedPitayaControlService(BaseService, LinienControlService):
 
     def exposed_write_registers(self):
         pass
-
-    def exposed_start_autolock(self, x0, x1, spectrum):
-        logger.info(f"Start autolock {x0} {x1}")
-
-    def exposed_start_optimization(self, x0, x1, spectrum):
-        logger.info("Start optimization")
-        self.parameters.optimization_running.value = True
 
     def exposed_shutdown(self):
         raise SystemExit()

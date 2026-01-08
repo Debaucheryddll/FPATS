@@ -155,8 +155,7 @@ class PSDWindow(QtWidgets.QMainWindow):
             self.parameters.task.value.stop()
             self.parameters.task.value = None
 
-    def start_pid_optimization(self):
-        self.control.start_pid_optimization()
+
 
     def delete_curve(self):
         uuid = self.curveTable.delete_selected_curve()

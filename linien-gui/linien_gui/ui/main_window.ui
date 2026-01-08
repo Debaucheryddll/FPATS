@@ -1092,24 +1092,6 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="optimizationPanel">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>338</width>
-            <height>488</height>
-           </rect>
-          </property>
-          <attribute name="label">
-           <string>Optimization</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_10">
-           <item>
-            <widget class="OptimizationPanel" name="widget_6" native="true"/>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="loggingPanel">
           <property name="geometry">
            <rect>
@@ -1215,7 +1197,6 @@ p, li { white-space: pre-wrap; }
     <slot>kp_changed()</slot>
     <slot>ki_changed()</slot>
     <slot>kd_changed()</slot>
-    <slot>watch_lock_changed()</slot>
     <slot>start_manual_lock()</slot>
    </slots>
   </customwidget>
@@ -1235,12 +1216,6 @@ p, li { white-space: pre-wrap; }
    <class>ViewPanel</class>
    <extends>QWidget</extends>
    <header location="global">view_panel.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>OptimizationPanel</class>
-   <extends>QWidget</extends>
-   <header location="global">optimization_panel.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

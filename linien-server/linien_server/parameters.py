@@ -21,7 +21,7 @@ from time import time
 from typing import Any, Callable, Iterator
 
 import linien_server
-from linien_common.common import AutolockMode, MHz, PSDAlgorithm, Vpp
+from linien_common.common import  MHz, PSDAlgorithm, Vpp
 from linien_common.config import USER_DATA_PATH, create_backup_file
 
 PARAMETER_STORE_FILENAME = "parameters.json"
@@ -269,8 +269,8 @@ class Parameters:
 
         self.fetch_additional_signals = Parameter(start=True)
         """
-        This parameter is not exposed to GUI. It is used by the autolock or normal lock
-        to fetch less data if they are not needed.
+        This parameter is not exposed to GUI. It is used by the lock flow to fetch less
+        data if they are not needed.
         """
 
         self.ping = Parameter(start=0)
@@ -527,50 +527,9 @@ class Parameters:
         self.watch_lock = Parameter(start=True, restorable=True)
         self.watch_lock_threshold = Parameter(start=0.01, restorable=True)
 
-        # ------------------- AUTOLOCK PARAMETERS --------------------------------------
-        # These parameters are used internally by the optimization algorithm and usually
-        # should not be manipulated
-        self.task = Parameter(start=None, sync=False)
-        self.automatic_mode = Parameter(start=True)
-        self.autolock_target_position = Parameter(start=0)
-        self.autolock_mode_preference = Parameter(
-            start=AutolockMode.AUTO_DETECT, restorable=True
-        )
-        self.autolock_mode = Parameter(start=AutolockMode.SIMPLE)
-        self.autolock_time_scale = Parameter(start=0)
-        self.autolock_instructions = Parameter(start=[], sync=False)
-        self.autolock_final_wait_time = Parameter(start=0)
-        self.autolock_selection = Parameter(start=False)
-        self.autolock_running = Parameter(start=False)
-        self.autolock_preparing = Parameter(start=False)
-        self.autolock_percentage = Parameter(start=0, min_=0, max_=100)
-        self.autolock_watching = Parameter(start=False)
-        self.autolock_failed = Parameter(start=False)
-        self.autolock_locked = Parameter(start=False)
-        self.autolock_retrying = Parameter(start=False)
-        self.autolock_determine_offset = Parameter(start=True, restorable=True)
-        self.autolock_initial_sweep_amplitude = Parameter(start=1)
 
-        # ------------------- OPTIMIZATION PARAMETERS ----------------------------------
-        # These parameters are used internally by the optimization algorithm and usually
-        # should not be manipulated
-        self.optimization_selection = Parameter(start=False)
-        self.optimization_running = Parameter(start=False)
-        self.optimization_approaching = Parameter(start=False)
-        self.optimization_improvement = Parameter(start=0)
-        self.optimization_mod_freq_enabled = Parameter(start=1)
-        self.optimization_mod_freq_min = Parameter(start=0.0)
-        self.optimization_mod_freq_max = Parameter(start=10.0)
-        self.optimization_mod_amp_enabled = Parameter(start=1)
-        self.optimization_mod_amp_min = Parameter(start=0.0)
-        self.optimization_mod_amp_max = Parameter(start=2.0)
-        self.optimization_optimized_parameters = Parameter(start=(0, 0, 0))
-        self.optimization_channel = Parameter(start=0)
-        self.optimization_failed = Parameter(start=False)
 
-        # ------------------- PID OPTIMIZATION PARAMETERS ------------------------------
-        # These parameters are used internally by the optimization algorithm and usually
-        # should not be manipulated
+        # ------------------- PSD ACQUISITION PARAMETERS ------------------------------
         self.acquisition_raw_enabled = Parameter(start=False)
         self.acquisition_raw_decimation = Parameter(start=1)
         self.acquisition_raw_data = Parameter()
@@ -587,7 +546,6 @@ class Parameters:
         self.psd_data_complete = Parameter(start=None)
         self.psd_algorithm = Parameter(start=PSDAlgorithm.LPSD, restorable=True)
         self.psd_acquisition_running = Parameter(start=False)
-        self.psd_optimization_running = Parameter(start=False)
         self.psd_acquisition_max_decimation = Parameter(
             start=18, min_=1, max_=32, restorable=True
         )

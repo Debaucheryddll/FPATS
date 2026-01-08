@@ -125,21 +125,10 @@ class Registers:
             logic_combined_offset=twos_complement(
                 self.parameters.combined_offset.value, 14
             ),
-            # logic_control_channel=self.parameters.control_channel.value,
-            # logic_mod_channel=self.parameters.mod_channel.value,
-            # logic_sweep_channel=self.parameters.sweep_channel.value,
-            # logic_slow_control_channel=self.parameters.slow_control_channel.value,
-            # slow_chain_pid_reset=not self.parameters.pid_on_slow_enabled.value,
             logic_analog_out_1=self.parameters.analog_out_1.value,
             logic_analog_out_2=self.parameters.analog_out_2.value,
             logic_analog_out_3=self.parameters.analog_out_3.value,
-            # logic_autolock_fast_target_position=self.parameters.autolock_target_position.value,  # noqa: E501
-            # logic_autolock_autolock_mode=self.parameters.autolock_mode.value,
-            # logic_autolock_robust_N_instructions=len(
-            #     self.parameters.autolock_instructions.value
-            # ),
-            # logic_autolock_robust_time_scale=self.parameters.autolock_time_scale.value,
-            # logic_autolock_robust_final_wait_time=self.parameters.autolock_final_wait_time.value,  # noqa: E501
+
             # channel A
             fast_a_demod_delay=(
                 phase_to_delay(self.parameters.demodulation_phase_a.value)
@@ -175,11 +164,6 @@ class Registers:
             logic_slow_decimation=16,
         )
 
-        # for instruction_idx, [wait_for, peak_height] in enumerate(
-        #     self.parameters.autolock_instructions.value
-        # ):
-        #     new[f"logic_autolock_robust_peak_height_{instruction_idx}"] = peak_height
-        #     new[f"logic_autolock_robust_wait_for_{instruction_idx}"] = wait_for
 
         if self.parameters.lock.value:
             # display combined error signal and control signal
@@ -242,25 +226,9 @@ class Registers:
 
         fpga_base_freq = 125e6
 
-        # self.set_iir(
-        #     "logic_raw_acquisition_iir",
-        #     *make_filter(
-        #         "LP",
-        #         f=self.parameters.acquisition_raw_filter_frequency.value
-        #         / fpga_base_freq,
-        #         k=1,
-        #     ),
-        # )
 
         for k, v in new.items():
             self.set(k, int(v))
-
-        # if not self.parameters.lock.value and sweep_changed:
-        #     # reset sweep for a short time if the scan range was changed this is needed
-        #     # because otherwise it may take too long before the new scan range is
-        #     # reached --> no scope trigger is sent
-        #     self.set("logic_sweep_run", 0)
-        #     self.set("logic_sweep_run", 1)
 
         kp = self.parameters.p.value
         ki = self.parameters.i.value
@@ -367,8 +335,7 @@ class Registers:
                 # self.set_slow_pid(slow_strength, slow_slope)
 
     def set_pid(self, p, i, d, slope, reset=None, request_lock=None):
-        # if request_lock is not None:
-        #     self.set("logic_autolock_request_lock", request_lock)
+
         sign = -1 if slope else 1
         self.set("logic_pid_kp", p * sign)
         self.set("logic_pid_ki", i * sign)

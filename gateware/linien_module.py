@@ -30,7 +30,6 @@ from migen import (
 from misoc.interconnect import csr_bus
 from misoc.interconnect.csr import AutoCSR, CSRStatus, CSRStorage
 
-from gateware.logic.autolock import FPGAAutolock
 from gateware.logic.chains import FastChain, SlowChain, cross_connect
 from gateware.logic.decimation import Decimate
 from gateware.logic.KalmanTargets import KalmanTargets
@@ -39,11 +38,9 @@ from gateware.logic.errorsignalcalculator_1 import ErrorSignalCalculator
 from gateware.logic.scan_tracking import ScanTrackingController
 from gateware.logic.sine_source import SineSource
 
-from gateware.logic.iir import Iir
 from gateware.logic.limit import LimitCSR
 from gateware.logic.modulate import Modulate
 from gateware.logic.pid import PID
-from gateware.logic.sweep import SweepCSR
 from gateware.lowlevel.analog import PitayaAnalog
 from gateware.lowlevel.crg import CRG
 from gateware.lowlevel.dna import DNA
@@ -77,6 +74,12 @@ class LinienLogic(Module, AutoCSR):
         self.chain_a_offset_signed = Signal((width, True))
         self.chain_b_offset_signed = Signal((width, True))
         self.out_offset_signed = Signal((width, True))
+
+        self.signal_in = []
+        self.signal_out = []
+        self.state_in = []
+        self.state_out = []
+
 
     def init_submodules(self, width, signal_width):
         self.submodules.mod = Modulate(width=width)

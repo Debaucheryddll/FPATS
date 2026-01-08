@@ -74,7 +74,6 @@ class MainWindow(QtWidgets.QMainWindow):
     settingsToolbox: QtWidgets.QToolBox
     generalPanel: QtWidgets.QWidget
     modSpectroscopyPanel: QtWidgets.QWidget
-    optimizationPanel: QtWidgets.QWidget
     loggingPanel: QtWidgets.QWidget
     viewPanel: QtWidgets.QWidget
     lockingPanel: QtWidgets.QWidget
@@ -124,12 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.parameters = self.app.parameters
 
         self.parameters.lock.add_callback(self.change_sweep_control_visibility)
-        self.parameters.autolock_running.add_callback(
-            self.change_sweep_control_visibility
-        )
-        self.parameters.optimization_running.add_callback(
-            self.change_sweep_control_visibility
-        )
+
 
         self.parameters.to_plot.add_callback(self.update_std)
 
@@ -152,17 +146,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.parameters.dual_channel.add_callback(self.update_legend_text)
 
     def change_sweep_control_visibility(self, *args):
-        al_running = self.parameters.autolock_running.value
-        optimization = self.parameters.optimization_running.value
         locked = self.parameters.lock.value
 
-        self.sweepControlWidget.setVisible(
-            not al_running and not locked and not optimization
-        )
+        self.sweepControlWidget.setVisible(not locked)
         self.topLockPanelWidget.setVisible(locked)
-        self.statusbar_unlocked.setVisible(
-            not al_running and not locked and not optimization
-        )
+        self.statusbar_unlocked.setVisible(not locked)
 
     def on_plot_color_changed(self, *args):
         def set_color(el, color: Color):

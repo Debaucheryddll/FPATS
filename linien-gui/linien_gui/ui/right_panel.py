@@ -41,10 +41,6 @@ class RightPanel(QtWidgets.QWidget):
         self.parameters = self.app.parameters
         self.control = self.app.control
 
-        self.parameters.autolock_running.add_callback(self.autolock_status_changed)
-        self.parameters.optimization_running.add_callback(
-            self.optimization_status_changed
-        )
         self.parameters.lock.add_callback(self.enable_or_disable_panels)
 
         def highlight_psd_button(locked: bool) -> None:
@@ -63,33 +59,13 @@ class RightPanel(QtWidgets.QWidget):
     def open_device_manager(self) -> None:
         self.app.open_device_manager()
 
-    def autolock_status_changed(self, value: bool) -> None:
-        if value:
-            self.main_window.settingsToolbox.setCurrentWidget(
-                self.main_window.lockingPanel
-            )
-
-        self.enable_or_disable_panels()
-
-    def optimization_status_changed(self, value: bool) -> None:
-        if value:
-            self.main_window.settingsToolbox.setCurrentWidget(
-                self.main_window.optimizationPanel
-            )
-
-        self.enable_or_disable_panels()
 
     def enable_or_disable_panels(self, *args) -> None:
         lock = self.parameters.lock.value
-        autolock = self.parameters.autolock_running.value
-        optimization = self.parameters.optimization_running.value
+
 
         def enable_panels(panel_names, condition: bool) -> None:
             for panel_name in panel_names:
                 getattr(self.main_window, panel_name).setEnabled(condition)
+        enable_panels(("generalPanel",), not lock)
 
-        enable_panels(("generalPanel",), not autolock and not optimization and not lock)
-        enable_panels(
-            ("modSpectroscopyPanel", "viewPanel", "lockingPanel"), not optimization
-        )
-        enable_panels(("optimizationPanel",), not autolock and not lock)

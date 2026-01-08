@@ -55,12 +55,6 @@ class AcquisitionService(Service):
 
         self.locked = False
         self.exposed_set_sweep_speed(9)
-        # when self.locked is set to True, this doesn't mean that the lock is really on.
-        # It just means that the lock is requested and that the gateware waits until the
-        # sweep is at the correct position for the lock. Therefore, when self.locked is
-        # set, the acquisition process waits for confirmation from the gateware that the
-        # lock is actually running.
-        self.confirmed_that_in_lock = False
 
         self.fetch_additional_signals = True
         self.raw_acquisition_enabled = False
@@ -95,13 +89,6 @@ class AcquisitionService(Service):
                 name, b, a = self.csr_iir_queue.pop(0)
                 self.csr.set_iir(name, b, a)
 
-            if self.locked and not self.confirmed_that_in_lock:
-                self.confirmed_that_in_lock = bool(
-                    self.csr.get("logic_autolock_lock_running")
-                )
-                if not self.confirmed_that_in_lock:
-                    sleep(0.05)
-                    continue
 
             if pause_event.is_set():
                 sleep(0.05)
@@ -273,7 +260,7 @@ class AcquisitionService(Service):
 
     def exposed_set_lock_status(self, locked: bool) -> None:
         self.locked = locked
-        self.confirmed_that_in_lock = False
+
 
     def exposed_set_fetch_additional_signals(self, fetch: bool) -> None:
         self.fetch_additional_signals = fetch
@@ -315,7 +302,7 @@ class AcquisitionService(Service):
         self.data_uuid = uuid
         # if we are sweeping, we have to skip one data set because an incomplete sweep
         # may have been recorded. When locked, this does not matter
-        if self.confirmed_that_in_lock:
+        if self.locked:
             self.skip_next_data_event.clear()
         else:
             self.skip_next_data_event.set()
