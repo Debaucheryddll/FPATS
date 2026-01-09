@@ -196,14 +196,14 @@ class Platform(XilinxPlatform):
     def do_finalize(self, fragment):
         try:
             clk125 = self.lookup_request("clk125")
-            self.add_period_constraint(clk125.p, 8)
-            # 明确地告诉Vivado工具：“名为 clk125 的这个时钟信号，其周期（period）是8纳秒（ns）”
             self.add_platform_command(
+                "create_clock -name clk125_p -period 8 [get_nets {clk}]\n"
+                # 明确地告诉Vivado工具：“名为 clk125 的这个时钟信号，其周期（period）是8纳秒（ns）”
                 "set_clock_groups -asynchronous "
                 # 在Zynq SoC中，通常有两个主要的、来源不同的时钟：一个是来自外部晶振、供给FPGA逻辑（PL）的 clk125；
                 # 另一个是由ARM处理器系统（PS）内部生成、供给PL的 clk_fpga_0。
                 # 这条命令告诉Vivado：“这两个时钟是异步的，它们之间没有任何确定的相位关系。”
-                "-group [get_clocks -include_generated_clocks {clk}] "
+               "-group [get_clocks -include_generated_clocks clk125_p] "
                 "-group [get_clocks -include_generated_clocks clk_fpga_0]",
                 clk=clk125.p,
             )

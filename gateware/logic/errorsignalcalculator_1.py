@@ -89,31 +89,27 @@ class ErrorSignalCalculator(Module, AutoCSR):
         )
 
         # --- 7. 连接除法器 ---
-        # 这是一个正确的“单周期脉冲”生成器 (边沿检测)
-        start_pulse = Signal()
-        safe_to_divide_reg = Signal()
-        self.sync += safe_to_divide_reg.eq(safe_to_divide)
-        self.comb += start_pulse.eq(safe_to_divide & ~safe_to_divide_reg)
+        # 让除法器在 “分母足够大” 时持续工作（每拍都可以发起一次，流水线会连续出结果）
+        start_en = Signal()
+        self.comb += start_en.eq(safe_to_divide)
 
-        # 【注意】: 我们在 self.comb 中连接除法器的输入
-        # PipelinedFloatDivider [cite: 1-404] 内部的 start 逻辑会锁存它们
         self.comb += [
-            self.divider.start.eq(start_pulse),  # 只在安全信号的上升沿启动
+            self.divider.start.eq(start_en),
             self.divider.num.eq(numerator),
             self.divider.den.eq(denominator),
         ]
 
-        # --- 8. 获取最终输出 (带【组合循环修复】) ---
-
+        # --- 8. 获取最终输出 ---
+        # done 是单周期脉冲：有新结果就更新 out_e
+        # 当分母太小且流水线空闲时，把 out_e 清零（可选逻辑，保持你原有行为）
         self.sync += [
-            If(self.divider.done,  # 当除法器报告计算完成时
-               # 结果是 (N << F) / D，一个完美的定点数
+            If(self.divider.done,
                self.out_e.eq(self.divider.quotient)
-               ).Elif(~self.divider.busy & ~start_pulse,
-            # 如果除法器是空闲的 (比如因为分母太小而没启动)，则输出0
-            self.out_e.eq(0)
-        )
+               ).Elif(~safe_to_divide & ~self.divider.busy,
+                      self.out_e.eq(0)
+                      )
         ]
+
         denominator_reg = Signal.like(denominator)
         self.sync += denominator_reg.eq(denominator)
         self.comb += [

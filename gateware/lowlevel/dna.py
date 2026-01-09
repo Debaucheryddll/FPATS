@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Linien.  If not, see <http://www.gnu.org/licenses/>.
 
-from migen import Cat, If, Instance, Module, Signal
+from migen import Cat,ClockSignal,  If, Instance, Module, Signal
 from misoc.interconnect.csr import AutoCSR, CSRStatus
 
 # DNA模块是一个硬件接口，用于读取FPGA芯片唯一的、在出厂时就被固化的序列号，为了软件授权/版权保护
@@ -33,7 +33,7 @@ class DNA(Module, AutoCSR):
             "DNA_PORT",
             i_DIN=self.dna.status[-1],
             o_DOUT=do,
-            i_CLK=cnt[0],
+            i_CLK=ClockSignal(),
             i_READ=cnt < 2,
             i_SHIFT=1,
         )
