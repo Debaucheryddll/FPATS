@@ -18,24 +18,24 @@
 from migen import Array, Cat, If, Module, Mux, Signal, bits_for
 from misoc.interconnect.csr import CSR, AutoCSR, CSRStatus, CSRStorage
 
-from .iir import Iir
-from .limit import LimitCSR
-from .modulate import Demodulate
-from .pid import PID
+from gateware.logic.iir import Iir
+from gateware.logic.limit import LimitCSR
+from gateware.logic.modulate import Demodulate
+from gateware.logic.pid import PID
 
 
 class FastChain(Module, AutoCSR):
     def __init__(
         self, width=14, signal_width=25, coeff_width=18, mod=None, offset_signal=None
     ):
-        self.adc = Signal((width, True))  # 输入，14为有符号信号，接收来自ADC的数据
+        self.adc = Signal((width, True))
         # output of in-phase demodulated signal
         self.out_i = Signal((signal_width, True))
         # output of quadrature demodulated signal
         self.out_q = Signal((signal_width, True))
 
-        self.y_tap = CSRStorage(2,name="y_tap")
-        self.invert = CSRStorage(1,name="invert")
+        self.y_tap = CSRStorage(2)
+        self.invert = CSRStorage(1)
 
         self.state_in = []
         self.state_out = []
@@ -59,7 +59,6 @@ class FastChain(Module, AutoCSR):
             x.eq(self.adc << s),
             self.demod.x.eq(self.adc),
             self.demod.phase.eq(mod.phase),
-            self.demod.freq_base.eq(mod.freq.storage),
         ]
         ya = Signal((width + 3, True))
         self.sync += (ya.eq(((dy >> s))),)

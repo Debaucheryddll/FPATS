@@ -3,7 +3,7 @@ from misoc.interconnect.csr import AutoCSR, CSRStatus
 
 
 FPGA_CLOCK_FREQ = 125000000
-FP_WIDTH = 25
+FP_WIDTH = 28
 FP_FRAC_BITS = 10
 
 # --- 转换物理常量为定点数 ---

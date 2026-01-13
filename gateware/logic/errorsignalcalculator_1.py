@@ -5,7 +5,6 @@ from migen import Module, Signal, Cat, If
 from misoc.interconnect.csr import AutoCSR, CSRStatus
 
 # --- [导入依赖] ---
-from gateware.logic.cordic import Cordic
 from gateware.logic.divider_1 import PipelinedFloatDivider
 
 
@@ -39,29 +38,34 @@ class ErrorSignalCalculator(Module, AutoCSR):
         mag_a_scaled = Signal((width, True))  # 缩放后的幅度
         mag_b_scaled = Signal((width, True))  # 缩放后的幅度
 
-        # --- 3. CORDIC 模块 (计算幅度) ---
-        cordic_eval_mode = "combinatorial"
+        # --- 3. 幅度计算（方案A：功率/幅度平方，只保留高 width 位） ---
+        # P = I^2 + Q^2（不做开方）
+        # I/Q 为 width 位 => 平方是 2*width 位；两路相加得到 (2*width+1) 位。
+        # 只保留 pa_wide/pb_wide 的最高 width 位直接作为 mag_a/mag_b。
 
-        self.submodules.cordic_a = Cordic(
-            width=width, cordic_mode="vector", func_mode="circular",
-            eval_mode=cordic_eval_mode
-        )
-        self.submodules.cordic_b = Cordic(
-            width=width, cordic_mode="vector", func_mode="circular",
-            eval_mode=cordic_eval_mode
-        )
+        ia_sq = Signal((2 * width, True))
+        qa_sq = Signal((2 * width, True))
+        ib_sq = Signal((2 * width, True))
+        qb_sq = Signal((2 * width, True))
 
-        # --- 4. 连接 CORDIC 并进行【溢出修复】 ---
+        pa_wide = Signal((2 * width + 1, True))
+        pb_wide = Signal((2 * width + 1, True))
+
         self.comb += [
-            self.cordic_a.xi.eq(self.i_a),
-            self.cordic_a.yi.eq(self.q_a),
-            mag_a.eq(self.cordic_a.xo),
+            ia_sq.eq(self.i_a * self.i_a),
+            qa_sq.eq(self.q_a * self.q_a),
+            ib_sq.eq(self.i_b * self.i_b),
+            qb_sq.eq(self.q_b * self.q_b),
 
-            self.cordic_b.xi.eq(self.i_b),
-            self.cordic_b.yi.eq(self.q_b),
-            mag_b.eq(self.cordic_b.xo),
+            pa_wide.eq(ia_sq + qa_sq),
+            pb_wide.eq(ib_sq + qb_sq),
 
-            # 在这里进行右移位缩放 (除以2)，防止后续加法溢出
+            # 只取“高 width 位”
+            # 对 width=25：pa_wide/pb_wide 是 51 位，取 [26:51]（最高 25 位）
+            mag_a.eq(pa_wide[(2 * width + 1) - width: (2 * width + 1)]),
+            mag_b.eq(pb_wide[(2 * width + 1) - width: (2 * width + 1)]),
+
+            # 仍保留你原来的 /2 缩放，保证后面 denominator 加法更安全
             mag_a_scaled.eq(mag_a >> 1),
             mag_b_scaled.eq(mag_b >> 1),
         ]

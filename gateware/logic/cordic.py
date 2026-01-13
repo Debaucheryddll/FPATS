@@ -167,7 +167,7 @@ class TwoQuadrantCordic(Module):
 
     def __init__(
         self,
-        width=16,
+        width=25,
         widthz=None,
         stages=None,
         guard=0,

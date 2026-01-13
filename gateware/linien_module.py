@@ -225,8 +225,8 @@ class LinienModule(Module, AutoCSR):
             self.scan_tracker.kalman_est_uncertainty.eq(self.kalman_targets.t_target_cmd.storage),
 
             # 3. 连接 PL 的实时功率
-            # 位宽适配： 25位 (err_calc) -> 16位 (scan_tracker input)
-            self.scan_tracker.power_level.eq(self.err_calc.csr_power_signal.status),
+            # 位宽适配： err_calc -> scan_tracker input
+            self.scan_tracker.power_level.eq(self.err_calc.csr_power_signal_out.status),
 
             # 4. 连接功率阈值 (来自 PS)
             self.scan_tracker.power_threshold_acquire.eq(self.kalman_targets.power_threshold_target_cmd.storage),
