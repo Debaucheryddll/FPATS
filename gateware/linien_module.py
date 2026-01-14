@@ -168,6 +168,7 @@ class LinienModule(Module, AutoCSR):
                 ("scopegen", self.scopegen),
                 ("logic", self.logic),
                 ("scan_tracker", self.scan_tracker),
+                ("sine_source", self.sine_source),
             ],
         )
 
@@ -184,6 +185,7 @@ class LinienModule(Module, AutoCSR):
             "logic": 8,
             "kalman_targets": 10,
             "scan_tracker": 11,
+            "sine_source": 12,
         }
 
         self.submodules.csrbanks = csr_bus.CSRBankArray(

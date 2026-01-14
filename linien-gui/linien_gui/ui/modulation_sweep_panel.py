@@ -28,6 +28,9 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
     modulationAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
     modulation_frequency_group = QtWidgets.QGroupBox
     modulationFrequencySpinBox: CustomDoubleSpinBoxNoSign
+    sine_source_group = QtWidgets.QGroupBox
+    sineSourceFrequencySpinBox: CustomDoubleSpinBoxNoSign
+    sineSourceAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
     spectroscopyTabs: QtWidgets.QTabWidget
     spectroscopy_channel_1_page: QtWidgets.QWidget
     spectroscopy_channel_2_page: QtWidgets.QWidget
@@ -46,6 +49,14 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         self.modulationAmplitudeSpinBox.setKeyboardTracking(False)
         self.modulationAmplitudeSpinBox.valueChanged.connect(
             self.change_modulation_amplitude
+        )
+        self.sineSourceFrequencySpinBox.setKeyboardTracking(False)
+        self.sineSourceFrequencySpinBox.valueChanged.connect(
+            self.change_sine_source_frequency
+        )
+        self.sineSourceAmplitudeSpinBox.setKeyboardTracking(False)
+        self.sineSourceAmplitudeSpinBox.valueChanged.connect(
+            self.change_sine_source_amplitude
         )
         self.sweepSpeedComboBox.currentIndexChanged.connect(self.change_sweep_speed)
 
@@ -66,6 +77,16 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
             lambda value: value / Vpp,
         )
         param2ui(self.parameters.sweep_speed, self.sweepSpeedComboBox)
+        param2ui(
+            self.parameters.sine_source_frequency,
+            self.sineSourceFrequencySpinBox,
+            lambda value: value / MHz,
+        )
+        param2ui(
+            self.parameters.sine_source_amplitude,
+            self.sineSourceAmplitudeSpinBox,
+            lambda value: value / Vpp,
+        )
 
         self.parameters.dual_channel.add_callback(self.dual_channel_changed)
 
@@ -104,6 +125,19 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
             self.modulationAmplitudeSpinBox.value() * Vpp
         )
         self.control.write_registers()
+
+    def change_sine_source_frequency(self):
+        self.parameters.sine_source_frequency.value = (
+            self.sineSourceFrequencySpinBox.value() * MHz
+        )
+        self.control.write_registers()
+
+    def change_sine_source_amplitude(self):
+        self.parameters.sine_source_amplitude.value = (
+            self.sineSourceAmplitudeSpinBox.value() * Vpp
+        )
+        self.control.write_registers()
+
 
     def change_sweep_speed(self, decimation):
         self.parameters.sweep_speed.value = decimation

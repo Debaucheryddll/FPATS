@@ -18,9 +18,9 @@
 from math import pi, sin
 
 from migen import Array, Constant, Module, Signal
+from misoc.interconnect.csr import AutoCSR, CSRStorage
 
-
-class SineSource(Module):
+class SineSource(Module, AutoCSR):
     def __init__(
         self,
         width=14,
@@ -38,7 +38,7 @@ class SineSource(Module):
 
         lut = Array(
             Constant(
-                int(round(amplitude * sin(2 * pi * idx / table_size))),
+                int(round(max_amplitude * sin(2 * pi * idx / table_size))),
                 (width, True),
             )
             for idx in range(table_size)
@@ -46,11 +46,20 @@ class SineSource(Module):
 
         self.output = Signal((width, True))
 
+        self.phase_inc = CSRStorage(phase_bits, reset=phase_inc, name="phase_inc")
+        self.amplitude = CSRStorage(width, reset=amplitude, name="amplitude")
+
         phase = Signal(phase_bits)
         index = Signal(lut_bits)
+        base = Signal((width, True))
+        product = Signal((width * 2, True))
+        scaled = Signal((width, True))
 
-        self.sync += phase.eq(phase + phase_inc)
+        self.sync += phase.eq(phase + self.phase_inc.storage)
         self.comb += [
             index.eq(phase[phase_bits - lut_bits :]),
-            self.output.eq(lut[index]),
+            base.eq(lut[index]),
+            product.eq(base * self.amplitude.storage),
+            scaled.eq(product >> (width - 1)),
+            self.output.eq(scaled),
         ]

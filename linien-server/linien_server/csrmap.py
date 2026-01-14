@@ -209,6 +209,8 @@ csr = {
     'scopegen_adc_b_sel': (6, 0x014, 4, True),
     'scopegen_adc_a_q_sel': (6, 0x015, 4, True),
     'scopegen_adc_b_q_sel': (6, 0x016, 4, True),
+    'sine_source_phase_inc': (12, 0x000, 32, True),
+    'sine_source_amplitude': (12, 0x004, 14, True),
     'xadc_temp': (29, 0x000, 12, False),
     'xadc_v': (29, 0x002, 12, False),
     'xadc_a': (29, 0x004, 12, False),

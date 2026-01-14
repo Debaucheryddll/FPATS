@@ -330,6 +330,28 @@ class Parameters:
         the DAC.
         """
 
+        self.sine_source_frequency = Parameter(
+            min_=0, max_=0xFFFFFFFF, start=int(0.01 * MHz), restorable=True, loggable=True
+        )
+        """
+        Frequency of the sine source in internal units. Use MHz for conversion to
+        human-readable frequency, e.g:
+            `parameters.sine_source_frequency.value = 0.01 * MHz`
+        """
+
+        self.sine_source_amplitude = Parameter(
+            min_=0,
+            max_=(1 << 14) - 1,
+            start=1 * Vpp,
+            restorable=True,
+            loggable=True,
+        )
+        """
+        The amplitude of the sine source in internal units. Use Vpp for conversion to
+        volts peak-peak, e.g: `parameters.sine_source_amplitude.value = 0.5 * Vpp`
+        """
+
+
         # ------------------- DEMODULATION AND FILTER PARAMETERS -----------------------
         self.pid_only_mode = Parameter(start=False, restorable=True)
         """
