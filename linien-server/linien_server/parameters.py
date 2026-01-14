@@ -125,20 +125,19 @@ class Parameters:
         self.to_plot = Parameter(sync=False)
         """
         The `to_plot` parameter is a pickled dictionary that contains signals that may
-        be plotted. Depending on the locking state, it may contain these signals:
-        Unlocked state:
-          - `error_signal` and `error_signal_quadrature`:
-              IQ-demodulated and low-pass-filtered error signals from ANALOG IN 0
+         be plotted. It may contain these signals:
+          - `error_signal`:
+              Error signal derived from the error-signal calculator.
+          - `error_signal_quadrature`:
+              IQ-demodulated and low-pass-filtered quadrature error signal.
           - `error_signal_2` and `error_signal_2_quadrature`:
               IQ-demodulated and low-pass-filtered error signals from ANALOG IN 1. These
-              signals are only available if in dual-channel spectroscopy mode is
-              enabled. Otherwise the un-demodulated monitor_signal` is shown.
+               signals are only available if dual-channel spectroscopy mode is enabled.
           - `monitor_signal`:
               Signal recorded from ANALOG IN 1 without demodulation. Only available if
               dual channel mode is not enabled.
-        Locked state:
-          - `error_signal`:
-              Error signal that is fed into the PID controller.
+          - `power_signal`:
+              Power signal derived from the error-signal calculator.
           - `control_signal`:
               Output of the PID controller.
           - `slow`:

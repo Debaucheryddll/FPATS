@@ -31,6 +31,10 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph.Qt import QtCore
 
+import pickle
+from datetime import datetime
+from pathlib import Path
+
 sys.path += [str(UI_PATH)]
 
 logger = logging.getLogger(__name__)
@@ -44,12 +48,14 @@ class LinienApp(QtWidgets.QApplication):
         super(LinienApp, self).__init__(*args, **kwargs)
 
         self.settings = load_settings()
+        self.recorded_plot_data: list[tuple[float, bytes]] = []
 
         self.main_window = MainWindow()
         self.device_manager = DeviceManager()
         self.psd_window = PSDWindow()
         self.device_manager.show()
         self.aboutToQuit.connect(self.quit)
+        self.aboutToQuit.connect(self.save_recorded_plot_data)
 
     def client_connected(self, client: LinienClient):
         self.device_manager.hide()
@@ -58,6 +64,7 @@ class LinienApp(QtWidgets.QApplication):
         self.client = client
         self.control = client.control
         self.parameters = client.parameters
+        self.parameters.to_plot.add_callback(self.record_plot_data)
 
         self.connection_established.emit()
 
@@ -105,6 +112,23 @@ class LinienApp(QtWidgets.QApplication):
         else:
             logger.info("No new version available")
             QtCore.QTimer.singleShot(1000 * 60 * 60, self.check_for_new_version)
+
+    def record_plot_data(self, to_plot: bytes | None) -> None:
+        if to_plot is None:
+            return
+        timestamp = QtCore.QTime.currentTime().msecsSinceStartOfDay() / 1000.0
+        self.recorded_plot_data.append((timestamp, to_plot))
+
+    def save_recorded_plot_data(self) -> None:
+        if not self.recorded_plot_data:
+            return
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_dir = Path(r"E:\testlinien\FPATS\data")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path = output_dir / f"plot_data_{timestamp}.pkl"
+        with output_path.open("wb") as file_handle:
+            pickle.dump(self.recorded_plot_data, file_handle)
+        logger.info("Saved plot data recording to %s", output_path)
 
 
 # ignore type, otherwise "Argument 1 has incompatible type "Callable[[int, bool, str |

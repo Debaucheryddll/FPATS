@@ -134,14 +134,15 @@ class AcquisitionService(Service):
 
             self.program_acquisition_and_rearm()
 
-        def read_data(self) -> dict[str, int]:
-            error_signal = int(self.csr.get("err_calc_out_e"))
-            power_signal = int(self.csr.get("err_calc_power_signal_out"))
+    def read_data(self) -> dict[str, int]:
+        error_signal = int(self.csr.get("err_calc_out_e"))
+        power_signal = int(self.csr.get("err_calc_power_signal_out"))
 
-            return {
-                "error_signal": error_signal,
-                "power_signal": power_signal,
-            }
+        return {
+            "error_signal": error_signal,
+            "power_signal": power_signal,
+        }
+
     def read_data_raw(
         self, offset: int, addr: int, data_length: int
     ) -> tuple[Any, ...]:

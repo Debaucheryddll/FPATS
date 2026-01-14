@@ -214,9 +214,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
                 data_loaded = pickle.loads(new_data)
 
                 if not data_was_raw:
-                    is_locked = self.parameters.lock.value
-
-                    if not check_plot_data(is_locked, data_loaded):
+                    if not check_plot_data(data_loaded):
                         logger.error(
                             "incorrect data received for lock state, ignoring!"
                         )
@@ -232,7 +230,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
                         stats[f"{signal_name}_max"] = np.max(signal)
                         stats[f"{signal_name}_min"] = np.min(signal)
                     self.parameters.signal_stats.value = stats
-                    # update signal history (if in locked state)
+                    # update signal history
                     (
                         self.parameters.control_signal_history.value,
                         self.parameters.monitor_signal_history.value,
@@ -240,7 +238,6 @@ class RedPitayaControlService(BaseService, LinienControlService):
                         self.parameters.control_signal_history.value,
                         self.parameters.monitor_signal_history.value,
                         data_loaded,
-                        is_locked,
                         self.parameters.control_signal_history_length.value,
                     )
                 else:

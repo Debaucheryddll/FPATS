@@ -22,7 +22,6 @@ from collections import deque
 import numpy as np
 import pyqtgraph as pg
 from linien_common.common import (
-    DECIMATION,
     N_POINTS,
     check_plot_data,
 )
@@ -63,26 +62,11 @@ class TimeXAxis(pg.AxisItem):
         QtCore.QTimer.singleShot(100, self.listen_to_parameter_changes)
 
     def listen_to_parameter_changes(self):
-        self.parent.parameters.sweep_center.add_callback(self.on_lock_changed)
-        self.parent.parameters.sweep_amplitude.add_callback(self.on_lock_changed)
-        self.parent.parameters.lock.add_callback(self.on_lock_changed)
         self.on_lock_changed()
 
     def tickStrings(self, values, scale, spacing) -> list[str]:
-        if self.parent.parameters.lock.value:
-            # use µs for the x axis
-            spacing = DECIMATION / 125e6
-            values = [1e6 * scale * v * spacing for v in values]
-            precision_specifier = 1
-        else:
-            # use voltage for the x axis
-            center = self.parent.parameters.sweep_center.value
-            amplitude = self.parent.parameters.sweep_amplitude.value
-            min_ = center - amplitude
-            max_ = center + amplitude
-            spacing = abs(max_ - min_) / (N_POINTS - 1)
-            values = [scale * (v * spacing + min_) for v in values]
-            precision_specifier = 2
+        values = [scale * v for v in values]
+        precision_specifier = 0
         return [f"{v:.{precision_specifier}f}" for v in values]
 
     def on_lock_changed(self, *args) -> None:
@@ -209,7 +193,6 @@ class PlotWidget(pg.PlotWidget):
 
         self.parameters.to_plot.add_callback(self.on_new_plot_data_received)
         self.parameters.automatic_mode.add_callback(self.on_automatic_mode_changed)
-        self.parameters.lock.add_callback(self.on_lock_changed)
 
         self._configure_simple_view()
 
@@ -256,12 +239,8 @@ class PlotWidget(pg.PlotWidget):
             a = self.app.settings.plot_line_opacity.value
             curve.setPen(pg.mkPen((r, g, b, a), width=pen_width))
 
-    def on_lock_changed(self, lock: bool) -> None:
-        if not lock:
-            self.setLabel("bottom", "sweep voltage", units="V")
-        else:
-            self.setLabel("bottom", "time", units="µs")
-
+    def on_lock_changed(self, *args) -> None:
+        self.setLabel("bottom", "sample", units="")
 
     def on_new_plot_data_received(self, to_plot):
         time_beginning = time()
@@ -295,7 +274,7 @@ class PlotWidget(pg.PlotWidget):
             if to_plot is None:
                 return
 
-            if not check_plot_data(self.parameters.lock.value, to_plot):
+            if not check_plot_data(to_plot):
                 return
             error_signal = to_plot.get("error_signal")
             power_signal = to_plot.get("power_signal")

@@ -96,7 +96,7 @@ def update_signal_history(
     control_history: Dict[str, List[float]],
     monitor_history: Dict[str, List[float]],
     to_plot,
-    is_locked: bool,
+
     max_time_diff: float,
 ) -> Union[
     Tuple[Dict[str, List[float]], Dict[str, List[float]]], Dict[str, List[float]]
@@ -104,41 +104,22 @@ def update_signal_history(
     if not to_plot:
         return control_history
 
-    if is_locked:
         if "control_signal" not in to_plot:
             return control_history, monitor_history
         control_history["values"].append(np.mean(to_plot["control_signal"]))
         control_history["times"].append(time())
 
-        if "slow_control_signal" in to_plot:
-            control_history["slow_values"].append(to_plot["slow_control_signal"])
-            control_history["slow_times"].append(time())
-
         if "monitor_signal" in to_plot:
             monitor_history["values"].append(np.mean(to_plot["monitor_signal"]))
             monitor_history["times"].append(time())
 
-    else:
-        control_history["values"] = []
-        control_history["times"] = []
-        control_history["slow_values"] = []
-        control_history["slow_times"] = []
-        monitor_history["values"] = []
-        monitor_history["times"] = []
-
     # truncate
     truncate(control_history["times"], control_history["values"], max_time_diff)
-    truncate(
-        control_history["slow_times"], control_history["slow_values"], max_time_diff
-    )
     truncate(monitor_history["times"], monitor_history["values"], max_time_diff)
 
     # downsample
     downsample_history(
         control_history["times"], control_history["values"], max_time_diff
-    )
-    downsample_history(
-        control_history["slow_times"], control_history["slow_values"], max_time_diff
     )
     downsample_history(
         monitor_history["times"], monitor_history["values"], max_time_diff
@@ -177,7 +158,7 @@ def combine_error_signal(
     return np.array([v + combined_offset for v in signal])
 
 
-def check_plot_data(is_locked: bool, plot_data: Dict[str, np.ndarray]) -> bool:
+def check_plot_data(plot_data: Dict[str, np.ndarray]) -> bool:
 
     if "error_signal" not in plot_data:
         return False

@@ -55,10 +55,10 @@ class ScopeGen(Module, AutoCSR):
         self.scope_sys = Record(sys_layout)
         self.asg_sys = Record(sys_layout)
 
-        adc_a = Signal((width, True))
-        adc_a_q = Signal((width, True))
-        adc_b = Signal((width, True))
-        adc_b_q = Signal((width, True))
+        adc_a = Signal((width, True), name="scope_adc_a")
+        adc_a_q = Signal((width, True), name="scope_adc_a_q")
+        adc_b = Signal((width, True), name="scope_adc_b")
+        adc_b_q = Signal((width, True), name="scope_adc_b_q")
         dac_a = Signal((width, True))
         dac_b = Signal((width, True))
 
