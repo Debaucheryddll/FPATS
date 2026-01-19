@@ -489,6 +489,202 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="startKalmanButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Start the TPFC Kalman tracker on the server.</string>
+         </property>
+         <property name="text">
+          <string>Start Kalman Tracker</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stopKalmanButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Stop the TPFC Kalman tracker on the server.</string>
+         </property>
+         <property name="text">
+          <string>Stop Kalman Tracker</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="kalmanGroupBox">
+         <property name="title">
+          <string>Kalman Filter</string>
+         </property>
+         <layout class="QFormLayout" name="kalmanFormLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="kalmanDtLabel">
+            <property name="text">
+             <string>dt (s)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanDtSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>0.000001000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="kalmanProcNoiseTLabel">
+            <property name="text">
+             <string>Process noise t</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanProcNoiseTSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000100000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="kalmanProcNoiseFLabel">
+            <property name="text">
+             <string>Process noise f</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanProcNoiseFSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.001000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="kalmanProcNoiseDriftLabel">
+            <property name="text">
+             <string>Process noise drift</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanProcNoiseDriftSpinBox">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000001000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="kalmanMeasNoiseBaseLabel">
+            <property name="text">
+             <string>Meas noise base</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanMeasNoiseBaseSpinBox">
+            <property name="decimals">
+             <number>12</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>0.000001000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000000000001000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="kalmanMeasNoiseFadeLabel">
+            <property name="text">
+             <string>Meas noise fade</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="kalmanMeasNoiseFadeSpinBox">
+            <property name="decimals">
+             <number>12</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>0.000001000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000000000001000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="kalmanPowerThresholdLabel">
+            <property name="text">
+             <string>Power threshold</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="CustomSpinBox" name="kalmanPowerThresholdSpinBox">
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>

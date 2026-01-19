@@ -34,6 +34,16 @@ class LockingPanel(QtWidgets.QWidget):
     button_slope_falling: QtWidgets.QRadioButton
     button_slope_rising: QtWidgets.QRadioButton
     manualLockButton: QtWidgets.QPushButton
+    startKalmanButton: QtWidgets.QPushButton
+    stopKalmanButton: QtWidgets.QPushButton
+
+    kalmanDtSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanProcNoiseTSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanProcNoiseFSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanProcNoiseDriftSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanMeasNoiseBaseSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanMeasNoiseFadeSpinBox: QtWidgets.QDoubleSpinBox
+    kalmanPowerThresholdSpinBox: CustomSpinBox
 
     lock_status_container: LockStatusPanel
     controlSignalHistoryLengthSpinBox: CustomSpinBox
@@ -51,6 +61,45 @@ class LockingPanel(QtWidgets.QWidget):
         self.kdSpinBox.valueChanged.connect(self.kd_changed)
 
         self.manualLockButton.clicked.connect(self.start_manual_lock)
+        self.startKalmanButton.clicked.connect(self.start_kalman_tracker)
+        self.stopKalmanButton.clicked.connect(self.stop_kalman_tracker)
+
+        for spin_box in (
+                self.kalmanDtSpinBox,
+                self.kalmanProcNoiseTSpinBox,
+                self.kalmanProcNoiseFSpinBox,
+                self.kalmanProcNoiseDriftSpinBox,
+                self.kalmanMeasNoiseBaseSpinBox,
+                self.kalmanMeasNoiseFadeSpinBox,
+                self.kalmanPowerThresholdSpinBox,
+        ):
+            spin_box.setKeyboardTracking(False)
+
+        self.kalmanDtSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param("tpfc_kalman_dt", value)
+        )
+        self.kalmanProcNoiseTSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param("tpfc_kalman_proc_noise_t", value)
+        )
+        self.kalmanProcNoiseFSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param("tpfc_kalman_proc_noise_f", value)
+        )
+        self.kalmanProcNoiseDriftSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param(
+                "tpfc_kalman_proc_noise_drift", value
+            )
+        )
+        self.kalmanMeasNoiseBaseSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param("tpfc_kalman_meas_noise_base", value)
+        )
+        self.kalmanMeasNoiseFadeSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param("tpfc_kalman_meas_noise_fade", value)
+        )
+        self.kalmanPowerThresholdSpinBox.valueChanged.connect(
+            lambda value: self.update_kalman_param(
+                "tpfc_kalman_power_threshold", value
+            )
+        )
 
         self.pid_on_slow_strength.setKeyboardTracking(False)
         self.pid_on_slow_strength.valueChanged.connect(
@@ -90,6 +139,25 @@ class LockingPanel(QtWidgets.QWidget):
             self.button_slope_falling,
             lambda value: not value,
         )
+        param2ui(self.parameters.tpfc_kalman_dt, self.kalmanDtSpinBox)
+        param2ui(self.parameters.tpfc_kalman_proc_noise_t, self.kalmanProcNoiseTSpinBox)
+        param2ui(self.parameters.tpfc_kalman_proc_noise_f, self.kalmanProcNoiseFSpinBox)
+        param2ui(
+            self.parameters.tpfc_kalman_proc_noise_drift,
+            self.kalmanProcNoiseDriftSpinBox,
+        )
+        param2ui(
+            self.parameters.tpfc_kalman_meas_noise_base,
+            self.kalmanMeasNoiseBaseSpinBox,
+        )
+        param2ui(
+            self.parameters.tpfc_kalman_meas_noise_fade,
+            self.kalmanMeasNoiseFadeSpinBox,
+        )
+        param2ui(
+            self.parameters.tpfc_kalman_power_threshold,
+            self.kalmanPowerThresholdSpinBox,
+        )
 
     def kp_changed(self):
         self.parameters.p.value = self.kpSpinBox.value()
@@ -110,6 +178,16 @@ class LockingPanel(QtWidgets.QWidget):
         self.control.write_registers()
         self.control.start_lock()
 
+    def start_kalman_tracker(self):
+        self.control.exposed_start_tpfc_tracker()
+
+    def stop_kalman_tracker(self):
+        self.control.exposed_stop_tpfc_tracker()
+
+    def update_kalman_param(self, name: str, value):
+        if not hasattr(self, "parameters"):
+            return
+        getattr(self.parameters, name).value = value
 
     def pid_on_slow_strength_changed(self):
         self.parameters.pid_on_slow_strength.value = self.pid_on_slow_strength.value()

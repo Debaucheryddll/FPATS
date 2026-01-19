@@ -105,6 +105,11 @@ class TPFCTrackerService(threading.Thread):
         except Exception:  # 读取或转换异常时跳过本周期
             logger.exception("读取误差/功率寄存器失败，跳过本周期。")
             return
+        logger.debug(
+            "TPFC 测量读取: z=%s, P=%s",
+            z_measurement,
+            P_received_power,
+        )
 
         # 保护：如果测量或功率值为 NaN/Inf，则不更新滤波器，避免破坏状态矩阵
         if not np.isfinite(z_measurement) or not np.isfinite(P_received_power):
@@ -135,7 +140,13 @@ class TPFCTrackerService(threading.Thread):
         time_variance = max(self.kf.P[0, 0], 0)  # 提取时间偏移的方差并裁剪负值
         time_uncertainty = np.sqrt(time_variance)  # 单位：秒
         power_threshold = self.kf.power_threshold
-
+        logger.debug(
+            "TPFC 估计值: x_offset=%s, f_offset=%s, time_uncertainty=%s, power_threshold=%s",
+            estimated_X_offset,
+            estimated_F_offset,
+            time_uncertainty,
+            power_threshold,
+        )
 
         # 5. 转换为 FPGA 定点数 (写入目标值)
         # 确保输出的定点数能被 PID 正确解析
@@ -151,11 +162,17 @@ class TPFCTrackerService(threading.Thread):
         raw_power_threshold_target = FixedPointConverter.float_to_fixed(
             power_threshold, self.FP_WIDTH, self.FP_FRAC_BITS
         )
+        logger.debug(
+            "TPFC 定点数目标: x=%s, f=%s, time_uncertainty=%s, power_threshold=%s",
+            raw_x_target,
+            raw_f_target,
+            raw_time_uncertain_target,
+            raw_power_threshold_target,
+        )
         # 6. 写入 CSR Storage，更新 PID 的目标设定值
         self.registers.write_kalman_targets(
             raw_x_target,
             raw_f_target,
             raw_time_uncertain_target,
             raw_power_threshold_target,
-
         )

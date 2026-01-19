@@ -80,8 +80,17 @@ class KalmanFilterTimeFrequency:
         """
         卡尔曼滤波器预测步骤 (三维)。
         """
+        previous_state = self.x.copy()
+        previous_covariance = self.P.copy()
         self.P = self.F @ self.P @ self.F.T + self.Q
         self.x = self.F @ self.x
+        logger.debug(
+            "KF predict: x_prev=%s P_prev=%s x_pred=%s P_pred=%s",
+            previous_state.flatten(),
+            previous_covariance,
+            self.x.flatten(),
+            self.P,
+        )
         return self.x
 
     def update(self, z: float, power_level: float) -> np.ndarray:
@@ -117,6 +126,14 @@ class KalmanFilterTimeFrequency:
 
         # y = z - H * x_k^- (y 是 1x1 标量)
         y = z - self.H @ self.x
+        logger.debug(
+            "KF update: z=%s power=%s residual=%s S=%s K=%s",
+            z,
+            power_level,
+            y,
+            S,
+            K,
+        )
 
         # x_k^+ = x_k^- + K * y
         # 当 R 很大 -> S 很大 -> K 很小 -> x 几乎不变 (等于预测值)
@@ -128,7 +145,12 @@ class KalmanFilterTimeFrequency:
         # 当 R 很大 -> K 很小 -> I_KH 接近 I -> P ≈ P_k^-
         # (这不完全对，P 应该 = P_k^-。Joseph Form 在这里是正确的。)
         self.P = (I_KH @ self.P @ I_KH.T) + (K @ current_R @ K.T)
-
+        logger.debug(
+            "KF update result: x_post=%s P_post=%s R_used=%s",
+            self.x.flatten(),
+            self.P,
+            current_R,
+        )
         return self.x
 
     def get_state(self) -> np.ndarray:

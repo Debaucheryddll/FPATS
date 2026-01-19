@@ -61,7 +61,7 @@ class LinienApp(QtWidgets.QApplication):
         self.device_manager.hide()
         self.main_window.show(client.device.host, client.device.name)
 
-        self.client = client
+        self.client = client    
         self.control = client.control
         self.parameters = client.parameters
         self.parameters.to_plot.add_callback(self.record_plot_data)
