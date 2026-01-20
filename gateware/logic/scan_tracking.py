@@ -52,6 +52,12 @@ class ScanTrackingController(Module, AutoCSR):
         self.time_command_out_status = CSRStatus(
             width, name="time_command_out"
         )
+        self.power_level_status = CSRStatus(
+            width, name="power_level"
+        )
+        self.power_threshold_status = CSRStatus(
+            width, name="power_threshold_acquire"
+        )
 
         # --- 内部逻辑 (Internal Logic) ---
         current_output_time = Signal((width, True), reset=0)  # 内部当前输出时间寄存器
@@ -143,4 +149,6 @@ class ScanTrackingController(Module, AutoCSR):
             self.time_command_out.eq(current_output_time),
             self.fsm_state_status.status.eq(self.fsm_state),
             self.time_command_out_status.status.eq(self.time_command_out),
+            self.power_level_status.status.eq(self.power_level),
+            self.power_threshold_status.status.eq(self.power_threshold_acquire),
         ]

@@ -29,26 +29,33 @@ class PipelinedFloatDivider(Module):
         self.den = Signal((width_den, True))
         self.quotient = Signal((width_num, True))
         # 流水线迭代次数必须覆盖被放大后的所有位
-        PIPELINE_STAGES = width_num + fractional_bits
-        INTERNAL_NUM_WIDTH = width_num + fractional_bits  # 被除数在内部的位宽
+        abs_num_width = width_num + 1
+        abs_den_width = width_den + 1
+        PIPELINE_STAGES = abs_num_width + fractional_bits
+        INTERNAL_NUM_WIDTH = abs_num_width + fractional_bits  # 被除数在内部的位宽
 
-        # 符号处理
-        n_abs = Signal((width_num, False))
-        d_abs = Signal((width_den, False))
+        # 符号处理（使用扩展位宽避免最小负数取反溢出）
+        n_abs = Signal((abs_num_width, False))
+        d_abs = Signal((abs_den_width, False))
         n_sign = Signal()
         d_sign = Signal()
         q_sign = Signal()
 
+        num_ext = Signal((abs_num_width, True))
+        den_ext = Signal((abs_den_width, True))
+
         self.comb += [
             n_sign.eq(self.num[-1]),
             d_sign.eq(self.den[-1]),
-            n_abs.eq(Mux(n_sign, -self.num, self.num)),
-            d_abs.eq(Mux(d_sign, -self.den, self.den)),
-            q_sign.eq(n_sign ^ d_sign)
+            num_ext.eq(Cat(self.num, self.num[-1])),
+            den_ext.eq(Cat(self.den, self.den[-1])),
+            n_abs.eq(Mux(n_sign, -num_ext, num_ext)),
+            d_abs.eq(Mux(d_sign, -den_ext, den_ext)),
+            q_sign.eq(n_sign ^ d_sign),
         ]
 
         # 流水线寄存器
-        r = [Signal((width_den + 1, False)) for _ in range(PIPELINE_STAGES + 1)]
+        r = [Signal((abs_den_width + 1, False)) for _ in range(PIPELINE_STAGES + 1)]
         quo = [Signal((INTERNAL_NUM_WIDTH, False)) for _ in range(PIPELINE_STAGES + 1)]
         q = [Signal((INTERNAL_NUM_WIDTH, False)) for _ in range(PIPELINE_STAGES + 1)]
         d = [Signal.like(d_abs) for _ in range(PIPELINE_STAGES + 1)]
@@ -85,16 +92,16 @@ class PipelinedFloatDivider(Module):
             quo_out = quo[i + 1]
 
             # 移位：把 q_in 的最高位移入 r 的最低位左边
-            r_shifted = Cat(q_in[-1], r_in[0:width_den])
+            r_shifted = Cat(q_in[-1], r_in[0:abs_den_width])
             q_shifted = (q_in << 1) & ((1 << INTERNAL_NUM_WIDTH) - 1)  # 保持位宽
 
             # 减法
-            r_sub = Signal((width_den + 1, False))
+            r_sub = Signal((abs_den_width + 1, False))
             self.comb += r_sub.eq(r_shifted - d_in)
 
             # 如果 r_sub 的最高位 (符号位) 为 0 表示非负 => 减法成功
             sub_success = Signal()
-            self.comb += sub_success.eq(r_sub[width_den] == 0)
+            self.comb += sub_success.eq(r_sub[abs_den_width] == 0)
 
             # 更新寄存器
             self.sync += [

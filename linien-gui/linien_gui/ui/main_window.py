@@ -61,6 +61,20 @@ class MainWindow(QtWidgets.QMainWindow):
     topLockPanelWidget: QtWidgets.QWidget
     controlStdLabel: QtWidgets.QLabel
     errorStdLabel: QtWidgets.QLabel
+    errorValueLabel: QtWidgets.QLabel
+    powerAValueLabel: QtWidgets.QLabel
+    powerBValueLabel: QtWidgets.QLabel
+    kalmanXValueLabel: QtWidgets.QLabel
+    kalmanFValueLabel: QtWidgets.QLabel
+    kalmanTValueLabel: QtWidgets.QLabel
+    kalmanPowerThresholdValueLabel: QtWidgets.QLabel
+    scanTrackerStateValueLabel: QtWidgets.QLabel
+    scanTrackerTimeValueLabel: QtWidgets.QLabel
+    pidSetpointValueLabel: QtWidgets.QLabel
+    pidKpValueLabel: QtWidgets.QLabel
+    pidKiValueLabel: QtWidgets.QLabel
+    pidKdValueLabel: QtWidgets.QLabel
+    pidOutputValueLabel: QtWidgets.QLabel
     controlSignalLegendLabel: QtWidgets.QLabel
     controlSignalHistoryLegendLabel: QtWidgets.QLabel
     errorSignalLegendLabel: QtWidgets.QLabel
@@ -126,6 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.parameters.to_plot.add_callback(self.update_std)
+        self.parameters.to_plot.add_callback(self.update_runtime_status)
 
         self.parameters.pid_on_slow_enabled.add_callback(
             lambda v: self.slowSignalHistoryLegendLabel.setVisible(v)
@@ -266,3 +281,62 @@ class MainWindow(QtWidgets.QMainWindow):
     def reset_std_history(self):
         self.error_std_history = []
         self.control_std_history = []
+
+
+    def update_runtime_status(self, to_plot) -> None:
+        if not to_plot:
+            return
+
+        to_plot = pickle.loads(to_plot)
+        if not to_plot:
+            return
+
+        def _format_value(value):
+            if value is None:
+                return "-"
+            if isinstance(value, np.ndarray):
+                return f"{np.mean(value):.2f}"
+            return f"{value:.2f}" if isinstance(value, float) else str(value)
+
+        error_signal = to_plot.get("error_signal")
+        power_signal_a = to_plot.get("power_signal_a")
+        power_signal_b = to_plot.get("power_signal_b")
+        control_signal = to_plot.get("control_signal")
+        kalman_x = to_plot.get("kalman_x_target")
+        kalman_f = to_plot.get("kalman_f_target")
+        kalman_t = to_plot.get("kalman_t_target")
+        kalman_threshold = to_plot.get("kalman_power_threshold")
+        scan_state = to_plot.get("scan_tracker_state")
+        scan_time = to_plot.get("scan_tracker_time_command_out")
+        scan_power_level = to_plot.get("scan_tracker_power_level")
+        scan_power_threshold = to_plot.get("scan_tracker_power_threshold_acquire")
+        pid_setpoint = to_plot.get("pid_setpoint")
+        pid_kp = to_plot.get("pid_kp")
+        pid_ki = to_plot.get("pid_ki")
+        pid_kd = to_plot.get("pid_kd")
+
+        state_map = {
+            0: "BROAD_SEARCH",
+            1: "NARROW_SEARCH",
+            2: "LOCKED",
+        }
+        scan_state_text = state_map.get(scan_state, str(scan_state))
+
+        self.errorValueLabel.setText(_format_value(error_signal))
+        self.powerAValueLabel.setText(_format_value(power_signal_a))
+        self.powerBValueLabel.setText(_format_value(power_signal_b))
+        self.kalmanXValueLabel.setText(_format_value(kalman_x))
+        self.kalmanFValueLabel.setText(_format_value(kalman_f))
+        self.kalmanTValueLabel.setText(_format_value(kalman_t))
+        self.kalmanPowerThresholdValueLabel.setText(_format_value(kalman_threshold))
+        self.scanTrackerStateValueLabel.setText(scan_state_text)
+        self.scanTrackerTimeValueLabel.setText(_format_value(scan_time))
+        self.scanTrackerPowerLevelValueLabel.setText(_format_value(scan_power_level))
+        self.scanTrackerPowerThresholdValueLabel.setText(
+            _format_value(scan_power_threshold)
+        )
+        self.pidSetpointValueLabel.setText(_format_value(pid_setpoint))
+        self.pidKpValueLabel.setText(_format_value(pid_kp))
+        self.pidKiValueLabel.setText(_format_value(pid_ki))
+        self.pidKdValueLabel.setText(_format_value(pid_kd))
+        self.pidOutputValueLabel.setText(_format_value(control_signal))

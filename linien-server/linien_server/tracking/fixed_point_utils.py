@@ -35,6 +35,14 @@ class FixedPointConverter:
         return signed_value / (1 << fractional_bits)
 
     @staticmethod
+    def fixed_to_signed_int(raw_value: int, width: int) -> int:
+        """Convert a raw fixed-point integer to a signed integer."""
+        sign_bit = 1 << (width - 1)
+        if raw_value & sign_bit:
+            return raw_value - (1 << width)
+        return raw_value
+
+    @staticmethod
     def float_to_fixed(float_value: float, width: int, fractional_bits: int) -> int:
         """
         将浮点数转换为 FPGA 可识别的原始定点数 (整数)。

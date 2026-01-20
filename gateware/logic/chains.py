@@ -33,6 +33,8 @@ class FastChain(Module, AutoCSR):
         self.out_i = Signal((signal_width, True))
         # output of quadrature demodulated signal
         self.out_q = Signal((signal_width, True))
+        self.out_i_status = CSRStatus(signal_width, name="out_i")
+        self.out_q_status = CSRStatus(signal_width, name="out_q")
 
         self.y_tap = CSRStorage(2)
         self.invert = CSRStorage(1)
@@ -59,6 +61,10 @@ class FastChain(Module, AutoCSR):
             x.eq(self.adc << s),
             self.demod.x.eq(self.adc),
             self.demod.phase.eq(mod.phase),
+        ]
+        self.comb += [
+            self.out_i_status.status.eq(self.out_i),
+            self.out_q_status.status.eq(self.out_q),
         ]
         ya = Signal((width + 3, True))
         self.sync += (ya.eq(((dy >> s))),)

@@ -130,6 +130,9 @@ class Registers:
             logic_analog_out_3=self.parameters.analog_out_3.value,
             sine_source_phase_inc=int(self.parameters.sine_source_frequency.value),
             sine_source_amplitude=int(self.parameters.sine_source_amplitude.value),
+            kalman_targets_power_threshold_target_cmd=int(
+                self.parameters.scan_power_threshold.value
+            ),
 
             # channel A
             fast_a_demod_delay=(

@@ -44,6 +44,7 @@ class LockingPanel(QtWidgets.QWidget):
     kalmanMeasNoiseBaseSpinBox: QtWidgets.QDoubleSpinBox
     kalmanMeasNoiseFadeSpinBox: QtWidgets.QDoubleSpinBox
     kalmanPowerThresholdSpinBox: CustomSpinBox
+    scanPowerThresholdSpinBox: CustomSpinBox
 
     lock_status_container: LockStatusPanel
     controlSignalHistoryLengthSpinBox: CustomSpinBox
@@ -72,6 +73,7 @@ class LockingPanel(QtWidgets.QWidget):
                 self.kalmanMeasNoiseBaseSpinBox,
                 self.kalmanMeasNoiseFadeSpinBox,
                 self.kalmanPowerThresholdSpinBox,
+                self.scanPowerThresholdSpinBox,
         ):
             spin_box.setKeyboardTracking(False)
 
@@ -99,6 +101,9 @@ class LockingPanel(QtWidgets.QWidget):
             lambda value: self.update_kalman_param(
                 "tpfc_kalman_power_threshold", value
             )
+        )
+        self.scanPowerThresholdSpinBox.valueChanged.connect(
+            self.update_scan_power_threshold
         )
 
         self.pid_on_slow_strength.setKeyboardTracking(False)
@@ -158,6 +163,10 @@ class LockingPanel(QtWidgets.QWidget):
             self.parameters.tpfc_kalman_power_threshold,
             self.kalmanPowerThresholdSpinBox,
         )
+        param2ui(
+            self.parameters.scan_power_threshold,
+            self.scanPowerThresholdSpinBox,
+        )
 
     def kp_changed(self):
         self.parameters.p.value = self.kpSpinBox.value()
@@ -188,6 +197,12 @@ class LockingPanel(QtWidgets.QWidget):
         if not hasattr(self, "parameters"):
             return
         getattr(self.parameters, name).value = value
+
+    def update_scan_power_threshold(self, value):
+        if not hasattr(self, "parameters"):
+            return
+        self.parameters.scan_power_threshold.value = value
+        self.control.write_registers()
 
     def pid_on_slow_strength_changed(self):
         self.parameters.pid_on_slow_strength.value = self.pid_on_slow_strength.value()

@@ -196,20 +196,20 @@ class PlotWidget(pg.PlotWidget):
 
         self._configure_simple_view()
 
-        def _configure_simple_view(self) -> None:
-            self.errorSignal1.setVisible(False)
-            self.errorSignal2.setVisible(False)
-            self.monitorSignal.setVisible(False)
-            self.controlSignal.setVisible(False)
-            self.controlSignalHistory.setVisible(False)
-            self.slowHistory.setVisible(False)
-            self.monitorSignalHistory.setVisible(False)
-            self.signalStrengthA.setVisible(False)
-            self.signalStrengthB.setVisible(False)
-            self.signalStrengthA2.setVisible(False)
-            self.signalStrengthB2.setVisible(False)
-            self.signalStrengthAFill.setVisible(False)
-            self.signalStrengthBFill.setVisible(False)
+    def _configure_simple_view(self) -> None:
+        self.errorSignal1.setVisible(False)
+        self.errorSignal2.setVisible(False)
+        self.monitorSignal.setVisible(False)
+        self.controlSignal.setVisible(False)
+        self.controlSignalHistory.setVisible(False)
+        self.slowHistory.setVisible(False)
+        self.monitorSignalHistory.setVisible(False)
+        self.signalStrengthA.setVisible(False)
+        self.signalStrengthB.setVisible(False)
+        self.signalStrengthA2.setVisible(False)
+        self.signalStrengthB2.setVisible(False)
+        self.signalStrengthAFill.setVisible(False)
+        self.signalStrengthBFill.setVisible(False)
 
     def _to_data_coords(self, event):
         pos = self.plotItem.vb.mapSceneToView(event.pos())
@@ -241,6 +241,9 @@ class PlotWidget(pg.PlotWidget):
 
     def on_lock_changed(self, *args) -> None:
         self.setLabel("bottom", "sample", units="")
+
+    def on_automatic_mode_changed(self, *args) -> None:
+        return
 
     def on_new_plot_data_received(self, to_plot):
         time_beginning = time()
@@ -277,7 +280,32 @@ class PlotWidget(pg.PlotWidget):
             if not check_plot_data(to_plot):
                 return
             error_signal = to_plot.get("error_signal")
+            error_signal_quadrature = to_plot.get("error_signal_quadrature")
+            error_signal_2 = to_plot.get("error_signal_2")
+            error_signal_2_quadrature = to_plot.get("error_signal_2_quadrature")
             power_signal = to_plot.get("power_signal")
+            power_signal_a = to_plot.get("power_signal_a")
+            power_signal_b = to_plot.get("power_signal_b")
+            monitor_signal = to_plot.get("monitor_signal")
+            control_signal = to_plot.get("control_signal")
+
+            def _as_series(signal):
+                if signal is None:
+                    return None
+                if isinstance(signal, np.ndarray):
+                    return signal
+                if isinstance(signal, (list, tuple)):
+                    return np.array(signal)
+                return None
+
+            def _emit_power(signal, fallback=INVALID_POWER):
+                if signal is None:
+                    return fallback
+                if isinstance(signal, np.ndarray):
+                    return float(np.mean(signal))
+                if isinstance(signal, (list, tuple)):
+                    return float(np.mean(signal))
+                return float(signal)
 
             if isinstance(error_signal, np.ndarray) and error_signal.size > 1:
                 error_series = error_signal
@@ -289,14 +317,73 @@ class PlotWidget(pg.PlotWidget):
                 error_series = np.array(self.error_signal_history)
 
             self.last_plot_data = [error_series]
+
             self.combinedErrorSignal.setVisible(True)
             self.combinedErrorSignal.setData(
                 list(range(len(error_series))), error_series / V
             )
-            if power_signal is not None:
-                self.signal_power1.emit(float(np.mean(power_signal)))
+
+            error_quadrature_series = _as_series(error_signal_quadrature)
+            if error_quadrature_series is not None and error_quadrature_series.size > 1:
+                self.errorSignal1.setVisible(True)
+                self.errorSignal1.setData(
+                    list(range(len(error_quadrature_series))),
+                    error_quadrature_series / V,
+                )
+                self.last_plot_data.append(error_quadrature_series)
+            else:
+                self.errorSignal1.setVisible(False)
+
+            error2_series = _as_series(error_signal_2)
+            error2_quadrature_series = _as_series(error_signal_2_quadrature)
+            secondary_series = None
+            if error2_series is not None and error2_series.size > 1:
+                secondary_series = error2_series
+            elif (
+                error2_quadrature_series is not None
+                and error2_quadrature_series.size > 1
+            ):
+                secondary_series = error2_quadrature_series
+
+            if secondary_series is not None:
+                self.errorSignal2.setVisible(True)
+                self.errorSignal2.setData(
+                    list(range(len(secondary_series))), secondary_series / V
+                )
+                self.last_plot_data.append(secondary_series)
+            else:
+                self.errorSignal2.setVisible(False)
+
+            monitor_series = _as_series(monitor_signal)
+            if monitor_series is not None and monitor_series.size > 1:
+                self.monitorSignal.setVisible(True)
+                self.monitorSignal.setData(
+                    list(range(len(monitor_series))), monitor_series / V
+                )
+                self.last_plot_data.append(monitor_series)
+            else:
+                self.monitorSignal.setVisible(False)
+
+            control_series = _as_series(control_signal)
+            if control_series is not None and control_series.size > 1:
+                self.controlSignal.setVisible(True)
+                self.controlSignal.setData(
+                    list(range(len(control_series))), control_series / V
+                )
+                self.last_plot_data.append(control_series)
+            else:
+                self.controlSignal.setVisible(False)
+
+            if power_signal_a is not None or power_signal_b is not None:
+                self.signal_power1.emit(_emit_power(power_signal_a))
+                self.signal_power2.emit(_emit_power(power_signal_b))
+            elif power_signal is not None:
+                self.signal_power1.emit(_emit_power(power_signal))
+                self.signal_power2.emit(INVALID_POWER)
             else:
                 self.signal_power1.emit(INVALID_POWER)
+                self.signal_power2.emit(INVALID_POWER)
+
 
         time_end = time()
         time_diff = time_end - time_beginning

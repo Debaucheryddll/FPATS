@@ -138,8 +138,20 @@ class Parameters:
               dual channel mode is not enabled.
           - `power_signal`:
               Power signal derived from the error-signal calculator.
+           - `power_signal_a` and `power_signal_b`:
+              Power estimates for fast channel A and B derived from the error signal
+              and total power.
           - `control_signal`:
               Output of the PID controller.
+          - `scan_tracker_state`, `scan_tracker_time_command_out`,
+            `scan_tracker_power_level`, and `scan_tracker_power_threshold_acquire`:
+              Scan-tracking state, time command output, power level, and the active
+              power threshold used for acquisition.
+          - `kalman_x_target`, `kalman_f_target`, `kalman_t_target`,
+            and `kalman_power_threshold`:
+              Latest Kalman filter targets written to the FPGA.
+          - `pid_setpoint`, `pid_kp`, `pid_ki`, `pid_kd`:
+              Current PID configuration values.  
           - `slow`:
               Output of slow additional integrator on slow analog output. Note that this
               value is not an array but a single point.

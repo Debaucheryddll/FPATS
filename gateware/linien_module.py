@@ -88,7 +88,9 @@ class LinienLogic(Module, AutoCSR):
         self.submodules.limit_fast2 = LimitCSR(width=width, guard=5)
         self.submodules.pid = PID(width=signal_width)
         self.control_signal = Signal((width, True), name="control_signal")
+        self.control_signal_status = CSRStatus(width, name="control_signal")
         self.signal_out = [self.control_signal]
+        self.comb += self.control_signal_status.status.eq(self.control_signal)
 
 class LinienModule(Module, AutoCSR):
     def __init__(self, platform):

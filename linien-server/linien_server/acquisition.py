@@ -27,7 +27,9 @@ from typing import Any, Optional
 import numpy as np
 from linien_common.common import DECIMATION, MAX_N_POINTS
 from linien_common.config import ACQUISITION_PORT
+from linien_server import csrmap
 from linien_server.csr import PythonCSR
+from linien_server.tracking.fixed_point_utils import FixedPointConverter
 from pyrp3.board import RedPitaya  # type: ignore
 from pyrp3.instrument import TriggerSource  # type: ignore
 from rpyc import Service
@@ -35,6 +37,44 @@ from rpyc.utils.server import ThreadedServer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+POWER_FRAC_BITS = 10
+
+
+def _to_signed(value: int, width: int) -> int:
+    sign_bit = 1 << (width - 1)
+    if value & sign_bit:
+        return value - (1 << width)
+    return value
+
+
+def _fixed_to_float(
+    value: int, width: int, fractional_bits: int = POWER_FRAC_BITS
+) -> float:
+    return FixedPointConverter.fixed_to_float(value, width, fractional_bits)
+
+
+def _split_power_by_error(
+    power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
+) -> tuple[float, float]:
+    scaled_error_power = (power_raw * error_raw) >> fractional_bits
+    power_a_raw = (power_raw + scaled_error_power) // 2
+    power_b_raw = (power_raw - scaled_error_power) // 2
+    return (
+        _fixed_to_float(power_a_raw, csrmap.csr["err_calc_power_signal_out"][2]),
+        _fixed_to_float(power_b_raw, csrmap.csr["err_calc_power_signal_out"][2]),
+    )
+
+
+def _has_csr(name: str) -> bool:
+    return name in csrmap.csr
+
+
+def _get_signed_csr(csr: PythonCSR, name: str) -> int | None:
+    if not _has_csr(name):
+        return None
+    return _to_signed(int(csr.get(name)), csrmap.csr[name][2])
+
 
 
 class AcquisitionService(Service):
@@ -134,13 +174,59 @@ class AcquisitionService(Service):
 
             self.program_acquisition_and_rearm()
 
-    def read_data(self) -> dict[str, int]:
-        error_signal = int(self.csr.get("err_calc_out_e"))
-        power_signal = int(self.csr.get("err_calc_power_signal_out"))
+    def read_data(self) -> dict[str, int | float | None]:
+        error_signal = _get_signed_csr(self.csr, "err_calc_out_e")
+        if error_signal is None:
+            raise KeyError("err_calc_out_e")
+        power_signal_raw = int(self.csr.get("err_calc_power_signal_out"))
+        power_signal = _fixed_to_float(
+            power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2]
+        )
+        power_signal_a, power_signal_b = _split_power_by_error(
+            power_signal_raw, error_signal
+        )
+        control_signal = _get_signed_csr(self.csr, "logic_control_signal")
+        if control_signal is None:
+            raise KeyError("logic_control_signal")
+        scan_tracker_state = int(self.csr.get("scan_tracker_fsm_state"))
+        scan_tracker_time = int(self.csr.get("scan_tracker_time_command_out"))
+        scan_tracker_power_level = _fixed_to_float(
+            int(self.csr.get("scan_tracker_power_level")),
+            csrmap.csr["scan_tracker_power_level"][2],
+        )
+        scan_tracker_power_threshold = _fixed_to_float(
+            int(self.csr.get("scan_tracker_power_threshold_acquire")),
+            csrmap.csr["scan_tracker_power_threshold_acquire"][2],
+        )
+        kalman_x = _get_signed_csr(self.csr, "kalman_targets_x_target_cmd")
+        kalman_f = _get_signed_csr(self.csr, "kalman_targets_f_target_cmd")
+        kalman_t = _get_signed_csr(self.csr, "kalman_targets_t_target_cmd")
+        kalman_power_threshold = int(
+            self.csr.get("kalman_targets_power_threshold_target_cmd")
+        )
+        pid_setpoint = _get_signed_csr(self.csr, "logic_pid_setpoint")
+        pid_kp = _get_signed_csr(self.csr, "logic_pid_kp")
+        pid_ki = _get_signed_csr(self.csr, "logic_pid_ki")
+        pid_kd = _get_signed_csr(self.csr, "logic_pid_kd")
 
         return {
             "error_signal": error_signal,
             "power_signal": power_signal,
+            "power_signal_a": power_signal_a,
+            "power_signal_b": power_signal_b,
+            "control_signal": control_signal,
+            "scan_tracker_state": scan_tracker_state,
+            "scan_tracker_time_command_out": scan_tracker_time,
+            "scan_tracker_power_level": scan_tracker_power_level,
+            "scan_tracker_power_threshold_acquire": scan_tracker_power_threshold,
+            "kalman_x_target": kalman_x,
+            "kalman_f_target": kalman_f,
+            "kalman_t_target": kalman_t,
+            "kalman_power_threshold": kalman_power_threshold,
+            "pid_setpoint": pid_setpoint,
+            "pid_kp": pid_kp,
+            "pid_ki": pid_ki,
+            "pid_kd": pid_kd,
         }
 
     def read_data_raw(

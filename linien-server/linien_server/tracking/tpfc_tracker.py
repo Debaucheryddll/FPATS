@@ -162,12 +162,24 @@ class TPFCTrackerService(threading.Thread):
         raw_power_threshold_target = FixedPointConverter.float_to_fixed(
             power_threshold, self.FP_WIDTH, self.FP_FRAC_BITS
         )
+        signed_x_target = FixedPointConverter.fixed_to_signed_int(
+            raw_x_target, self.FP_WIDTH
+        )
+        signed_f_target = FixedPointConverter.fixed_to_signed_int(
+            raw_f_target, self.FP_WIDTH
+        )
+        signed_time_uncertain_target = FixedPointConverter.fixed_to_signed_int(
+            raw_time_uncertain_target, self.FP_WIDTH
+        )
+        signed_power_threshold_target = FixedPointConverter.fixed_to_signed_int(
+            raw_power_threshold_target, self.FP_WIDTH
+        )
         logger.debug(
             "TPFC 定点数目标: x=%s, f=%s, time_uncertainty=%s, power_threshold=%s",
-            raw_x_target,
-            raw_f_target,
-            raw_time_uncertain_target,
-            raw_power_threshold_target,
+            signed_x_target,
+            signed_f_target,
+            signed_time_uncertain_target,
+            signed_power_threshold_target,
         )
         # 6. 写入 CSR Storage，更新 PID 的目标设定值
         self.registers.write_kalman_targets(
