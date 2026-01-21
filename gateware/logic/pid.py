@@ -58,7 +58,7 @@ class PID(Module, AutoCSR):
         self.comb += [kp_mult.eq(self.error * kp_signed)]
 
         self.output_p = Signal((self.width, True))
-        self.comb += [self.output_p.eq(kp_mult >> (self.coeff_width - 2))]
+        self.comb += [self.output_p.eq(kp_mult >> (self.coeff_width))]
 
         self.kp_mult = kp_mult
 
@@ -71,7 +71,7 @@ class PID(Module, AutoCSR):
 
         self.ki_mult = Signal((1 + self.width + self.coeff_width, True))
 
-        self.comb += [self.ki_mult.eq((self.error * ki_signed) >> 4)]
+        self.comb += [self.ki_mult.eq((self.error * ki_signed) >> 8)]
 
         int_reg_width = self.width + self.coeff_width + 4
         extra_width = int_reg_width - self.width

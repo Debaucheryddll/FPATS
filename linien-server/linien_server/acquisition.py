@@ -53,16 +53,25 @@ def _fixed_to_float(
 ) -> float:
     return FixedPointConverter.fixed_to_float(value, width, fractional_bits)
 
+def _clamp_unsigned(value: int, width: int) -> int:
+    mask = (1 << width) - 1
+    return max(0, min(value, mask))
 
 def _split_power_by_error(
     power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
 ) -> tuple[float, float]:
+    power_width = csrmap.csr["err_calc_power_signal_out"][2]
+    power_raw = power_raw & ((1 << power_width) - 1)
     scaled_error_power = (power_raw * error_raw) >> fractional_bits
-    power_a_raw = (power_raw + scaled_error_power) // 2
-    power_b_raw = (power_raw - scaled_error_power) // 2
+    power_a_raw = _clamp_unsigned((power_raw + scaled_error_power) // 2, power_width)
+    power_b_raw = _clamp_unsigned((power_raw - scaled_error_power) // 2, power_width)
     return (
-        _fixed_to_float(power_a_raw, csrmap.csr["err_calc_power_signal_out"][2]),
-        _fixed_to_float(power_b_raw, csrmap.csr["err_calc_power_signal_out"][2]),
+        FixedPointConverter.fixed_to_unsigned_float(
+            power_a_raw, power_width, fractional_bits
+        ),
+        FixedPointConverter.fixed_to_unsigned_float(
+            power_b_raw, power_width, fractional_bits
+        ),
     )
 
 
@@ -179,8 +188,8 @@ class AcquisitionService(Service):
         if error_signal is None:
             raise KeyError("err_calc_out_e")
         power_signal_raw = int(self.csr.get("err_calc_power_signal_out"))
-        power_signal = _fixed_to_float(
-            power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2]
+        power_signal = FixedPointConverter.fixed_to_unsigned_float(
+            power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
         )
         power_signal_a, power_signal_b = _split_power_by_error(
             power_signal_raw, error_signal
@@ -189,14 +198,16 @@ class AcquisitionService(Service):
         if control_signal is None:
             raise KeyError("logic_control_signal")
         scan_tracker_state = int(self.csr.get("scan_tracker_fsm_state"))
-        scan_tracker_time = int(self.csr.get("scan_tracker_time_command_out"))
-        scan_tracker_power_level = _fixed_to_float(
+        scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
+        scan_tracker_power_level = FixedPointConverter.fixed_to_unsigned_float(
             int(self.csr.get("scan_tracker_power_level")),
             csrmap.csr["scan_tracker_power_level"][2],
+            POWER_FRAC_BITS,
         )
-        scan_tracker_power_threshold = _fixed_to_float(
+        scan_tracker_power_threshold = FixedPointConverter.fixed_to_unsigned_float(
             int(self.csr.get("scan_tracker_power_threshold_acquire")),
             csrmap.csr["scan_tracker_power_threshold_acquire"][2],
+            POWER_FRAC_BITS,
         )
         kalman_x = _get_signed_csr(self.csr, "kalman_targets_x_target_cmd")
         kalman_f = _get_signed_csr(self.csr, "kalman_targets_f_target_cmd")

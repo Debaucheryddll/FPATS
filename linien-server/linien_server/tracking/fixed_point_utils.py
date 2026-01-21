@@ -35,6 +35,13 @@ class FixedPointConverter:
         return signed_value / (1 << fractional_bits)
 
     @staticmethod
+    def fixed_to_unsigned_float(raw_value: int, width: int, fractional_bits: int) -> float:
+        """Convert a raw fixed-point integer to an unsigned float."""
+        mask = (1 << width) - 1
+        unsigned_value = raw_value & mask
+        return unsigned_value / (1 << fractional_bits)
+
+    @staticmethod
     def fixed_to_signed_int(raw_value: int, width: int) -> int:
         """Convert a raw fixed-point integer to a signed integer."""
         sign_bit = 1 << (width - 1)

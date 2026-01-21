@@ -1,7 +1,7 @@
 #
 # 误差信号计算器模块
 #可以计算浮点数的误差信号计算器
-from migen import Module, Signal, Cat, If
+from migen import Module, Signal, Cat, If, Mux
 from misoc.interconnect.csr import AutoCSR, CSRStatus
 
 # --- [导入依赖] ---
@@ -20,7 +20,7 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.i_b = Signal((width, True))
         self.q_b = Signal((width, True))
         self.out_e = Signal((width, True))  # 最终的误差信号 E
-        self.power_signal_out = Signal((width, True), name="power_signal_out")
+        self.power_signal_out = Signal(width, name="power_signal_out")
 
         self.signal_in = []
         self.signal_out = [self.out_e, self.power_signal_out]
@@ -33,10 +33,10 @@ class ErrorSignalCalculator(Module, AutoCSR):
         # 寄存器 2: 功率信号 P (我们使用 'denominator' 作为代理)
         self.csr_power_signal_out = CSRStatus(width, name="power_signal_out")
         # --- 2. 内部信号 ---
-        mag_a = Signal((width, True))
-        mag_b = Signal((width, True))
-        mag_a_scaled = Signal((width, True))  # 缩放后的幅度
-        mag_b_scaled = Signal((width, True))  # 缩放后的幅度
+        mag_a = Signal(width)
+        mag_b = Signal(width)
+        mag_a_scaled = Signal(width)  # 缩放后的幅度
+        mag_b_scaled = Signal(width)  # 缩放后的幅度
 
         # --- 3. 幅度计算（方案A：功率/幅度平方，只保留高 width 位） ---
         # P = I^2 + Q^2（不做开方）
@@ -71,15 +71,19 @@ class ErrorSignalCalculator(Module, AutoCSR):
         ]
 
         # --- 5. 计算分子和分母 ---
-        numerator = Signal.like(mag_a)
-        denominator = Signal.like(mag_a)
+        numerator = Signal((width, True))
+        denominator = Signal(width)
+        mag_a_signed = Signal((width, True))
+        mag_b_signed = Signal((width, True))
 
         DENOMINATOR_THRESHOLD = 4
         safe_to_divide = Signal()
 
         self.comb += [
+            mag_a_signed.eq(mag_a_scaled),
+            mag_b_signed.eq(mag_b_scaled),
             # 使用缩放后的值进行计算
-            numerator.eq(mag_a_scaled - mag_b_scaled),
+            numerator.eq(mag_a_signed - mag_b_signed),  # <-- 现在这个加法是安全的！
             denominator.eq(mag_a_scaled + mag_b_scaled),  # <-- 现在这个加法是安全的！
             # 只有当分母足够大时，才允许除法
             safe_to_divide.eq(denominator > DENOMINATOR_THRESHOLD)
@@ -114,7 +118,7 @@ class ErrorSignalCalculator(Module, AutoCSR):
                       )
         ]
 
-        denominator_reg = Signal.like(denominator)
+        denominator_reg = Signal(width)
         self.sync += denominator_reg.eq(denominator)
         self.comb += [
             # 将最终的 E 连接到 PS

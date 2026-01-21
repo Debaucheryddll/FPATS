@@ -298,6 +298,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 return f"{np.mean(value):.2f}"
             return f"{value:.2f}" if isinstance(value, float) else str(value)
 
+        def _format_power_value(value):
+            if value is None:
+                return "-"
+            if isinstance(value, np.ndarray):
+                value = float(np.mean(value))
+            if not isinstance(value, float):
+                value = float(value)
+            if not np.isfinite(value) or value < 0:
+                return "-"
+            return f"{value:.2f}"
+
         error_signal = to_plot.get("error_signal")
         power_signal_a = to_plot.get("power_signal_a")
         power_signal_b = to_plot.get("power_signal_b")
@@ -323,17 +334,19 @@ class MainWindow(QtWidgets.QMainWindow):
         scan_state_text = state_map.get(scan_state, str(scan_state))
 
         self.errorValueLabel.setText(_format_value(error_signal))
-        self.powerAValueLabel.setText(_format_value(power_signal_a))
-        self.powerBValueLabel.setText(_format_value(power_signal_b))
+        self.powerAValueLabel.setText(_format_power_value(power_signal_a))
+        self.powerBValueLabel.setText(_format_power_value(power_signal_b))
         self.kalmanXValueLabel.setText(_format_value(kalman_x))
         self.kalmanFValueLabel.setText(_format_value(kalman_f))
         self.kalmanTValueLabel.setText(_format_value(kalman_t))
         self.kalmanPowerThresholdValueLabel.setText(_format_value(kalman_threshold))
         self.scanTrackerStateValueLabel.setText(scan_state_text)
         self.scanTrackerTimeValueLabel.setText(_format_value(scan_time))
-        self.scanTrackerPowerLevelValueLabel.setText(_format_value(scan_power_level))
+        self.scanTrackerPowerLevelValueLabel.setText(
+            _format_power_value(scan_power_level)
+        )
         self.scanTrackerPowerThresholdValueLabel.setText(
-            _format_value(scan_power_threshold)
+            _format_power_value(scan_power_threshold)
         )
         self.pidSetpointValueLabel.setText(_format_value(pid_setpoint))
         self.pidKpValueLabel.setText(_format_value(pid_kp))

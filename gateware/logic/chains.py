@@ -36,8 +36,8 @@ class FastChain(Module, AutoCSR):
         self.out_i_status = CSRStatus(signal_width, name="out_i")
         self.out_q_status = CSRStatus(signal_width, name="out_q")
 
-        self.y_tap = CSRStorage(2)
-        self.invert = CSRStorage(1)
+        self.y_tap = CSRStorage(2,name="y_tap")
+        self.invert = CSRStorage(1,name="invert")
 
         self.state_in = []
         self.state_out = []

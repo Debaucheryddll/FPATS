@@ -89,7 +89,7 @@ class TPFCTrackerService(threading.Thread):
         z_measurement = FixedPointConverter.fixed_to_float(
             raw_e, self.FP_WIDTH, self.FP_FRAC_BITS
         ) * self.scale_factor_E
-        P_received_power = FixedPointConverter.fixed_to_float(
+        P_received_power = FixedPointConverter.fixed_to_unsigned_float(
             raw_p, self.FP_WIDTH, self.FP_FRAC_BITS
         ) * self.scale_factor_P
 
@@ -139,6 +139,9 @@ class TPFCTrackerService(threading.Thread):
 
         time_variance = max(self.kf.P[0, 0], 0)  # 提取时间偏移的方差并裁剪负值
         time_uncertainty = np.sqrt(time_variance)  # 单位：秒
+        if time_uncertainty > 0:
+            min_time_uncertainty = 1 / (1 << self.FP_FRAC_BITS)
+            time_uncertainty = max(time_uncertainty, min_time_uncertainty)
         power_threshold = self.kf.power_threshold
         logger.debug(
             "TPFC 估计值: x_offset=%s, f_offset=%s, time_uncertainty=%s, power_threshold=%s",

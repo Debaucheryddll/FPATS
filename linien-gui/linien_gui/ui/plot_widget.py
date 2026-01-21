@@ -302,10 +302,14 @@ class PlotWidget(pg.PlotWidget):
                 if signal is None:
                     return fallback
                 if isinstance(signal, np.ndarray):
-                    return float(np.mean(signal))
-                if isinstance(signal, (list, tuple)):
-                    return float(np.mean(signal))
-                return float(signal)
+                    value = float(np.mean(signal))
+                elif isinstance(signal, (list, tuple)):
+                    value = float(np.mean(signal))
+                else:
+                    value = float(signal)
+                if not np.isfinite(value) or value < 0:
+                    return fallback
+                return value
 
             if isinstance(error_signal, np.ndarray) and error_signal.size > 1:
                 error_series = error_signal

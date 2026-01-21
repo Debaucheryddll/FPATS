@@ -324,19 +324,11 @@ class Registers:
                                 f"Unknown filter {filter_type} for {iir_name}"
                             )
 
-        if lock_changed:
-            if self.parameters.lock.value:
-                # set PI parameters
-                self.set_pid(kp, ki, kd, slope, reset=0, request_lock=1)
-                # self.set_slow_pid(slow_strength, slow_slope, reset=0)
-            else:
-                self.set_pid(0, 0, 0, slope, reset=1, request_lock=0)
-                # self.set_slow_pid(0, slow_slope, reset=1)
+        if lock_changed and not self.parameters.lock.value:
+            self.set_pid(kp, ki, kd, slope, reset=1, request_lock=0)
         else:
-            if self.parameters.lock.value:
-                # set new PI parameters
-                self.set_pid(kp, ki, kd, slope)
-                # self.set_slow_pid(slow_strength, slow_slope)
+            self.set_pid(kp, ki, kd, slope, reset=0)
+            # self.set_slow_pid(slow_strength, slow_slope)
 
     def set_pid(self, p, i, d, slope, reset=None, request_lock=None):
 
