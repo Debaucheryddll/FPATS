@@ -133,6 +133,9 @@ class Parameters:
           - `error_signal_2` and `error_signal_2_quadrature`:
               IQ-demodulated and low-pass-filtered error signals from ANALOG IN 1. These
                signals are only available if dual-channel spectroscopy mode is enabled.
+          - `demodulated_iir_a` and `demodulated_iir_b`:
+              IQ-demodulated and IIR low-pass-filtered in-phase signals from fast
+              channels A and B.
           - `monitor_signal`:
               Signal recorded from ANALOG IN 1 without demodulation. Only available if
               dual channel mode is not enabled.

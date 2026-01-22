@@ -73,20 +73,33 @@ class ErrorSignalCalculator(Module, AutoCSR):
         # --- 5. 计算分子和分母 ---
         numerator = Signal((width, True))
         denominator = Signal(width)
+        denominator_wide = Signal(width + 1)
         mag_a_signed = Signal((width, True))
         mag_b_signed = Signal((width, True))
 
         DENOMINATOR_THRESHOLD = 4
+        NOISE_FLOOR_THRESHOLD = 32
         safe_to_divide = Signal()
+        error_limit = Signal((width, True))
+
 
         self.comb += [
             mag_a_signed.eq(mag_a_scaled),
             mag_b_signed.eq(mag_b_scaled),
+            error_limit.eq(1 << fractional_bits),
             # 使用缩放后的值进行计算
             numerator.eq(mag_a_signed - mag_b_signed),  # <-- 现在这个加法是安全的！
-            denominator.eq(mag_a_scaled + mag_b_scaled),  # <-- 现在这个加法是安全的！
+            denominator_wide.eq(mag_a_scaled + mag_b_scaled),
             # 只有当分母足够大时，才允许除法
             safe_to_divide.eq(denominator > DENOMINATOR_THRESHOLD)
+        ]
+        self.comb += [
+            If(
+                denominator_wide[width],
+                denominator.eq((1 << width) - 1),
+            ).Else(
+                denominator.eq(denominator_wide[:width]),
+            )
         ]
 
         # --- 6. 实例化“定点数除法器” ---
@@ -110,12 +123,28 @@ class ErrorSignalCalculator(Module, AutoCSR):
         # --- 8. 获取最终输出 ---
         # done 是单周期脉冲：有新结果就更新 out_e
         # 当分母太小且流水线空闲时，把 out_e 清零（可选逻辑，保持你原有行为）
+        limited_quotient = Signal((width, True))
+        self.comb += [
+            If(
+                self.divider.quotient > error_limit,
+                limited_quotient.eq(error_limit),
+            ).Elif(
+                self.divider.quotient < -error_limit,
+                limited_quotient.eq(-error_limit),
+            ).Else(
+                limited_quotient.eq(self.divider.quotient),
+            )
+        ]
         self.sync += [
-            If(self.divider.done,
-               self.out_e.eq(self.divider.quotient)
-               ).Elif(~safe_to_divide & ~self.divider.busy,
-                      self.out_e.eq(0)
-                      )
+            If(
+                self.divider.done,
+                If(
+                    denominator > NOISE_FLOOR_THRESHOLD,
+                    self.out_e.eq(limited_quotient),
+                ).Else(
+                    self.out_e.eq(0),
+                ),
+            ).Elif(~safe_to_divide & ~self.divider.busy, self.out_e.eq(0))
         ]
 
         denominator_reg = Signal(width)

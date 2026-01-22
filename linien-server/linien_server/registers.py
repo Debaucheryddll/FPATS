@@ -155,7 +155,7 @@ class Registers:
             ),
             fast_b_demod_multiplier=self.parameters.demodulation_multiplier_b.value,
             fast_b_dx_sel=csrmap.signals.index("zero"),
-            fast_b_y_tap=1,
+            fast_b_y_tap=2,
             fast_b_dy_sel=csrmap.signals.index("zero"),
             fast_b_invert=int(self.parameters.invert_b.value),
             # trigger on sweep

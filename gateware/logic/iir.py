@@ -61,7 +61,8 @@ class Iir(Filter):
         ###
 
         z = Signal((intermediate_width, True), name="z0r")
-        self.sync += z.eq(self.z0.storage << shift)
+        reset_state = Signal()
+        self.sync += If(reset_state, z.eq(0)).Else(z.eq(self.z0.storage << shift))
 
         y_lim = Signal.like(self.y)
         y_next = Signal.like(z)
@@ -70,14 +71,17 @@ class Iir(Filter):
         y_pat = Signal.like(y_over, reset=2 ** (intermediate_width - skip) - 1)
         y = Signal.like(self.y)
         railed = Signal()
+        hold_state = Signal()
         self.comb += [
             railed.eq(~((y_over == y_pat) | (y_over == ~y_pat))),
+            hold_state.eq(self.hold | railed),
+            reset_state.eq(self.clear | railed),
             If(railed, y_lim.eq(self.y)).Else(y_lim.eq(y_next[shift:])),
         ]
         self.sync += [
             self.error.eq(railed),
             self.y.eq(y_lim),
-            If(self.clear, y.eq(0)).Elif(~self.hold, y.eq(y_lim)),
+            If(reset_state, y.eq(0)).Elif(~hold_state, y.eq(y_lim)),
         ]
 
         if mode == "pipelined":
@@ -85,7 +89,11 @@ class Iir(Filter):
             r += [(f"a{i}", y) for i in reversed(range(1, order + 1))]
             for coeff, signal in r:
                 zr = Signal.like(z)
-                self.sync += zr.eq(z)
+                self.sync += (
+                    If(reset_state, zr.eq(0))
+                    .Elif(hold_state, zr.eq(zr))
+                    .Else(zr.eq(z))
+                )
                 z = Signal.like(zr)
                 self.comb += z.eq(zr + signal * c[coeff])
             self.comb += y_next.eq(z)

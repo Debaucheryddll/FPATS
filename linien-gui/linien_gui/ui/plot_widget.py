@@ -43,6 +43,7 @@ pg.setConfigOptions(
 
 # relation between counts and 1V
 V = 8192
+FAST_IIR_SHIFT = 11
 
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000
@@ -148,6 +149,10 @@ class PlotWidget(pg.PlotWidget):
         self.addItem(self.combinedErrorSignal)
         self.monitorSignal = pg.PlotCurveItem()
         self.addItem(self.monitorSignal)
+        self.demodulatedIirSignalA = pg.PlotCurveItem()
+        self.addItem(self.demodulatedIirSignalA)
+        self.demodulatedIirSignalB = pg.PlotCurveItem()
+        self.addItem(self.demodulatedIirSignalB)
 
         self.controlSignal = pg.PlotCurveItem()
         self.addItem(self.controlSignal)
@@ -176,6 +181,8 @@ class PlotWidget(pg.PlotWidget):
 
         self._should_reposition_reset_view_button = False
         self.error_signal_history = deque(maxlen=N_POINTS)
+        self.demodulated_iir_a_history = deque(maxlen=N_POINTS)
+        self.demodulated_iir_b_history = deque(maxlen=N_POINTS)
 
     def on_connection_established(self):
         self.parameters = self.app.parameters
@@ -200,6 +207,8 @@ class PlotWidget(pg.PlotWidget):
         self.errorSignal1.setVisible(False)
         self.errorSignal2.setVisible(False)
         self.monitorSignal.setVisible(False)
+        self.demodulatedIirSignalA.setVisible(False)
+        self.demodulatedIirSignalB.setVisible(False)
         self.controlSignal.setVisible(False)
         self.controlSignalHistory.setVisible(False)
         self.slowHistory.setVisible(False)
@@ -230,6 +239,8 @@ class PlotWidget(pg.PlotWidget):
             self.errorSignal2: Color.ERROR2,
             self.combinedErrorSignal: Color.ERROR_COMBINED,
             self.monitorSignal: Color.MONITOR,
+            self.demodulatedIirSignalA: Color.ERROR1,
+            self.demodulatedIirSignalB: Color.ERROR2,
             self.controlSignal: Color.CONTROL_SIGNAL,
             self.controlSignalHistory: Color.CONTROL_SIGNAL_HISTORY,
             self.slowHistory: Color.SLOW_HISTORY,
@@ -237,7 +248,12 @@ class PlotWidget(pg.PlotWidget):
         }.items():
             r, g, b, _ = getattr(self.app.settings, f"plot_color_{color.value}").value
             a = self.app.settings.plot_line_opacity.value
-            curve.setPen(pg.mkPen((r, g, b, a), width=pen_width))
+            style = (
+                QtCore.Qt.DashLine
+                if curve in (self.demodulatedIirSignalA, self.demodulatedIirSignalB)
+                else QtCore.Qt.SolidLine
+            )
+            curve.setPen(pg.mkPen((r, g, b, a), width=pen_width, style=style))
 
     def on_lock_changed(self, *args) -> None:
         self.setLabel("bottom", "sample", units="")
@@ -283,6 +299,8 @@ class PlotWidget(pg.PlotWidget):
             error_signal_quadrature = to_plot.get("error_signal_quadrature")
             error_signal_2 = to_plot.get("error_signal_2")
             error_signal_2_quadrature = to_plot.get("error_signal_2_quadrature")
+            demodulated_iir_a = to_plot.get("demodulated_iir_a")
+            demodulated_iir_b = to_plot.get("demodulated_iir_b")
             power_signal = to_plot.get("power_signal")
             power_signal_a = to_plot.get("power_signal_a")
             power_signal_b = to_plot.get("power_signal_b")
@@ -310,6 +328,21 @@ class PlotWidget(pg.PlotWidget):
                 if not np.isfinite(value) or value < 0:
                     return fallback
                 return value
+
+            def _series_or_history(signal, history):
+                series = _as_series(signal)
+                if series is not None and series.size > 1:
+                    history.clear()
+                    return series
+                if signal is None:
+                    return None
+                if isinstance(signal, np.ndarray):
+                    history.append(float(np.mean(signal)))
+                elif isinstance(signal, (list, tuple)):
+                    history.append(float(np.mean(signal)))
+                else:
+                    history.append(float(signal))
+                return np.array(history)
 
             if isinstance(error_signal, np.ndarray) and error_signal.size > 1:
                 error_series = error_signal
@@ -357,6 +390,39 @@ class PlotWidget(pg.PlotWidget):
                 self.last_plot_data.append(secondary_series)
             else:
                 self.errorSignal2.setVisible(False)
+            demodulated_iir_a_series = _series_or_history(
+                demodulated_iir_a, self.demodulated_iir_a_history
+            )
+            if (
+                    demodulated_iir_a_series is not None
+                    and demodulated_iir_a_series.size > 1
+            ):
+                demodulated_scale = V * (1 << FAST_IIR_SHIFT)
+                self.demodulatedIirSignalA.setVisible(True)
+                self.demodulatedIirSignalA.setData(
+                    list(range(len(demodulated_iir_a_series))),
+                    demodulated_iir_a_series / demodulated_scale,
+                )
+                self.last_plot_data.append(demodulated_iir_a_series)
+            else:
+                self.demodulatedIirSignalA.setVisible(False)
+
+            demodulated_iir_b_series = _series_or_history(
+                demodulated_iir_b, self.demodulated_iir_b_history
+            )
+            if (
+                    demodulated_iir_b_series is not None
+                    and demodulated_iir_b_series.size > 1
+            ):
+                demodulated_scale = V * (1 << FAST_IIR_SHIFT)
+                self.demodulatedIirSignalB.setVisible(True)
+                self.demodulatedIirSignalB.setData(
+                    list(range(len(demodulated_iir_b_series))),
+                    demodulated_iir_b_series / demodulated_scale,
+                )
+                self.last_plot_data.append(demodulated_iir_b_series)
+            else:
+                self.demodulatedIirSignalB.setVisible(False)
 
             monitor_series = _as_series(monitor_signal)
             if monitor_series is not None and monitor_series.size > 1:
@@ -389,14 +455,7 @@ class PlotWidget(pg.PlotWidget):
                 self.signal_power2.emit(INVALID_POWER)
 
 
-        time_end = time()
-        time_diff = time_end - time_beginning
-        new_rate_limit = 2 * time_diff
-
-        if new_rate_limit < DEFAULT_PLOT_RATE_LIMIT:
-            new_rate_limit = DEFAULT_PLOT_RATE_LIMIT
-
-        self.plot_rate_limit = new_rate_limit
+        self.plot_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
 
     # called when widget is resized

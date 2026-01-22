@@ -51,6 +51,7 @@ class PID(Module, AutoCSR):
 
     def calculate_p(self):
         self.kp = CSRStorage(self.coeff_width,name="kp")
+        self.p_shift = self.coeff_width - 2
         kp_signed = Signal((self.coeff_width, True))
         self.comb += [kp_signed.eq(self.kp.storage)]
 
@@ -58,12 +59,13 @@ class PID(Module, AutoCSR):
         self.comb += [kp_mult.eq(self.error * kp_signed)]
 
         self.output_p = Signal((self.width, True))
-        self.comb += [self.output_p.eq(kp_mult >> (self.coeff_width))]
+        self.comb += [self.output_p.eq(kp_mult >> (self.p_shift))]
 
         self.kp_mult = kp_mult
 
     def calculate_i(self):
         self.ki = CSRStorage(self.coeff_width,name="ki")
+        self.i_shift = 10
         self.reset = CSRStorage(name="reset")
 
         ki_signed = Signal((self.coeff_width, True))
@@ -71,7 +73,7 @@ class PID(Module, AutoCSR):
 
         self.ki_mult = Signal((1 + self.width + self.coeff_width, True))
 
-        self.comb += [self.ki_mult.eq((self.error * ki_signed) >> 8)]
+        self.comb += [self.ki_mult.eq((self.error * ki_signed) >> self.i_shift)]
 
         int_reg_width = self.width + self.coeff_width + 4
         extra_width = int_reg_width - self.width
