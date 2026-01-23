@@ -40,6 +40,7 @@ logger.setLevel(logging.DEBUG)
 
 POWER_FRAC_BITS = 10
 POWER_DENOM_THRESHOLD = 4
+DEMOD_IIR_NOISE_GATE_THRESHOLD = 32
 
 
 def _to_signed(value: int, width: int) -> int:
@@ -61,18 +62,28 @@ def _clamp_unsigned(value: int, width: int) -> int:
 def _clamp_signed(value: int, limit: int) -> int:
     return max(-limit, min(value, limit))
 
-def _split_power_by_error(
+def _split_power_by_error_raw(
     power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
-) -> tuple[float, float]:
+) -> tuple[int, int]:
     power_width = csrmap.csr["err_calc_power_signal_out"][2]
     power_raw = power_raw & ((1 << power_width) - 1)
     if power_raw <= POWER_DENOM_THRESHOLD:
-        return 0.0, 0.0
+        return 0, 0
     error_limit = 1 << fractional_bits
     error_raw = max(-error_limit, min(error_raw, error_limit))
     scaled_error_power = (power_raw * error_raw) >> fractional_bits
     power_a_raw = _clamp_unsigned((power_raw + scaled_error_power) // 2, power_width)
     power_b_raw = _clamp_unsigned((power_raw - scaled_error_power) // 2, power_width)
+    return power_a_raw, power_b_raw
+
+
+def _split_power_by_error(
+    power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
+) -> tuple[float, float]:
+    power_width = csrmap.csr["err_calc_power_signal_out"][2]
+    power_a_raw, power_b_raw = _split_power_by_error_raw(
+        power_raw, error_raw, fractional_bits
+    )
     return (
         FixedPointConverter.fixed_to_unsigned_float(
             power_a_raw, power_width, fractional_bits
@@ -202,9 +213,22 @@ class AcquisitionService(Service):
         power_signal = FixedPointConverter.fixed_to_unsigned_float(
             power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
         )
+        power_a_raw, power_b_raw = _split_power_by_error_raw(
+            power_signal_raw, error_signal
+        )
         power_signal_a, power_signal_b = _split_power_by_error(
             power_signal_raw, error_signal
         )
+        if (
+                demodulated_iir_a is not None
+                and power_a_raw <= DEMOD_IIR_NOISE_GATE_THRESHOLD
+        ):
+            demodulated_iir_a = 0
+        if (
+                demodulated_iir_b is not None
+                and power_b_raw <= DEMOD_IIR_NOISE_GATE_THRESHOLD
+        ):
+            demodulated_iir_b = 0
         control_signal = _get_signed_csr(self.csr, "logic_control_signal")
         if control_signal is None:
             raise KeyError("logic_control_signal")

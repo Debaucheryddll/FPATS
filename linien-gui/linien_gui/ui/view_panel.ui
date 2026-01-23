@@ -46,6 +46,30 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <layout class="QHBoxLayout" name="channelDisplayLayout">
+        <item>
+         <widget class="QCheckBox" name="showChannelACheckBox">
+          <property name="text">
+           <string>Show A channel</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="showChannelBCheckBox">
+          <property name="text">
+           <string>Show B channel</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="plotLineWidthLayout">
         <item>
          <widget class="QLabel" name="label">

@@ -26,6 +26,10 @@ from linien_server.parameters import Parameters
 from linien_server import csrmap
 from linien_server.iir_coeffs import make_filter
 
+# Keep automatic filters from opening too wide at high modulation frequencies.
+# This reduces wideband noise spikes when no signal is present.
+AUTO_FILTER_MAX_FREQUENCY_HZ = 100_000
+
 
 class Registers:
     """
@@ -82,6 +86,21 @@ class Registers:
             factor_a, factor_b = convert_channel_mixing_value(
                 self.parameters.channel_mixing.value
             )
+        pid_amplitude_override = 0
+        if self.parameters.pid_feedback_to_sine_enabled.value:
+            control_signal = None
+            try:
+                raw = self.read_csr("logic_control_signal")
+                if raw is not None:
+                    sign_bit = 1 << 13
+                    control_signal = raw - (1 << 14) if raw & sign_bit else raw
+            except Exception:
+                control_signal = None
+            if control_signal is not None:
+                scale = float(self.parameters.pid_feedback_to_sine_scale.value)
+                pid_amplitude_override = int(
+                    max_(min(8191, abs(control_signal) * scale))
+                )
 
         lock_changed = self.parameters.lock.value != self.control.exposed_is_locked
         self.control.exposed_is_locked = self.parameters.lock.value
@@ -130,6 +149,11 @@ class Registers:
             logic_analog_out_3=self.parameters.analog_out_3.value,
             sine_source_phase_inc=int(self.parameters.sine_source_frequency.value),
             sine_source_amplitude=int(self.parameters.sine_source_amplitude.value),
+            sine_source_am_phase_inc=int(
+                self.parameters.sine_source_am_frequency.value
+            ),
+            sine_source_am_amplitude=int(self.parameters.sine_source_am_amplitude.value),
+            sine_source_pid_amplitude=int(pid_amplitude_override),
             kalman_targets_power_threshold_target_cmd=int(
                 self.parameters.scan_power_threshold.value
             ),
@@ -280,8 +304,12 @@ class Registers:
                     if automatic:
                         filter_enabled = True
                         filter_type = FilterType.LOW_PASS
-                        filter_frequency = (
-                            self.parameters.modulation_frequency.value / MHz * 1e6 / 2
+                        modulation_frequency_hz = (
+                                self.parameters.modulation_frequency.value / MHz * 1e6
+                        )
+                        filter_frequency = min(
+                            modulation_frequency_hz / 2,
+                            AUTO_FILTER_MAX_FREQUENCY_HZ,
                         )
 
                         # if the filter frequency is too low (< 10Hz), the IIR doesn't

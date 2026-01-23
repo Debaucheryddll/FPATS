@@ -366,6 +366,38 @@ class Parameters:
         volts peak-peak, e.g: `parameters.sine_source_amplitude.value = 0.5 * Vpp`
         """
 
+        self.sine_source_am_frequency = Parameter(
+            min_=0, max_=0xFFFFFFFF, start=0, restorable=True, loggable=True
+        )
+        """
+        AM frequency of the sine source in internal units. The GUI exposes this value
+        in Hz for low-frequency AM configuration.
+        """
+
+        self.sine_source_am_amplitude = Parameter(
+            min_=0,
+            max_=(1 << 14) - 1,
+            start=0,
+            restorable=True,
+            loggable=True,
+        )
+        """
+        AM amplitude of the sine source in internal units. Use Vpp for conversion to
+        volts peak-peak, e.g: `parameters.sine_source_am_amplitude.value = 0.2 * Vpp`
+        """
+
+        self.pid_feedback_to_sine_enabled = Parameter(start=False, restorable=True)
+        """
+        If enabled, the PID control signal is used as the AM depth for the sine source.
+        """
+
+        self.pid_feedback_to_sine_scale = Parameter(
+            min_=0, max_=1, start=1.0, restorable=True
+        )
+        """
+        Scale factor applied to the PID control signal when used as sine-source AM
+        depth. Range is [0, 1].
+        """
 
         # ------------------- DEMODULATION AND FILTER PARAMETERS -----------------------
         self.pid_only_mode = Parameter(start=False, restorable=True)
@@ -444,7 +476,8 @@ class Parameters:
         `filter_automatic` is a boolean indicating whether Linien should automatically
         determine suitable filter for a given modulation frequency or whether the user
         may configure the filters himself. If automatic mode is enabled, two low pass
-        filters are installed with a frequency of half the modulation frequency.
+         filters are installed with a frequency of half the modulation frequency,
+        capped to avoid excessive bandwidth.
         """
 
         self.filter_automatic_b = Parameter(start=True, restorable=True)
@@ -453,7 +486,8 @@ class Parameters:
         `filter_automatic` is a boolean indicating whether Linien should automatically
         determine suitable filter for a given modulation frequency or whether the user
         may configure the filters himself. If automatic mode is enabled, two low pass
-        filters are installed with a frequency of half the modulation frequency.
+        filters are installed with a frequency of half the modulation frequency,
+        capped to avoid excessive bandwidth.
         """
 
         self.filter_1_enabled_a = Parameter(start=False, restorable=True)

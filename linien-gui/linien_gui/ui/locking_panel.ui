@@ -522,6 +522,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="pidFeedbackToSineCheckBox">
+         <property name="text">
+          <string>PID feedback → Sine AM</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="kalmanGroupBox">
          <property name="title">
           <string>Kalman Filter</string>

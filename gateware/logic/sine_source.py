@@ -48,18 +48,40 @@ class SineSource(Module, AutoCSR):
 
         self.phase_inc = CSRStorage(phase_bits, reset=phase_inc, name="phase_inc")
         self.amplitude = CSRStorage(width, reset=amplitude, name="amplitude")
+        self.am_phase_inc = CSRStorage(phase_bits, reset=0, name="am_phase_inc")
+        self.am_amplitude = CSRStorage(width, reset=0, name="am_amplitude")
+        self.pid_amplitude = CSRStorage(width, reset=0, name="pid_amplitude")
 
         phase = Signal(phase_bits)
+        am_phase = Signal(phase_bits)
         index = Signal(lut_bits)
+        am_index = Signal(lut_bits)
         base = Signal((width, True))
-        product = Signal((width * 2, True))
+        am_base = Signal((width, True))
+        product = Signal((width * 2 + 1, True))
+        am_product = Signal((width * 2 + 1, True))
+        am_scaled = Signal((width, True))
         scaled = Signal((width, True))
+        amplitude_signed = Signal((width + 1, True))
+        am_mod_depth = Signal((width + 1, True))
+        envelope = Signal((width + 1, True))
 
-        self.sync += phase.eq(phase + self.phase_inc.storage)
+        self.sync += [
+            phase.eq(phase + self.phase_inc.storage),
+            am_phase.eq(am_phase + self.am_phase_inc.storage),
+        ]
         self.comb += [
             index.eq(phase[phase_bits - lut_bits :]),
             base.eq(lut[index]),
-            product.eq(base * self.amplitude.storage),
+            am_index.eq(am_phase[phase_bits - lut_bits:]),
+            am_base.eq(lut[am_index]),
+            am_mod_depth.eq(self.am_amplitude.storage + self.pid_amplitude.storage),
+            am_product.eq(am_base * am_mod_depth),
+            am_scaled.eq(am_product >> (width - 1)),
+            amplitude_signed.eq(self.amplitude.storage),
+            envelope.eq(amplitude_signed + am_scaled),
+            product.eq(base * envelope),
             scaled.eq(product >> (width - 1)),
             self.output.eq(scaled),
+
         ]

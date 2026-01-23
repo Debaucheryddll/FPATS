@@ -110,6 +110,8 @@ class Settings:
         self.plot_color_5 = Setting(start=DEFAULT_COLORS[5])
         self.plot_color_6 = Setting(start=DEFAULT_COLORS[6])
         self.plot_color_7 = Setting(start=DEFAULT_COLORS[7])
+        self.show_channel_a = Setting(start=True)
+        self.show_channel_b = Setting(start=True)
 
         # save changed settings to disk
         for _, setting in self:

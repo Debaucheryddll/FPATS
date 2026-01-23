@@ -394,7 +394,8 @@ class PlotWidget(pg.PlotWidget):
                 demodulated_iir_a, self.demodulated_iir_a_history
             )
             if (
-                    demodulated_iir_a_series is not None
+                    self.app.settings.show_channel_a.value
+                    and demodulated_iir_a_series is not None
                     and demodulated_iir_a_series.size > 1
             ):
                 demodulated_scale = V * (1 << FAST_IIR_SHIFT)
@@ -411,7 +412,8 @@ class PlotWidget(pg.PlotWidget):
                 demodulated_iir_b, self.demodulated_iir_b_history
             )
             if (
-                    demodulated_iir_b_series is not None
+                    self.app.settings.show_channel_b.value
+                    and demodulated_iir_b_series is not None
                     and demodulated_iir_b_series.size > 1
             ):
                 demodulated_scale = V * (1 << FAST_IIR_SHIFT)

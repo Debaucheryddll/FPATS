@@ -35,6 +35,8 @@ class ViewPanel(QtWidgets.QWidget):
     displayColorLabel2: QtWidgets.QLabel
     displayColorLabel3: QtWidgets.QLabel
     displayColorLabel4: QtWidgets.QLabel
+    showChannelACheckBox: QtWidgets.QCheckBox
+    showChannelBCheckBox: QtWidgets.QCheckBox
     editColorButton0: QtWidgets.QToolButton
     editColorButton1: QtWidgets.QToolButton
     editColorButton2: QtWidgets.QToolButton
@@ -64,6 +66,8 @@ class ViewPanel(QtWidgets.QWidget):
         self.plotFillOpacitySpinBox.valueChanged.connect(
             self.on_plot_fill_opacity_changed
         )
+        self.showChannelACheckBox.toggled.connect(self.on_show_channel_a_changed)
+        self.showChannelBCheckBox.toggled.connect(self.on_show_channel_b_changed)
 
         for color_idx in range(N_COLORS):
             getattr(self, f"editColorButton{color_idx}").clicked.connect(
@@ -83,7 +87,8 @@ class ViewPanel(QtWidgets.QWidget):
         param2ui(self.app.settings.plot_line_width, self.plotLineWidthSpinBox)
         param2ui(self.app.settings.plot_line_opacity, self.plotLineOpacitySpinBox)
         param2ui(self.app.settings.plot_fill_opacity, self.plotFillOpacitySpinBox)
-
+        param2ui(self.app.settings.show_channel_a, self.showChannelACheckBox)
+        param2ui(self.app.settings.show_channel_b, self.showChannelBCheckBox)
         def preview_colors(*args):
             for color_idx in range(N_COLORS):
                 element = getattr(self, f"displayColorLabel{color_idx}")
@@ -105,6 +110,12 @@ class ViewPanel(QtWidgets.QWidget):
 
     def on_plot_fill_opacity_changed(self):
         self.app.settings.plot_fill_opacity.value = self.plotFillOpacitySpinBox.value()
+
+    def on_show_channel_a_changed(self, value: bool):
+        self.app.settings.show_channel_a.value = value
+
+    def on_show_channel_b_changed(self, value: bool):
+        self.app.settings.show_channel_b.value = value
 
     def export_select_file(self):
         options = QtWidgets.QFileDialog.Options()
