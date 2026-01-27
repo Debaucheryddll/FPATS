@@ -584,6 +584,9 @@ class Parameters:
         self.target_slope_rising = Parameter(start=True)
         """A boolean that inverts the sign of the PID parameters"""
 
+        self.pid_enabled = Parameter(start=True, restorable=True)
+        """Whether the fast PID controller is enabled."""
+
         self.pid_on_slow_enabled = Parameter(start=False, restorable=True)
         """Whether the PID on ANALOG_OUT 0 is enabled."""
 

@@ -88,19 +88,8 @@ class Registers:
             )
         pid_amplitude_override = 0
         if self.parameters.pid_feedback_to_sine_enabled.value:
-            control_signal = None
-            try:
-                raw = self.read_csr("logic_control_signal")
-                if raw is not None:
-                    sign_bit = 1 << 13
-                    control_signal = raw - (1 << 14) if raw & sign_bit else raw
-            except Exception:
-                control_signal = None
-            if control_signal is not None:
-                scale = float(self.parameters.pid_feedback_to_sine_scale.value)
-                pid_amplitude_override = int(
-                    max_(min(8191, abs(control_signal) * scale))
-                )
+            scale = float(self.parameters.pid_feedback_to_sine_scale.value)
+            pid_amplitude_override = int(max_(min(8191, 8191 * scale)))
 
         lock_changed = self.parameters.lock.value != self.control.exposed_is_locked
         self.control.exposed_is_locked = self.parameters.lock.value
@@ -132,6 +121,7 @@ class Registers:
             ),
             # logic_dual_channel=int(self.parameters.dual_channel.value),
             logic_pid_only_mode=int(self.parameters.pid_only_mode.value),
+            logic_pid_enable=int(self.parameters.pid_enabled.value),
             logic_chain_a_factor=factor_a,
             logic_chain_b_factor=factor_b,
             logic_chain_a_offset=twos_complement(

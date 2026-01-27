@@ -38,15 +38,17 @@ class PID(Module, AutoCSR):
 
     def calculate_error_signal(self):
         self.setpoint = CSRStorage(self.width,name="setpoint")
+        self.enable = CSRStorage(1, reset=1, name="enable")
         setpoint_signed = Signal((self.width, True))
         self.comb += [setpoint_signed.eq(self.setpoint.storage)]
 
         self.error = Signal((self.width + 1, True))
 
         self.comb += [
+            self.running.eq(self.enable.storage),
             If(self.running, self.error.eq(self.input - self.setpoint.storage)).Else(
                 self.error.eq(0)
-            )
+            ),
         ]
 
     def calculate_p(self):

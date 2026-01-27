@@ -242,7 +242,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
                     )
                 else:
                     self.parameters.acquisition_raw_data.value = new_data
-            sleep(0.05)
+            sleep(0.01)
 
     def _build_kalman_params(self) -> dict:
         """Assemble Kalman filter parameters from ``self.parameters``."""
@@ -282,7 +282,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
         try:
             kalman_params = self._build_kalman_params()
-            loop_interval = kalman_params.get("dt", 0.001) or 0.001
+            loop_interval = kalman_params.get("dt", 0.01) or 0.01
 
             self.tracker_service = TPFCTrackerService(
                 device=self.registers,

@@ -236,9 +236,9 @@ class LinienModule(Module, AutoCSR):
             self.scan_tracker.power_threshold_acquire.eq(self.kalman_targets.power_threshold_target_cmd.storage),
         ]
 
-        self.comb += self.logic.pid.running.eq(1)
         # FAST PID ---------------------------------------------------------------------
         pid_out = Signal((width, True))
+        control_signal_abs = Signal(width)
         self.comb += [
             If(
                 self.logic.pid_only_mode.storage,
@@ -249,6 +249,13 @@ class LinienModule(Module, AutoCSR):
                 self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
             ),
             pid_out.eq(self.logic.pid.pid_out >> s),
+        ]
+        self.comb += [
+            If(
+                self.logic.control_signal < 0,
+                control_signal_abs.eq(-self.logic.control_signal),
+            ).Else(control_signal_abs.eq(self.logic.control_signal)),
+            self.sine_source.pid_amplitude_input.eq(control_signal_abs),
         ]
 
         # connect other analog outputs

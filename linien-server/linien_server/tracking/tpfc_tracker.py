@@ -18,7 +18,7 @@ class TPFCTrackerService(threading.Thread):
     """
     独立的 TPFC 跟踪服务，周期性执行卡尔曼滤波并更新 PID 目标。
     """
-    def __init__(self, device, kalman_params, loop_interval_s=0.1):
+    def __init__(self, device, kalman_params, loop_interval_s=0.02):
         # loop_interval_s 决定了 Kalman Filter 的更新频率（例如 10 Hz）
         super().__init__()
         self.device = device

@@ -17,7 +17,7 @@
 
 from math import pi, sin
 
-from migen import Array, Constant, Module, Signal
+from migen import Array, Constant, Module, Signal,If
 from misoc.interconnect.csr import AutoCSR, CSRStorage
 
 class SineSource(Module, AutoCSR):
@@ -51,6 +51,8 @@ class SineSource(Module, AutoCSR):
         self.am_phase_inc = CSRStorage(phase_bits, reset=0, name="am_phase_inc")
         self.am_amplitude = CSRStorage(width, reset=0, name="am_amplitude")
         self.pid_amplitude = CSRStorage(width, reset=0, name="pid_amplitude")
+        self.pid_amplitude_input = Signal((width, True))
+
 
         phase = Signal(phase_bits)
         am_phase = Signal(phase_bits)
@@ -60,9 +62,12 @@ class SineSource(Module, AutoCSR):
         am_base = Signal((width, True))
         product = Signal((width * 2 + 1, True))
         am_product = Signal((width * 2 + 1, True))
+        pid_product = Signal((width * 2, True))
+        pid_scaled = Signal((width, True))
         am_scaled = Signal((width, True))
         scaled = Signal((width, True))
         amplitude_signed = Signal((width + 1, True))
+        am_mod_depth_raw = Signal((width + 2, True))
         am_mod_depth = Signal((width + 1, True))
         envelope = Signal((width + 1, True))
 
@@ -75,7 +80,13 @@ class SineSource(Module, AutoCSR):
             base.eq(lut[index]),
             am_index.eq(am_phase[phase_bits - lut_bits:]),
             am_base.eq(lut[am_index]),
-            am_mod_depth.eq(self.am_amplitude.storage + self.pid_amplitude.storage),
+            pid_product.eq(self.pid_amplitude_input * self.pid_amplitude.storage),
+            pid_scaled.eq(pid_product >> (width - 1)),
+            am_mod_depth_raw.eq(self.am_amplitude.storage - pid_scaled),
+            If(
+                am_mod_depth_raw < 0,
+                am_mod_depth.eq(0),
+            ).Else(am_mod_depth.eq(am_mod_depth_raw)),
             am_product.eq(am_base * am_mod_depth),
             am_scaled.eq(am_product >> (width - 1)),
             amplitude_signed.eq(self.amplitude.storage),
