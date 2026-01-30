@@ -51,6 +51,9 @@ from linien_server.tracking.tpfc_tracker import TPFCTrackerService
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+DEFAULT_DATA_PUSH_SLEEP = 0.01
+RAW_DATA_PUSH_SLEEP = 0.001
+
 
 class BaseService(rpyc.Service):
     """
@@ -242,7 +245,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
                     )
                 else:
                     self.parameters.acquisition_raw_data.value = new_data
-            sleep(0.01)
+            sleep(0.001)
 
     def _build_kalman_params(self) -> dict:
         """Assemble Kalman filter parameters from ``self.parameters``."""
@@ -413,7 +416,7 @@ class FakeRedPitayaControlService(BaseService, LinienControlService):
                     "error_signal_2_quadrature": gen(),
                 }
             )
-            sleep(0.1)
+            sleep(0.001)
 
     def exposed_write_registers(self):
         pass

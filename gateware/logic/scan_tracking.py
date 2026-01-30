@@ -66,14 +66,19 @@ class ScanTrackingController(Module, AutoCSR):
         sweep_center = Signal((width, True))   # 扫描中心（组合逻辑）
         sweep_span = Signal((width, True))     # 扫描范围（组合逻辑，有符号）
 
-        # 常量转换
-        FULL_RANGE_FS = int(full_range_ns * 1e6)
+        # # 常量转换
+        # FULL_RANGE_FS = int(full_range_ns * 1e6)
+        # 常量使用原始输入值（避免额外缩放导致数值过大）
+        FULL_RANGE_FS = int(full_range_ns)
         LOCK_UNCERTAINTY_FS = int(lock_uncertainty_fs)
-        NARROW_SEARCH_TIMEOUT_CYCLES = int(narrow_search_timeout_s * clock_freq)
+        # NARROW_SEARCH_TIMEOUT_CYCLES = int(narrow_search_timeout_s * clock_freq)
+        NARROW_SEARCH_TIMEOUT_CYCLES = int(narrow_search_timeout_s)
         self.narrow_search_timeout_counter = Signal(max=NARROW_SEARCH_TIMEOUT_CYCLES + 1)
 
-        # 斜坡步长计算（确保至少为1）
-        step_per_cycle = max(1, int(slew_rate_ns_per_sec * 1e6 / clock_freq))
+        # # 斜坡步长计算（确保至少为1）
+        # step_per_cycle = max(1, int(slew_rate_ns_per_sec * 1e6 / clock_freq))
+        # 斜坡步长计算（确保至少为1，直接使用原始斜率参数）
+        step_per_cycle = max(1, int(slew_rate_ns_per_sec))
 
         # 状态机 (FSM)
         fsm = FSM(reset_state="BROAD_SEARCH")
@@ -106,7 +111,12 @@ class ScanTrackingController(Module, AutoCSR):
         fsm.act("LOCKED",
                 self.fsm_state.eq(2),
                 sweep_center.eq(0),
-                sweep_span.eq(0)
+                sweep_span.eq(0),
+                If(self.power_level <= self.power_threshold_acquire,
+                   NextState("BROAD_SEARCH")
+                   ).Elif(self.kalman_est_uncertainty >= LOCK_UNCERTAINTY_FS,
+                          NextState("NARROW_SEARCH")
+                          )
                 )
 
         # 三角波斜坡发生器逻辑（同步逻辑）

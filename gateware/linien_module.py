@@ -238,7 +238,7 @@ class LinienModule(Module, AutoCSR):
 
         # FAST PID ---------------------------------------------------------------------
         pid_out = Signal((width, True))
-        control_signal_abs = Signal(width)
+        control_signal_signed = Signal((width, True))
         self.comb += [
             If(
                 self.logic.pid_only_mode.storage,
@@ -251,11 +251,8 @@ class LinienModule(Module, AutoCSR):
             pid_out.eq(self.logic.pid.pid_out >> s),
         ]
         self.comb += [
-            If(
-                self.logic.control_signal < 0,
-                control_signal_abs.eq(-self.logic.control_signal),
-            ).Else(control_signal_abs.eq(self.logic.control_signal)),
-            self.sine_source.pid_amplitude_input.eq(control_signal_abs),
+            control_signal_signed.eq(self.logic.control_signal),
+            self.sine_source.pid_amplitude_input.eq(control_signal_signed),
         ]
 
         # connect other analog outputs

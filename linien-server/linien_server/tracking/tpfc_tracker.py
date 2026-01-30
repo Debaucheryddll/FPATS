@@ -33,13 +33,6 @@ class TPFCTrackerService(threading.Thread):
         # --- III. 卡尔曼滤波器实例化 ---
         self.kf = KalmanFilterTimeFrequency(
             **self.params             # 使用参数传递来配置
-            # dt=self.loop_interval,  # 跟踪服务的循环间隔 (dt)
-            # process_noise_std_t=1e-18,  # 时间状态的过程噪声标准差 (s)
-            # process_noise_std_f=1e-12,  # 频率状态的过程噪声标准差 (Hz)
-            # process_noise_std_drift=1e-6,  # 漂移率状态的过程噪声标准差 (Hz/s)
-            # base_measurement_noise_std=30e-15,  # 高功率时的基准测量噪声 (s)
-            # fade_measurement_noise_std=5e-12,  # 衰落时的测量噪声 (s)
-            # power_threshold=0.5,  # 功率衰落阈值 (相对值)
         )
 
         # --- IV. 定点数转换参数 (需与 FPGA 位宽一致) ---

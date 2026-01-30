@@ -156,6 +156,10 @@ class Registers:
                 else 0
             ),
             fast_a_demod_multiplier=self.parameters.demodulation_multiplier_a.value,
+            # fast_a_dfl_enable=int(self.parameters.dfl_enable_a.value),
+            # fast_a_dfl_gain=self.parameters.dfl_gain_a.value,
+            # fast_a_dfl_phase_to_freq_shift=self.parameters.dfl_phase_to_freq_shift_a.value,
+            # fast_a_dfl_smooth_shift=self.parameters.dfl_smooth_shift_a.value,
             fast_a_dx_sel=csrmap.signals.index("zero"),
             fast_a_y_tap=2,
             fast_a_dy_sel=csrmap.signals.index("zero"),
@@ -168,6 +172,10 @@ class Registers:
                 else 0
             ),
             fast_b_demod_multiplier=self.parameters.demodulation_multiplier_b.value,
+            # fast_b_dfl_enable=int(self.parameters.dfl_enable_b.value),
+            # fast_b_dfl_gain=self.parameters.dfl_gain_b.value,
+            # fast_b_dfl_phase_to_freq_shift=self.parameters.dfl_phase_to_freq_shift_b.value,
+            # fast_b_dfl_smooth_shift=self.parameters.dfl_smooth_shift_b.value,
             fast_b_dx_sel=csrmap.signals.index("zero"),
             fast_b_y_tap=2,
             fast_b_dy_sel=csrmap.signals.index("zero"),

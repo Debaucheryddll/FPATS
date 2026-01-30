@@ -160,7 +160,7 @@ class AcquisitionService(Service):
 
 
             if pause_event.is_set():
-                sleep(0.05)
+                sleep(0.001)
                 continue
 
             if self.read_from_csr:
@@ -170,7 +170,7 @@ class AcquisitionService(Service):
                 # check that scope is triggered; copied from
                 # https://github.com/RedPitaya/RedPitaya/blob/14cca62dd58f29826ee89f4b28901602f5cdb1d8/api/src/oscilloscope.c#L115  # noqa: E501
                 if not (self.red_pitaya.scope.read(0x1 << 2) & 0x4) <= 0:
-                    sleep(0.05)
+                    sleep(0.001)
                     continue
 
                 if self.raw_acquisition_enabled:
@@ -398,7 +398,7 @@ class AcquisitionService(Service):
 
     def exposed_continue_acquisition(self, uuid: Optional[float]) -> None:
         self.program_acquisition_and_rearm()
-        sleep(0.01)
+        sleep(0.001)
         # resetting data here is not strictly required but we want to be on the safe
         # side
         self.data_hash = None

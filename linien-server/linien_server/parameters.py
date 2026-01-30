@@ -446,6 +446,41 @@ class Parameters:
         This parameter allows for multi-f (e.g. 3f or 5f) demodulation. Default value is
         1, indicating that 1f demodulation is used.
         """
+        self.dfl_enable_a = Parameter(start=False, restorable=True, loggable=True)
+        """Enable the demodulation frequency lock loop for channel A."""
+
+        self.dfl_enable_b = Parameter(start=False, restorable=True, loggable=True)
+        """Enable the demodulation frequency lock loop for channel B."""
+
+        self.dfl_gain_a = Parameter(
+            min_=0, max_=15, start=0, restorable=True, loggable=True
+        )
+        """Gain applied to the DFL phase error for channel A."""
+
+        self.dfl_gain_b = Parameter(
+            min_=0, max_=15, start=0, restorable=True, loggable=True
+        )
+        """Gain applied to the DFL phase error for channel B."""
+
+        self.dfl_phase_to_freq_shift_a = Parameter(
+            min_=0, max_=31, start=4, restorable=True, loggable=True
+        )
+        """Shift converting phase error to frequency correction for channel A."""
+
+        self.dfl_phase_to_freq_shift_b = Parameter(
+            min_=0, max_=31, start=4, restorable=True, loggable=True
+        )
+        """Shift converting phase error to frequency correction for channel B."""
+
+        self.dfl_smooth_shift_a = Parameter(
+            min_=0, max_=15, start=4, restorable=True, loggable=True
+        )
+        """Smoothing shift for the DFL correction filter on channel A."""
+
+        self.dfl_smooth_shift_b = Parameter(
+            min_=0, max_=15, start=4, restorable=True, loggable=True
+        )
+        """Smoothing shift for the DFL correction filter on channel B."""
 
         self.offset_a = Parameter(
             min_=-8191, max_=8191, start=0, restorable=True, loggable=True
