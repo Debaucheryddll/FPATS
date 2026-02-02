@@ -56,12 +56,15 @@ class PythonCSR:
             return self.constants[name]
 
         map, addr, nr, wr = self.map[name]
-        v = 0
         b = (nr + 8 - 1) // 8
-        for i in range(b):
-            v |= self.get_one(self.offset + (map << 11) + ((addr + i) << 2)) << 8 * (
-                b - i - 1
-            )
+        base_addr = self.offset + (map << 11) + (addr << 2)
+        if b == 1:
+            return self.get_one(base_addr)
+
+        values = self.rp.reads(base_addr, b)
+        v = 0
+        for i, word in enumerate(values):
+            v |= (int(word) & 0xFF) << (8 * (b - i - 1))
         return v
 
     def set_iir(self, prefix: str, b: list[float], a: list[float]) -> None:

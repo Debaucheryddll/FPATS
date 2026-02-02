@@ -137,6 +137,7 @@ class AcquisitionService(Service):
         self.stop_event = Event()
         self.pause_event = Event()
         self.skip_next_data_event = Event()
+        self.program_acquisition_and_rearm()
 
         self.thread = Thread(
             target=self._acquisition_loop,
@@ -202,8 +203,6 @@ class AcquisitionService(Service):
                     self.data = pickle.dumps(data)
                 self.data_was_raw = is_raw
                 self.data_hash = random()
-
-            self.program_acquisition_and_rearm()
 
     def read_data(self) -> dict[str, int | float | None]:
         error_signal = _get_signed_csr(self.csr, "err_calc_out_e")
@@ -336,15 +335,12 @@ class AcquisitionService(Service):
         # 配置: data_decimation被固定为1。
         # 代表不进行任何抽取，即以FPGA能达到的最高采样率进行数据采集。这在锁定状态下非常有用，因为它提供了最高的时间分辨率，让您可以精细地观察和分析反馈环路的动态性能和高频噪声。
         """Program the acquisition settings and rearm acquisition."""
-        if not self.locked:
+        if self.raw_acquisition_enabled:
             self.red_pitaya.scope.data_decimation = 1
-
-        elif self.raw_acquisition_enabled:
-            self.red_pitaya.scope.data_decimation = 1
-            self.red_pitaya.scope.trigger_delay = trigger_delay
-
+            self.red_pitaya.scope.trigger_delay = int(trigger_delay / DECIMATION) - 1
         else:
-            self.red_pitaya.scope.data_decimation = 1
+            target_decimation = 1
+            self.red_pitaya.scope.data_decimation = target_decimation
             self.red_pitaya.scope.trigger_delay = int(trigger_delay / DECIMATION) - 1
 
         self.red_pitaya.scope.rearm(trigger_source=TriggerSource.ext_posedge)
@@ -365,9 +361,6 @@ class AcquisitionService(Service):
 
     def exposed_set_sweep_speed(self, speed):
         self.sweep_speed = speed
-        # if a slow acqisition is currently running and we change the sweep speed we
-        # don't want to wait until it finishes
-        self.program_acquisition_and_rearm()
 
     def exposed_set_lock_status(self, locked: bool) -> None:
         self.locked = locked
@@ -420,8 +413,6 @@ class AcquisitionService(Service):
         self.data = None
 
     def exposed_continue_acquisition(self, uuid: Optional[float]) -> None:
-        self.program_acquisition_and_rearm()
-        sleep(0.001)
         # resetting data here is not strictly required but we want to be on the safe
         # side
         self.data_hash = None
