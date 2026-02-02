@@ -48,7 +48,6 @@ FAST_IIR_SHIFT = 11
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000
 
-
 class TimeXAxis(pg.AxisItem):
     """Plots x axis as time in seconds instead of point number."""
 
@@ -445,7 +444,6 @@ class PlotWidget(pg.PlotWidget):
                 self.last_plot_data.append(control_series)
             else:
                 self.controlSignal.setVisible(False)
-
             if power_signal_a is not None or power_signal_b is not None:
                 self.signal_power1.emit(_emit_power(power_signal_a))
                 self.signal_power2.emit(_emit_power(power_signal_b))
@@ -455,9 +453,6 @@ class PlotWidget(pg.PlotWidget):
             else:
                 self.signal_power1.emit(INVALID_POWER)
                 self.signal_power2.emit(INVALID_POWER)
-
-
-        self.plot_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
 
     # called when widget is resized

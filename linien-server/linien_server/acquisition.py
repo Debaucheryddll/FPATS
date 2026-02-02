@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Linien.  If not, see <http://www.gnu.org/licenses/>.
 
+import csv
 import logging
 import pickle
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from random import random
 from threading import Event, Thread
@@ -120,6 +122,7 @@ class AcquisitionService(Service):
         self.data_was_raw = False
         self.data_hash: float | None = None
         self.data_uuid: float | None = None
+        self.power_samples: list[tuple[str, float, float, float]] = []
 
         self.locked = False
         self.exposed_set_sweep_speed(9)
@@ -255,7 +258,7 @@ class AcquisitionService(Service):
         pid_ki = _get_signed_csr(self.csr, "logic_pid_ki")
         pid_kd = _get_signed_csr(self.csr, "logic_pid_kd")
 
-        return {
+        data = {
             "error_signal": error_signal,
             "demodulated_iir_a": demodulated_iir_a,
             "demodulated_iir_b": demodulated_iir_b,
@@ -276,6 +279,12 @@ class AcquisitionService(Service):
             "pid_ki": pid_ki,
             "pid_kd": pid_kd,
         }
+        timestamp = datetime.utcnow().isoformat()
+        self.power_samples.append(
+            (timestamp, power_signal, power_signal_a, power_signal_b)
+        )
+        return data
+
 
     def read_data_raw(
         self, offset: int, addr: int, data_length: int
@@ -328,13 +337,10 @@ class AcquisitionService(Service):
         # 代表不进行任何抽取，即以FPGA能达到的最高采样率进行数据采集。这在锁定状态下非常有用，因为它提供了最高的时间分辨率，让您可以精细地观察和分析反馈环路的动态性能和高频噪声。
         """Program the acquisition settings and rearm acquisition."""
         if not self.locked:
-            target_decimation = 2 ** (self.sweep_speed + int(np.log2(DECIMATION)))
-
-            self.red_pitaya.scope.data_decimation = target_decimation
-            self.red_pitaya.scope.trigger_delay = int(trigger_delay / DECIMATION) - 1
+            self.red_pitaya.scope.data_decimation = 1
 
         elif self.raw_acquisition_enabled:
-            self.red_pitaya.scope.data_decimation = 2**self.raw_acquisition_decimation
+            self.red_pitaya.scope.data_decimation = 1
             self.red_pitaya.scope.trigger_delay = trigger_delay
 
         else:
@@ -389,6 +395,23 @@ class AcquisitionService(Service):
     def exposed_stop_acquisition(self) -> None:
         self.stop_event.set()
         self.thread.join()
+        if self.power_samples:
+            output_dir = Path("/usr/share/plot_data")
+            output_dir.mkdir(parents=True, exist_ok=True)
+            filename = f"{datetime.utcnow():%Y%m%d_%H%M%S_%f}.csv"
+            output_path = output_dir / filename
+            with output_path.open("w", newline="") as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(
+                    [
+                        "timestamp_utc",
+                        "power_signal",
+                        "power_signal_a",
+                        "power_signal_b",
+                    ]
+                )
+                writer.writerows(self.power_samples)
+            self.power_samples.clear()
         start_nginx()
 
     def exposed_pause_acquisition(self):
@@ -411,7 +434,6 @@ class AcquisitionService(Service):
             self.skip_next_data_event.clear()
         else:
             self.skip_next_data_event.set()
-
 
 def flash_fpga():
     filepath = Path(__file__).resolve().parent / "gateware.bin"

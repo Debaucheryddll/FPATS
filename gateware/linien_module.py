@@ -159,7 +159,11 @@ class LinienModule(Module, AutoCSR):
         self.submodules.kalman_targets = KalmanTargets(width=signal_width)
         self.submodules.scan_tracker = ScanTrackingController(width=signal_width)
         self.submodules.scopegen = ScopeGen(signal_width)
-        self.submodules.sine_source = SineSource(width=width, amplitude_scale=0.5)
+        self.submodules.sine_source = SineSource(
+            width=width,
+            amplitude_scale=0.5,
+            lut_bits=12,
+        )
 
         self.state_names, self.signal_names = cross_connect(
             self.gpio_n,
