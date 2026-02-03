@@ -137,6 +137,8 @@ class AcquisitionService(Service):
         self.stop_event = Event()
         self.pause_event = Event()
         self.skip_next_data_event = Event()
+        self.slow_data_cache: dict[str, int | float | None] = {}
+        self.slow_data_dirty = True
         self.program_acquisition_and_rearm()
 
         self.thread = Thread(
@@ -154,13 +156,19 @@ class AcquisitionService(Service):
         self, stop_event: Event, pause_event: Event, skip_next_data_event: Event
     ) -> None:
         while not stop_event.is_set():
+            had_csr_updates = False
             while self.csr_queue:
                 key, value = self.csr_queue.pop(0)
                 self.csr.set(key, value)
+                had_csr_updates = True
 
             while self.csr_iir_queue:
                 name, b, a = self.csr_iir_queue.pop(0)
                 self.csr.set_iir(name, b, a)
+                had_csr_updates = True
+
+            if had_csr_updates:
+                self.slow_data_dirty = True
 
 
             if pause_event.is_set():
@@ -204,38 +212,8 @@ class AcquisitionService(Service):
                 self.data_was_raw = is_raw
                 self.data_hash = random()
 
-    def read_data(self) -> dict[str, int | float | None]:
-        error_signal = _get_signed_csr(self.csr, "err_calc_out_e")
-        if error_signal is None:
-            raise KeyError("err_calc_out_e")
-        error_signal = _clamp_signed(error_signal, 1 << POWER_FRAC_BITS)
-        demodulated_iir_a = _get_signed_csr(self.csr, "fast_a_out_i")
-        demodulated_iir_b = _get_signed_csr(self.csr, "fast_b_out_i")
-        power_signal_raw = int(self.csr.get("err_calc_power_signal_out"))
-        power_signal = FixedPointConverter.fixed_to_unsigned_float(
-            power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
-        )
-        power_a_raw, power_b_raw = _split_power_by_error_raw(
-            power_signal_raw, error_signal
-        )
-        power_signal_a, power_signal_b = _split_power_by_error(
-            power_signal_raw, error_signal
-        )
-        if (
-                demodulated_iir_a is not None
-                and power_a_raw <= DEMOD_IIR_NOISE_GATE_THRESHOLD
-        ):
-            demodulated_iir_a = 0
-        if (
-                demodulated_iir_b is not None
-                and power_b_raw <= DEMOD_IIR_NOISE_GATE_THRESHOLD
-        ):
-            demodulated_iir_b = 0
-        control_signal = _get_signed_csr(self.csr, "logic_control_signal")
-        if control_signal is None:
-            raise KeyError("logic_control_signal")
+    def _read_slow_data(self, power_a_raw: int, power_b_raw: int) -> dict[str, int | float | None]:
         scan_tracker_state = int(self.csr.get("scan_tracker_fsm_state"))
-        scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
         scan_tracker_power_level = FixedPointConverter.fixed_to_unsigned_float(
             int(self.csr.get("scan_tracker_power_level")),
             csrmap.csr["scan_tracker_power_level"][2],
@@ -246,9 +224,6 @@ class AcquisitionService(Service):
             csrmap.csr["scan_tracker_power_threshold_acquire"][2],
             POWER_FRAC_BITS,
         )
-        kalman_x = _get_signed_csr(self.csr, "kalman_targets_x_target_cmd")
-        kalman_f = _get_signed_csr(self.csr, "kalman_targets_f_target_cmd")
-        kalman_t = _get_signed_csr(self.csr, "kalman_targets_t_target_cmd")
         kalman_power_threshold = int(
             self.csr.get("kalman_targets_power_threshold_target_cmd")
         )
@@ -256,34 +231,59 @@ class AcquisitionService(Service):
         pid_kp = _get_signed_csr(self.csr, "logic_pid_kp")
         pid_ki = _get_signed_csr(self.csr, "logic_pid_ki")
         pid_kd = _get_signed_csr(self.csr, "logic_pid_kd")
-
-        data = {
-            "error_signal": error_signal,
-            "demodulated_iir_a": demodulated_iir_a,
-            "demodulated_iir_b": demodulated_iir_b,
-            "power_signal": power_signal,
-            "power_signal_a": power_signal_a,
-            "power_signal_b": power_signal_b,
-            "control_signal": control_signal,
+        return {
             "scan_tracker_state": scan_tracker_state,
-            "scan_tracker_time_command_out": scan_tracker_time,
             "scan_tracker_power_level": scan_tracker_power_level,
             "scan_tracker_power_threshold_acquire": scan_tracker_power_threshold,
-            "kalman_x_target": kalman_x,
-            "kalman_f_target": kalman_f,
-            "kalman_t_target": kalman_t,
             "kalman_power_threshold": kalman_power_threshold,
             "pid_setpoint": pid_setpoint,
             "pid_kp": pid_kp,
             "pid_ki": pid_ki,
             "pid_kd": pid_kd,
         }
+
+    def read_data(self) -> dict[str, int | float | None]:
+        error_signal = _get_signed_csr(self.csr, "err_calc_out_e")
+        if error_signal is None:
+            raise KeyError("err_calc_out_e")
+        error_signal = _clamp_signed(error_signal, 1 << POWER_FRAC_BITS)
+        power_signal_raw = int(self.csr.get("err_calc_power_signal_out"))
+        power_signal = FixedPointConverter.fixed_to_unsigned_float(
+            power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
+        )
+        power_a_raw, power_b_raw = _split_power_by_error_raw(
+            power_signal_raw, error_signal
+        )
+        power_signal_a, power_signal_b = _split_power_by_error(
+            power_signal_raw, error_signal
+        )
+        control_signal = _get_signed_csr(self.csr, "logic_control_signal")
+        if control_signal is None:
+            raise KeyError("logic_control_signal")
+        scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
+        kalman_x = _get_signed_csr(self.csr, "kalman_targets_x_target_cmd")
+        kalman_f = _get_signed_csr(self.csr, "kalman_targets_f_target_cmd")
+        kalman_t = _get_signed_csr(self.csr, "kalman_targets_t_target_cmd")
+        if self.slow_data_dirty or not self.slow_data_cache:
+            self.slow_data_cache = self._read_slow_data(power_a_raw, power_b_raw)
+            self.slow_data_dirty = False
+        data = {
+            "error_signal": error_signal,
+            "power_signal": power_signal,
+            "power_signal_a": power_signal_a,
+            "power_signal_b": power_signal_b,
+            "control_signal": control_signal,
+            "scan_tracker_time_command_out": scan_tracker_time,
+            "kalman_x_target": kalman_x,
+            "kalman_f_target": kalman_f,
+            "kalman_t_target": kalman_t,
+        }
+        data.update(self.slow_data_cache)
         timestamp = datetime.utcnow().isoformat()
         self.power_samples.append(
             (timestamp, power_signal, power_signal_a, power_signal_b)
         )
         return data
-
 
     def read_data_raw(
         self, offset: int, addr: int, data_length: int
@@ -381,9 +381,11 @@ class AcquisitionService(Service):
 
     def exposed_set_csr(self, key: str, value: int) -> None:
         self.csr_queue.append((key, value))
+        self.slow_data_dirty = True
 
     def exposed_set_iir_csr(self, name: str, b: list[float], a: list[float]) -> None:
         self.csr_iir_queue.append((name, b, a))
+        self.slow_data_dirty = True
 
     def exposed_stop_acquisition(self) -> None:
         self.stop_event.set()

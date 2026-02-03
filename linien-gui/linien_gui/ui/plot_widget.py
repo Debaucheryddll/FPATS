@@ -180,8 +180,8 @@ class PlotWidget(pg.PlotWidget):
 
         self._should_reposition_reset_view_button = False
         self.error_signal_history = deque(maxlen=N_POINTS)
-        self.demodulated_iir_a_history = deque(maxlen=N_POINTS)
-        self.demodulated_iir_b_history = deque(maxlen=N_POINTS)
+        self.power_a_history = deque(maxlen=N_POINTS)
+        self.power_b_history = deque(maxlen=N_POINTS)
 
     def on_connection_established(self):
         self.parameters = self.app.parameters
@@ -298,8 +298,6 @@ class PlotWidget(pg.PlotWidget):
             error_signal_quadrature = to_plot.get("error_signal_quadrature")
             error_signal_2 = to_plot.get("error_signal_2")
             error_signal_2_quadrature = to_plot.get("error_signal_2_quadrature")
-            demodulated_iir_a = to_plot.get("demodulated_iir_a")
-            demodulated_iir_b = to_plot.get("demodulated_iir_b")
             power_signal = to_plot.get("power_signal")
             power_signal_a = to_plot.get("power_signal_a")
             power_signal_b = to_plot.get("power_signal_b")
@@ -389,39 +387,39 @@ class PlotWidget(pg.PlotWidget):
                 self.last_plot_data.append(secondary_series)
             else:
                 self.errorSignal2.setVisible(False)
-            demodulated_iir_a_series = _series_or_history(
-                demodulated_iir_a, self.demodulated_iir_a_history
+            power_a_series = _series_or_history(
+                power_signal_a, self.power_a_history
             )
             if (
                     self.app.settings.show_channel_a.value
-                    and demodulated_iir_a_series is not None
-                    and demodulated_iir_a_series.size > 1
+                    and power_a_series is not None
+                    and power_a_series.size > 1
             ):
-                demodulated_scale = V * (1 << FAST_IIR_SHIFT)
+                power_scale = (1 << FAST_IIR_SHIFT)
                 self.demodulatedIirSignalA.setVisible(True)
                 self.demodulatedIirSignalA.setData(
-                    list(range(len(demodulated_iir_a_series))),
-                    demodulated_iir_a_series / demodulated_scale,
+                    list(range(len(power_a_series))),
+                    power_a_series / power_scale,
                 )
-                self.last_plot_data.append(demodulated_iir_a_series)
+                self.last_plot_data.append(power_a_series)
             else:
                 self.demodulatedIirSignalA.setVisible(False)
 
-            demodulated_iir_b_series = _series_or_history(
-                demodulated_iir_b, self.demodulated_iir_b_history
+            power_b_series = _series_or_history(
+                power_signal_b, self.power_b_history
             )
             if (
                     self.app.settings.show_channel_b.value
-                    and demodulated_iir_b_series is not None
-                    and demodulated_iir_b_series.size > 1
+                    and power_b_series is not None
+                    and power_b_series.size > 1
             ):
-                demodulated_scale = V * (1 << FAST_IIR_SHIFT)
+                power_scale = (1 << FAST_IIR_SHIFT)
                 self.demodulatedIirSignalB.setVisible(True)
                 self.demodulatedIirSignalB.setData(
-                    list(range(len(demodulated_iir_b_series))),
-                    demodulated_iir_b_series / demodulated_scale,
+                    list(range(len(power_b_series))),
+                    power_b_series / power_scale,
                 )
-                self.last_plot_data.append(demodulated_iir_b_series)
+                self.last_plot_data.append(power_b_series)
             else:
                 self.demodulatedIirSignalB.setVisible(False)
 
