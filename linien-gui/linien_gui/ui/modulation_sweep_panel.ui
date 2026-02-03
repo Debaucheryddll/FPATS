@@ -162,9 +162,12 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <widget class="CustomDoubleSpinBoxNoSign" name="sineSourceAmAmplitudeSpinBox">
+        <widget class="CustomDoubleSpinBox" name="sineSourceAmAmplitudeSpinBox">
           <property name="decimals">
            <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>-2.000000000000000</double>
           </property>
           <property name="maximum">
            <double>2.000000000000000</double>
@@ -389,6 +392,11 @@
  <customwidgets>
   <customwidget>
    <class>CustomDoubleSpinBoxNoSign</class>
+   <extends>QDoubleSpinBox</extends>
+   <header location="global">spin_box.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header location="global">spin_box.h</header>
   </customwidget>

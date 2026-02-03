@@ -17,7 +17,7 @@
 
 from linien_common.common import MHz, Vpp
 from linien_gui.config import UI_PATH
-from linien_gui.ui.spin_box import CustomDoubleSpinBoxNoSign
+from linien_gui.ui.spin_box import CustomDoubleSpinBox, CustomDoubleSpinBoxNoSign
 from linien_gui.utils import get_linien_app_instance, param2ui
 from PyQt5 import QtWidgets, uic
 
@@ -32,7 +32,7 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
     sineSourceFrequencySpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmFrequencySpinBox: CustomDoubleSpinBoxNoSign
-    sineSourceAmAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
+    sineSourceAmAmplitudeSpinBox: CustomDoubleSpinBox
     spectroscopyTabs: QtWidgets.QTabWidget
     spectroscopy_channel_1_page: QtWidgets.QWidget
     spectroscopy_channel_2_page: QtWidgets.QWidget

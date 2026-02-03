@@ -375,15 +375,16 @@ class Parameters:
         """
 
         self.sine_source_am_amplitude = Parameter(
-            min_=0,
-            max_=(1 << 14) - 1,
+            min_=-(1 << 13),
+            max_=(1 << 13) - 1,
             start=0,
             restorable=True,
             loggable=True,
         )
         """
         AM amplitude of the sine source in internal units. Use Vpp for conversion to
-        volts peak-peak, e.g: `parameters.sine_source_am_amplitude.value = 0.2 * Vpp`
+       volts peak-peak, e.g: `parameters.sine_source_am_amplitude.value = 0.2 * Vpp`.
+        Values between -2 * Vpp and 2 * Vpp are allowed.
         """
 
         self.pid_feedback_to_sine_enabled = Parameter(start=False, restorable=True)

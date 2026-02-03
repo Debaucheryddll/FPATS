@@ -29,7 +29,7 @@ logger.setLevel(logging.DEBUG)
 UI_PATH = Path(__file__).parents[0].resolve() / "ui"
 SETTINGS_STORE_FILENAME = "settings.json"
 # don't plot more often than once per `DEFAULT_PLOT_RATE_LIMIT` seconds
-DEFAULT_PLOT_RATE_LIMIT = 0.001
+DEFAULT_PLOT_RATE_LIMIT = 0.005
 
 DEFAULT_COLORS = [
     (214, 39, 40, 200),  # 0: red
