@@ -141,7 +141,7 @@ class Parameters:
               dual channel mode is not enabled.
           - `power_signal`:
               Power signal derived from the error-signal calculator.
-           - `power_signal_a` and `power_signal_b`:
+          - `power_signal_a` and `power_signal_b`:
               Power estimates for fast channel A and B derived from the error signal
               and total power.
           - `control_signal`:
@@ -387,6 +387,27 @@ class Parameters:
         Values between -2 * Vpp and 2 * Vpp are allowed.
         """
 
+        self.sine_source_fm_frequency = Parameter(
+            min_=0, max_=0xFFFFFFFF, start=0, restorable=True, loggable=True
+        )
+        """
+        FM frequency of the sine source in internal units. The GUI exposes this value
+        in Hz for low-frequency FM configuration.
+        """
+
+        self.sine_source_fm_amplitude = Parameter(
+            min_=-(1 << 31),
+            max_=(1 << 31) - 1,
+            start=0,
+            restorable=True,
+            loggable=True,
+        )
+        """
+        FM amplitude of the sine source in internal units. Use MHz for conversion to
+        Hz, e.g: `parameters.sine_source_fm_amplitude.value = 0.5 * MHz` for 0.5 MHz
+        deviation.
+        """
+
         self.pid_feedback_to_sine_enabled = Parameter(start=False, restorable=True)
         """
         If enabled, the PID control signal is used as the AM depth for the sine source.
@@ -397,6 +418,19 @@ class Parameters:
         )
         """
         Scale factor applied to the PID control signal when used as sine-source AM
+        depth. Range is [0, 1].
+        """
+
+        self.pid_feedback_to_sine_fm_enabled = Parameter(start=False, restorable=True)
+        """
+        If enabled, the PID control signal is used as the FM depth for the sine source.
+        """
+
+        self.pid_feedback_to_sine_fm_scale = Parameter(
+            min_=0, max_=1, start=1.0, restorable=True
+        )
+        """
+        Scale factor applied to the PID control signal when used as sine-source FM
         depth. Range is [0, 1].
         """
 

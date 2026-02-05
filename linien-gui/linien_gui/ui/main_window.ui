@@ -580,16 +580,30 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </item>
-           <item row="15" column="1">
-            <widget class="QLabel" name="pidOutputValueLabel">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
+          <item row="15" column="1">
+           <widget class="QLabel" name="pidOutputValueLabel">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="0">
+           <widget class="QLabel" name="label_phase_diff">
+            <property name="text">
+             <string>Phase diff (deg):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="1">
+           <widget class="QLabel" name="phaseDiffValueLabel">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
         <item>
          <widget class="QWidget" name="statusbar_unlocked" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_5">

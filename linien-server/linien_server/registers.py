@@ -90,6 +90,11 @@ class Registers:
         if self.parameters.pid_feedback_to_sine_enabled.value:
             scale = float(self.parameters.pid_feedback_to_sine_scale.value)
             pid_amplitude_override = int(max_(min(8191, 8191 * scale)))
+        pid_fm_amplitude_override = 0
+        if self.parameters.pid_feedback_to_sine_fm_enabled.value:
+            scale = float(self.parameters.pid_feedback_to_sine_fm_scale.value)
+            max_fm_amplitude = (1 << 31) - 1
+            pid_fm_amplitude_override = int(max_fm_amplitude * scale)
 
         lock_changed = self.parameters.lock.value != self.control.exposed_is_locked
         self.control.exposed_is_locked = self.parameters.lock.value
@@ -144,6 +149,11 @@ class Registers:
             ),
             sine_source_am_amplitude=int(self.parameters.sine_source_am_amplitude.value),
             sine_source_pid_amplitude=int(pid_amplitude_override),
+            sine_source_fm_phase_inc=int(
+                self.parameters.sine_source_fm_frequency.value
+            ),
+            sine_source_fm_amplitude=int(self.parameters.sine_source_fm_amplitude.value),
+            sine_source_pid_fm_amplitude=int(pid_fm_amplitude_override),
             kalman_targets_power_threshold_target_cmd=int(
                 self.parameters.scan_power_threshold.value
             ),

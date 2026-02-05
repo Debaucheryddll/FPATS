@@ -535,6 +535,13 @@
          </property>
         </widget>
        </item>
+        <item>
+        <widget class="QCheckBox" name="pidFeedbackToSineFmCheckBox">
+         <property name="text">
+          <string>PID feedback → Sine FM</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QGroupBox" name="kalmanGroupBox">
          <property name="title">

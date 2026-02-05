@@ -35,6 +35,7 @@ from gateware.logic.decimation import Decimate
 from gateware.logic.KalmanTargets import KalmanTargets
 from gateware.logic.delta_sigma import DeltaSigma
 from gateware.logic.errorsignalcalculator_1 import ErrorSignalCalculator
+from gateware.logic.phase_diff import PhaseDiffCalculator
 from gateware.logic.scan_tracking import ScanTrackingController
 from gateware.logic.sine_source import SineSource
 
@@ -155,6 +156,7 @@ class LinienModule(Module, AutoCSR):
         # decimated_clock = ClockDomainsRenamer("decimated_clock")
         # self.submodules.slow_chain = decimated_clock(SlowChain())
         self.submodules.err_calc = ErrorSignalCalculator(width=signal_width)
+        self.submodules.phase_diff = PhaseDiffCalculator(width=signal_width)
         # 实例化 KalmanTargets 模块
         self.submodules.kalman_targets = KalmanTargets(width=signal_width)
         self.submodules.scan_tracker = ScanTrackingController(width=signal_width)
@@ -192,6 +194,7 @@ class LinienModule(Module, AutoCSR):
             "kalman_targets": 10,
             "scan_tracker": 11,
             "sine_source": 12,
+            "phase_diff": 13,
         }
 
         self.submodules.csrbanks = csr_bus.CSRBankArray(
@@ -222,6 +225,11 @@ class LinienModule(Module, AutoCSR):
             # 将FastChain B的 I, Q 输出连接到计算器的输入
             self.err_calc.i_b.eq(self.fast_b.out_i),
             self.err_calc.q_b.eq(self.fast_b.out_q),
+            # 将FastChain A/B 的 I, Q 输出连接到相位差计算模块
+            self.phase_diff.i_a.eq(self.fast_a.out_i),
+            self.phase_diff.q_a.eq(self.fast_a.out_q),
+            self.phase_diff.i_b.eq(self.fast_b.out_i),
+            self.phase_diff.q_b.eq(self.fast_b.out_q),
         ]
 
         # --- 连接 ScanTrackingController 的输入 ---

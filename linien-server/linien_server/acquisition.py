@@ -57,6 +57,9 @@ def _fixed_to_float(
 ) -> float:
     return FixedPointConverter.fixed_to_float(value, width, fractional_bits)
 
+def _phase_to_degrees(value: int, width: int) -> float:
+    return (value * 180.0) / (1 << (width - 1))
+
 def _clamp_unsigned(value: int, width: int) -> int:
     mask = (1 << width) - 1
     return max(0, min(value, mask))
@@ -122,7 +125,7 @@ class AcquisitionService(Service):
         self.data_was_raw = False
         self.data_hash: float | None = None
         self.data_uuid: float | None = None
-        self.power_samples: list[tuple[str, float, float, float]] = []
+        self.power_samples: list[tuple[str, float, float, float, float | None]] = []
 
         self.locked = False
         self.exposed_set_sweep_speed(9)
@@ -257,6 +260,12 @@ class AcquisitionService(Service):
         power_signal_a, power_signal_b = _split_power_by_error(
             power_signal_raw, error_signal
         )
+        phase_diff_raw = _get_signed_csr(self.csr, "phase_diff_phase_diff")
+        phase_diff = (
+            _phase_to_degrees(phase_diff_raw, csrmap.csr["phase_diff_phase_diff"][2])
+            if phase_diff_raw is not None
+            else None
+        )
         control_signal = _get_signed_csr(self.csr, "logic_control_signal")
         if control_signal is None:
             raise KeyError("logic_control_signal")
@@ -272,6 +281,7 @@ class AcquisitionService(Service):
             "power_signal": power_signal,
             "power_signal_a": power_signal_a,
             "power_signal_b": power_signal_b,
+            "phase_diff": phase_diff,
             "control_signal": control_signal,
             "scan_tracker_time_command_out": scan_tracker_time,
             "kalman_x_target": kalman_x,
@@ -281,7 +291,7 @@ class AcquisitionService(Service):
         data.update(self.slow_data_cache)
         timestamp = datetime.utcnow().isoformat()
         self.power_samples.append(
-            (timestamp, power_signal, power_signal_a, power_signal_b)
+            (timestamp, power_signal, power_signal_a, power_signal_b, phase_diff)
         )
         return data
 

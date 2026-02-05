@@ -21,9 +21,10 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.q_b = Signal((width, True))
         self.out_e = Signal((width, True))  # 最终的误差信号 E
         self.power_signal_out = Signal(width, name="power_signal_out")
+        self.power_signal_full_out = Signal((2 * width + 1), name="power_signal_full_out")
 
         self.signal_in = []
-        self.signal_out = [self.out_e, self.power_signal_out]
+        self.signal_out = [self.out_e, self.power_signal_out, self.power_signal_full_out]
         self.state_in = []
         self.state_out = []
 
@@ -32,6 +33,9 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.csr_out_e = CSRStatus(width, name="out_e")
         # 寄存器 2: 功率信号 P (我们使用 'denominator' 作为代理)
         self.csr_power_signal_out = CSRStatus(width, name="power_signal_out")
+        self.csr_power_signal_full_out = CSRStatus(
+            (2 * width + 1), name="power_signal_full_out"
+        )
         # --- 2. 内部信号 ---
         mag_a = Signal(width)
         mag_b = Signal(width)
@@ -148,11 +152,18 @@ class ErrorSignalCalculator(Module, AutoCSR):
         ]
 
         denominator_reg = Signal(width)
-        self.sync += denominator_reg.eq(denominator)
+        power_full_reg = Signal((2 * width + 1))
+        self.sync += [
+            denominator_reg.eq(denominator),
+            power_full_reg.eq(pa_wide + pb_wide),
+        ]
         self.comb += [
             # 将最终的 E 连接到 PS
             self.csr_out_e.status.eq(self.out_e),
             # 将 P (即 'denominator') 连接到 PS
             self.csr_power_signal_out.status.eq(denominator_reg),
             self.power_signal_out.eq(denominator_reg),
+            # 将全位宽功率 (I^2+Q^2) 连接到 PS
+            self.csr_power_signal_full_out.status.eq(power_full_reg),
+            self.power_signal_full_out.eq(power_full_reg),
         ]
