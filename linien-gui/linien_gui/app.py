@@ -79,7 +79,7 @@ class LinienApp(QtWidgets.QApplication):
             except AttributeError:
                 logger.exception("check_for_changed_parameters() failed")
 
-            QtCore.QTimer.singleShot(5, self.periodically_check_for_changed_parameters)
+            QtCore.QTimer.singleShot(1, self.periodically_check_for_changed_parameters)
 
     def shutdown(self):
         self.client.control.exposed_shutdown()

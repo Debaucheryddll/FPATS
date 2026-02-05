@@ -28,9 +28,11 @@ class SineSource(Module, AutoCSR):
         lut_bits=10,
         clk_freq=125_000_000,
         sine_freq=10_000,
+        am_freq=0,
         amplitude_scale=0.5,
     ):
         phase_inc = int(round(sine_freq * (1 << phase_bits) / clk_freq))
+        am_phase_inc = int(round(am_freq * (1 << phase_bits) / clk_freq))
         max_amplitude = (1 << (width - 1)) - 1
         amplitude_scale = max(0.0, min(1.0, float(amplitude_scale)))
         amplitude = int(round(max_amplitude * amplitude_scale))
@@ -48,7 +50,7 @@ class SineSource(Module, AutoCSR):
 
         self.phase_inc = CSRStorage(phase_bits, reset=phase_inc, name="phase_inc")
         self.amplitude = CSRStorage(width, reset=amplitude, name="amplitude")
-        self.am_phase_inc = CSRStorage(phase_bits, reset=0, name="am_phase_inc")
+        self.am_phase_inc = CSRStorage(phase_bits, reset=am_phase_inc, name="am_phase_inc")
         self.am_amplitude = CSRStorage(width, reset=0, name="am_amplitude")
         self.pid_amplitude = CSRStorage(width, reset=0, name="pid_amplitude")
         self.pid_amplitude_input = Signal((width, True))

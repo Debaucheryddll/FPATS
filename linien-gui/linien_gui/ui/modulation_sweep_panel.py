@@ -21,6 +21,7 @@ from linien_gui.ui.spin_box import CustomDoubleSpinBox, CustomDoubleSpinBoxNoSig
 from linien_gui.utils import get_linien_app_instance, param2ui
 from PyQt5 import QtWidgets, uic
 
+AM_HZ = MHz / 1e6
 
 class ModulationAndSweepPanel(QtWidgets.QWidget):
     sweepSpeedComboBox: QtWidgets.QGroupBox
@@ -100,7 +101,7 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         param2ui(
             self.parameters.sine_source_am_frequency,
             self.sineSourceAmFrequencySpinBox,
-            lambda value: value / MHz * 1e6,
+            lambda value: value / AM_HZ,
         )
         param2ui(
             self.parameters.sine_source_am_amplitude,
@@ -159,7 +160,7 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
 
     def change_sine_source_am_frequency(self):
         self.parameters.sine_source_am_frequency.value = (
-            self.sineSourceAmFrequencySpinBox.value() / 1e6 * MHz
+                self.sineSourceAmFrequencySpinBox.value() * AM_HZ
         )
         self.control.write_registers()
 

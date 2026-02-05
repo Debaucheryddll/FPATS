@@ -739,15 +739,15 @@ class Parameters:
                 self.register_remote_listener(uuid, name)
 
     def register_remote_listener(self, uuid: str, param_name: str) -> None:
-        self._changed_parameters_queue.setdefault(uuid, [])
+        self._changed_parameters_queue.setdefault(uuid,[])
         self._remote_listener_callbacks.setdefault(uuid, [])
+        param: Parameter = getattr(self, param_name)
 
         def append_changed_values_to_queue(value: Any) -> None:
             """Appends changed values to the queue of a specific client."""
             if uuid in self._changed_parameters_queue:
                 self._changed_parameters_queue[uuid].append((param_name, value))
 
-        param: Parameter = getattr(self, param_name)
         param.add_callback(append_changed_values_to_queue, call_immediately=True)
 
         self._remote_listener_callbacks[uuid].append(

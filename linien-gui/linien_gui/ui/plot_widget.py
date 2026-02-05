@@ -47,6 +47,7 @@ FAST_IIR_SHIFT = 11
 
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000
+TARGET_RENDER_FPS = 30
 
 class TimeXAxis(pg.AxisItem):
     """Plots x axis as time in seconds instead of point number."""
@@ -178,6 +179,16 @@ class PlotWidget(pg.PlotWidget):
         self.last_plot_time = 0
         self.plot_rate_limit = DEFAULT_PLOT_RATE_LIMIT
 
+        # decouple data consumption from UI rendering:
+        # callbacks only cache newest frame; rendering runs at fixed FPS
+        self._latest_to_plot = None
+        self._has_new_plot_frame = False
+        self._render_timer = QtCore.QTimer(self)
+        self._render_timer.setInterval(int(1000 / TARGET_RENDER_FPS))
+        self._render_timer.timeout.connect(self.render_latest_plot_frame)
+        self._render_timer.start()
+
+
         self._should_reposition_reset_view_button = False
         self.error_signal_history = deque(maxlen=N_POINTS)
         self.power_a_history = deque(maxlen=N_POINTS)
@@ -261,15 +272,23 @@ class PlotWidget(pg.PlotWidget):
         return
 
     def on_new_plot_data_received(self, to_plot):
+        # Keep only the newest frame. This prevents the GUI from spending time
+        # rendering stale data and stabilizes UI load at fixed FPS.
+        self._latest_to_plot = to_plot
+        self._has_new_plot_frame = True
+
+    def render_latest_plot_frame(self):
+        if not self._has_new_plot_frame:
+            return
+
+        to_plot = self._latest_to_plot
+        self._has_new_plot_frame = False
+
         time_beginning = time()
 
         if self._should_reposition_reset_view_button:
             self._should_reposition_reset_view_button = False
             self.position_reset_view_button()
-
-        if time_beginning - self.last_plot_time <= self.plot_rate_limit:
-            # don't plot too often as it only causes unnecessary load
-            return
 
         self.last_plot_time = time_beginning
 
@@ -287,7 +306,13 @@ class PlotWidget(pg.PlotWidget):
             return
 
         if to_plot is not None:
-            to_plot = pickle.loads(to_plot)
+            if isinstance(to_plot, (bytes, bytearray, memoryview)):
+                try:
+                    to_plot = pickle.loads(to_plot)
+                except Exception:
+                    return
+            elif not isinstance(to_plot, dict):
+                return
 
             if to_plot is None:
                 return

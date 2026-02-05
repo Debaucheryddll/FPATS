@@ -67,6 +67,61 @@ class PythonCSR:
             v |= (int(word) & 0xFF) << (8 * (b - i - 1))
         return v
 
+    def get_many(self, names: list[str]) -> dict[str, int]:
+        """Read multiple CSRs with batched MMIO transactions."""
+        if not names:
+            return {}
+
+        results: dict[str, int] = {}
+        requests: list[tuple[str, int, int]] = []
+
+        for name in names:
+            if name in self.constants:
+                results[name] = self.constants[name]
+                continue
+
+            map, addr, nr, _ = self.map[name]
+            n_bytes = (nr + 8 - 1) // 8
+            base_addr = self.offset + (map << 11) + (addr << 2)
+            requests.append((name, base_addr, n_bytes))
+
+        if not requests:
+            return results
+
+        requests.sort(key=lambda item: item[1])
+
+        request_idx = 0
+        n_requests = len(requests)
+        while request_idx < n_requests:
+            _, range_start, _ = requests[request_idx]
+            range_end = range_start
+            range_requests: list[tuple[str, int, int]] = []
+
+            while request_idx < n_requests:
+                name, base_addr, n_bytes = requests[request_idx]
+                end_addr = base_addr + ((n_bytes - 1) * 4)
+                if range_requests and (base_addr >> 11) != (range_start >> 11):
+                    break
+
+                range_end = max(range_end, end_addr)
+                range_requests.append((name, base_addr, n_bytes))
+                request_idx += 1
+
+            read_len = ((range_end - range_start) // 4) + 1
+            range_words = [
+                int(value) & 0xFF
+                for value in self.rp.reads(range_start, read_len)
+            ]
+
+            for name, base_addr, n_bytes in range_requests:
+                start_idx = (base_addr - range_start) // 4
+                value = 0
+                for i in range(n_bytes):
+                    value |= range_words[start_idx + i] << (8 * (n_bytes - i - 1))
+                results[name] = value
+
+        return results
+
     def set_iir(self, prefix: str, b: list[float], a: list[float]) -> None:
         shift = self.get(prefix + "_shift") or 16
         width = self.get(prefix + "_width") or 18

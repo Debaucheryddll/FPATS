@@ -109,6 +109,12 @@ def _get_signed_csr(csr: PythonCSR, name: str) -> int | None:
     return _to_signed(int(csr.get(name)), csrmap.csr[name][2])
 
 
+def _get_signed_from_raw(name: str, raw_values: dict[str, int]) -> int | None:
+    if name not in raw_values or not _has_csr(name):
+        return None
+    return _to_signed(int(raw_values[name]), csrmap.csr[name][2])
+
+
 
 class AcquisitionService(Service):
     def __init__(self) -> None:
@@ -216,24 +222,36 @@ class AcquisitionService(Service):
                 self.data_hash = random()
 
     def _read_slow_data(self, power_a_raw: int, power_b_raw: int) -> dict[str, int | float | None]:
-        scan_tracker_state = int(self.csr.get("scan_tracker_fsm_state"))
+        slow_keys = [
+            "scan_tracker_fsm_state",
+            "scan_tracker_power_level",
+            "scan_tracker_power_threshold_acquire",
+            "kalman_targets_power_threshold_target_cmd",
+            "logic_pid_setpoint",
+            "logic_pid_kp",
+            "logic_pid_ki",
+            "logic_pid_kd",
+        ]
+        slow_raw = self.csr.get_many(slow_keys)
+
+        scan_tracker_state = int(slow_raw["scan_tracker_fsm_state"])
         scan_tracker_power_level = FixedPointConverter.fixed_to_unsigned_float(
-            int(self.csr.get("scan_tracker_power_level")),
+            int(slow_raw["scan_tracker_power_level"]),
             csrmap.csr["scan_tracker_power_level"][2],
             POWER_FRAC_BITS,
         )
         scan_tracker_power_threshold = FixedPointConverter.fixed_to_unsigned_float(
-            int(self.csr.get("scan_tracker_power_threshold_acquire")),
+            int(slow_raw["scan_tracker_power_threshold_acquire"]),
             csrmap.csr["scan_tracker_power_threshold_acquire"][2],
             POWER_FRAC_BITS,
         )
         kalman_power_threshold = int(
-            self.csr.get("kalman_targets_power_threshold_target_cmd")
+            slow_raw["kalman_targets_power_threshold_target_cmd"]
         )
-        pid_setpoint = _get_signed_csr(self.csr, "logic_pid_setpoint")
-        pid_kp = _get_signed_csr(self.csr, "logic_pid_kp")
-        pid_ki = _get_signed_csr(self.csr, "logic_pid_ki")
-        pid_kd = _get_signed_csr(self.csr, "logic_pid_kd")
+        pid_setpoint = _get_signed_from_raw("logic_pid_setpoint", slow_raw)
+        pid_kp = _get_signed_from_raw("logic_pid_kp", slow_raw)
+        pid_ki = _get_signed_from_raw("logic_pid_ki", slow_raw)
+        pid_kd = _get_signed_from_raw("logic_pid_kd", slow_raw)
         return {
             "scan_tracker_state": scan_tracker_state,
             "scan_tracker_power_level": scan_tracker_power_level,
@@ -246,11 +264,22 @@ class AcquisitionService(Service):
         }
 
     def read_data(self) -> dict[str, int | float | None]:
-        error_signal = _get_signed_csr(self.csr, "err_calc_out_e")
+        fast_keys = [
+            "err_calc_out_e",
+            "err_calc_power_signal_out",
+            "logic_control_signal",
+            "scan_tracker_time_command_out",
+            "kalman_targets_x_target_cmd",
+            "kalman_targets_f_target_cmd",
+            "kalman_targets_t_target_cmd",
+        ]
+        raw_values = self.csr.get_many(fast_keys)
+
+        error_signal = _get_signed_from_raw("err_calc_out_e", raw_values)
         if error_signal is None:
             raise KeyError("err_calc_out_e")
         error_signal = _clamp_signed(error_signal, 1 << POWER_FRAC_BITS)
-        power_signal_raw = int(self.csr.get("err_calc_power_signal_out"))
+        power_signal_raw = int(raw_values["err_calc_power_signal_out"])
         power_signal = FixedPointConverter.fixed_to_unsigned_float(
             power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
         )
@@ -260,13 +289,16 @@ class AcquisitionService(Service):
         power_signal_a, power_signal_b = _split_power_by_error(
             power_signal_raw, error_signal
         )
-        control_signal = _get_signed_csr(self.csr, "logic_control_signal")
+        control_signal = _get_signed_from_raw("logic_control_signal", raw_values)
         if control_signal is None:
             raise KeyError("logic_control_signal")
         scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
-        kalman_x = _get_signed_csr(self.csr, "kalman_targets_x_target_cmd")
-        kalman_f = _get_signed_csr(self.csr, "kalman_targets_f_target_cmd")
-        kalman_t = _get_signed_csr(self.csr, "kalman_targets_t_target_cmd")
+        scan_tracker_time = _get_signed_from_raw(
+            "scan_tracker_time_command_out", raw_values
+        )
+        kalman_x = _get_signed_from_raw("kalman_targets_x_target_cmd", raw_values)
+        kalman_f = _get_signed_from_raw("kalman_targets_f_target_cmd", raw_values)
+        kalman_t = _get_signed_from_raw("kalman_targets_t_target_cmd", raw_values)
         if self.slow_data_dirty or not self.slow_data_cache:
             self.slow_data_cache = self._read_slow_data(power_a_raw, power_b_raw)
             self.slow_data_dirty = False
