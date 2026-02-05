@@ -198,56 +198,6 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
     def _push_acquired_data_to_parameters(self, stop_event: Event):
         last_hash = None
-        pending_plot_samples: dict[str, list[float]] = {}
-        last_plot_flush = monotonic()
-
-        def append_sample(sample: dict[str, Any]) -> None:
-            for signal_name, signal in sample.items():
-                values = np.asarray(signal)
-                if values.ndim == 0:
-                    pending_plot_samples.setdefault(signal_name, []).append(float(values))
-                else:
-                    pending_plot_samples.setdefault(signal_name, []).extend(
-                        values.astype(float).ravel().tolist()
-                    )
-
-        def flush_plot_samples() -> None:
-            nonlocal last_plot_flush
-            if not pending_plot_samples:
-                return
-            batched_data = {
-                signal_name: np.asarray(values)
-                for signal_name, values in pending_plot_samples.items()
-                if values
-            }
-            if not batched_data or not check_plot_data(batched_data):
-                pending_plot_samples.clear()
-                last_plot_flush = monotonic()
-                return
-
-            self.parameters.to_plot.value = pickle.dumps(batched_data)
-
-            stats = {}
-            for signal_name, signal in batched_data.items():
-                stats[f"{signal_name}_mean"] = float(np.mean(signal))
-                stats[f"{signal_name}_std"] = float(np.std(signal))
-                stats[f"{signal_name}_max"] = float(np.max(signal))
-                stats[f"{signal_name}_min"] = float(np.min(signal))
-            self.parameters.signal_stats.value = stats
-
-            (
-                self.parameters.control_signal_history.value,
-                self.parameters.monitor_signal_history.value,
-            ) = update_signal_history(
-                self.parameters.control_signal_history.value,
-                self.parameters.monitor_signal_history.value,
-                batched_data,
-                self.parameters.control_signal_history_length.value,
-            )
-
-            pending_plot_samples.clear()
-            last_plot_flush = monotonic()
-
         while not stop_event.is_set():
             (
                 new_data_returned,
@@ -261,7 +211,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
             # When a parameter is changed, `pause_acquisition` is set. This means that
             # the we should skip new data until we are sure that it was recorded with
             # the new settings.
-            if not self.parameters.pause_acquisition.value and new_data_returned:
+            if not self.parameters.pause_acquisition.value:
                 if data_uuid != self.data_uuid:
                     continue
 
@@ -273,24 +223,29 @@ class RedPitayaControlService(BaseService, LinienControlService):
                             "incorrect data received for lock state, ignoring!"
                         )
                         continue
-                        append_sample(data_loaded)
-                        sample_count = len(next(iter(pending_plot_samples.values()), []))
-                        if (
-                                sample_count >= PLOT_BATCH_MAX_SAMPLES
-                                or monotonic() - last_plot_flush >= PLOT_BATCH_INTERVAL_S
-                        ):
-                            flush_plot_samples()
-                    else:
-                        self.parameters.acquisition_raw_data.value = new_data
+                    self.parameters.to_plot.value = new_data
 
-                if (
-                        pending_plot_samples
-                        and monotonic() - last_plot_flush >= PLOT_BATCH_INTERVAL_S
-                ):
-                    flush_plot_samples()
-
-                sleep(0.001)
-
+                    # generate signal stats
+                    stats = {}
+                    for signal_name, signal in data_loaded.items():
+                        stats[f"{signal_name}_mean"] = np.mean(signal)
+                        stats[f"{signal_name}_std"] = np.std(signal)
+                        stats[f"{signal_name}_max"] = np.max(signal)
+                        stats[f"{signal_name}_min"] = np.min(signal)
+                    self.parameters.signal_stats.value = stats
+                    # update signal history
+                    (
+                        self.parameters.control_signal_history.value,
+                        self.parameters.monitor_signal_history.value,
+                    ) = update_signal_history(
+                        self.parameters.control_signal_history.value,
+                        self.parameters.monitor_signal_history.value,
+                        data_loaded,
+                        self.parameters.control_signal_history_length.value,
+                    )
+                else:
+                    self.parameters.acquisition_raw_data.value = new_data
+            sleep(0.001)
 
     def _build_kalman_params(self) -> dict:
         """Assemble Kalman filter parameters from ``self.parameters``."""
