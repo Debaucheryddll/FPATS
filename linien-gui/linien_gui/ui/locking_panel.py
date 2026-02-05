@@ -38,7 +38,6 @@ class LockingPanel(QtWidgets.QWidget):
     stopKalmanButton: QtWidgets.QPushButton
     pidEnableCheckBox: QtWidgets.QCheckBox
     pidFeedbackToSineCheckBox: QtWidgets.QCheckBox
-    pidFeedbackToSineFmCheckBox: QtWidgets.QCheckBox
 
     kalmanDtSpinBox: QtWidgets.QDoubleSpinBox
     kalmanProcNoiseTSpinBox: QtWidgets.QDoubleSpinBox
@@ -70,9 +69,6 @@ class LockingPanel(QtWidgets.QWidget):
         self.pidEnableCheckBox.toggled.connect(self.pid_enabled_changed)
         self.pidFeedbackToSineCheckBox.toggled.connect(
             self.pid_feedback_to_sine_changed
-        )
-        self.pidFeedbackToSineFmCheckBox.toggled.connect(
-            self.pid_feedback_to_sine_fm_changed
         )
 
         for spin_box in (
@@ -182,10 +178,6 @@ class LockingPanel(QtWidgets.QWidget):
             self.parameters.pid_feedback_to_sine_enabled,
             self.pidFeedbackToSineCheckBox,
         )
-        param2ui(
-            self.parameters.pid_feedback_to_sine_fm_enabled,
-            self.pidFeedbackToSineFmCheckBox,
-        )
 
     def kp_changed(self):
         self.parameters.p.value = self.kpSpinBox.value()
@@ -233,11 +225,6 @@ class LockingPanel(QtWidgets.QWidget):
         self.parameters.pid_feedback_to_sine_enabled.value = value
         self.control.write_registers()
 
-    def pid_feedback_to_sine_fm_changed(self, value):
-        if not hasattr(self, "parameters"):
-            return
-        self.parameters.pid_feedback_to_sine_fm_enabled.value = value
-        self.control.write_registers()
 
     def pid_enabled_changed(self, value):
         if not hasattr(self, "parameters"):

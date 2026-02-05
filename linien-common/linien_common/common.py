@@ -24,7 +24,13 @@ from typing import Dict, Iterable, List, Tuple, Union
 
 import numpy as np
 
-MHz = 0x10000000 / 8
+# DDS phase-increment units for a 32-bit accumulator clocked at 125 MHz.
+#
+# frequency_hz = phase_inc * 125e6 / 2**32
+# => phase_inc_per_hz = 2**32 / 125e6
+# => phase_inc_per_mhz = 2**32 / 125
+Hz = (1 << 32) / 125_000_000
+MHz = (1 << 32) / 125
 Vpp = ((1 << 14) - 1) / 4
 # conversion of bits to V
 ANALOG_OUT_V = 1.8 / ((2**15) - 1)

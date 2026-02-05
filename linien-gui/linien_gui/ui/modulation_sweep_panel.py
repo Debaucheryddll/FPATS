@@ -33,8 +33,6 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
     sineSourceAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmFrequencySpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmAmplitudeSpinBox: CustomDoubleSpinBox
-    sineSourceFmFrequencySpinBox: CustomDoubleSpinBoxNoSign
-    sineSourceFmAmplitudeSpinBox: CustomDoubleSpinBox
     spectroscopyTabs: QtWidgets.QTabWidget
     spectroscopy_channel_1_page: QtWidgets.QWidget
     spectroscopy_channel_2_page: QtWidgets.QWidget
@@ -69,14 +67,6 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         self.sineSourceAmAmplitudeSpinBox.setKeyboardTracking(False)
         self.sineSourceAmAmplitudeSpinBox.valueChanged.connect(
             self.change_sine_source_am_amplitude
-        )
-        self.sineSourceFmFrequencySpinBox.setKeyboardTracking(False)
-        self.sineSourceFmFrequencySpinBox.valueChanged.connect(
-            self.change_sine_source_fm_frequency
-        )
-        self.sineSourceFmAmplitudeSpinBox.setKeyboardTracking(False)
-        self.sineSourceFmAmplitudeSpinBox.valueChanged.connect(
-            self.change_sine_source_fm_amplitude
         )
         self.sweepSpeedComboBox.currentIndexChanged.connect(self.change_sweep_speed)
 
@@ -117,17 +107,6 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
             self.sineSourceAmAmplitudeSpinBox,
             lambda value: value / Vpp,
         )
-        param2ui(
-            self.parameters.sine_source_fm_frequency,
-            self.sineSourceFmFrequencySpinBox,
-            lambda value: value / MHz * 1e6,
-        )
-        param2ui(
-            self.parameters.sine_source_fm_amplitude,
-            self.sineSourceFmAmplitudeSpinBox,
-            lambda value: value / MHz * 1e6,
-        )
-
         self.parameters.dual_channel.add_callback(self.dual_channel_changed)
 
         def pid_only_mode_changed(pid_only_mode_enabled):
@@ -190,17 +169,6 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         )
         self.control.write_registers()
 
-    def change_sine_source_fm_frequency(self):
-        self.parameters.sine_source_fm_frequency.value = (
-                self.sineSourceFmFrequencySpinBox.value() / 1e6 * MHz
-        )
-        self.control.write_registers()
-
-    def change_sine_source_fm_amplitude(self):
-        self.parameters.sine_source_fm_amplitude.value = (
-                self.sineSourceFmAmplitudeSpinBox.value() / 1e6 * MHz
-        )
-        self.control.write_registers()
 
     def change_sweep_speed(self, decimation):
         self.parameters.sweep_speed.value = decimation

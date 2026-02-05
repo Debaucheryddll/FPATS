@@ -64,7 +64,6 @@ class MainWindow(QtWidgets.QMainWindow):
     errorValueLabel: QtWidgets.QLabel
     powerAValueLabel: QtWidgets.QLabel
     powerBValueLabel: QtWidgets.QLabel
-    phaseDiffValueLabel: QtWidgets.QLabel
     kalmanXValueLabel: QtWidgets.QLabel
     kalmanFValueLabel: QtWidgets.QLabel
     kalmanTValueLabel: QtWidgets.QLabel
@@ -314,7 +313,6 @@ class MainWindow(QtWidgets.QMainWindow):
         power_signal_a = to_plot.get("power_signal_a")
         power_signal_b = to_plot.get("power_signal_b")
         control_signal = to_plot.get("control_signal")
-        phase_diff = to_plot.get("phase_diff")
         kalman_x = to_plot.get("kalman_x_target")
         kalman_f = to_plot.get("kalman_f_target")
         kalman_t = to_plot.get("kalman_t_target")
@@ -338,7 +336,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.errorValueLabel.setText(_format_value(error_signal))
         self.powerAValueLabel.setText(_format_power_value(power_signal_a))
         self.powerBValueLabel.setText(_format_power_value(power_signal_b))
-        self.phaseDiffValueLabel.setText(_format_value(phase_diff))
         self.kalmanXValueLabel.setText(_format_value(kalman_x))
         self.kalmanFValueLabel.setText(_format_value(kalman_f))
         self.kalmanTValueLabel.setText(_format_value(kalman_t))
