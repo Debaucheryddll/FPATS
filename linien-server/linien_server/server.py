@@ -51,10 +51,11 @@ from linien_server.tracking.tpfc_tracker import TPFCTrackerService
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-DEFAULT_DATA_PUSH_SLEEP = 0.01
+DEFAULT_DATA_PUSH_SLEEP = 0.001
 RAW_DATA_PUSH_SLEEP = 0.001
 PLOT_BATCH_INTERVAL_S = 0.02
 PLOT_BATCH_MAX_SAMPLES = 32
+STATS_AND_HISTORY_UPDATE_INTERVAL_S = 0.05
 
 class BaseService(rpyc.Service):
     """
@@ -198,6 +199,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
     def _push_acquired_data_to_parameters(self, stop_event: Event):
         last_hash = None
+        last_stats_and_history_update = 0.0
         while not stop_event.is_set():
             (
                 new_data_returned,
@@ -215,16 +217,25 @@ class RedPitayaControlService(BaseService, LinienControlService):
                 if data_uuid != self.data_uuid:
                     continue
 
+                if data_was_raw:
+                    self.parameters.acquisition_raw_data.value = new_data
+                    sleep(RAW_DATA_PUSH_SLEEP)
+                    continue
+
                 data_loaded = pickle.loads(new_data)
+                if not check_plot_data(data_loaded):
+                    logger.error(
+                        "incorrect data received for lock state, ignoring!"
+                    )
+                    continue
+                self.parameters.to_plot.value = new_data
 
-                if not data_was_raw:
-                    if not check_plot_data(data_loaded):
-                        logger.error(
-                            "incorrect data received for lock state, ignoring!"
-                        )
-                        continue
-                    self.parameters.to_plot.value = new_data
-
+                now = monotonic()
+                if (
+                    now - last_stats_and_history_update
+                    >= STATS_AND_HISTORY_UPDATE_INTERVAL_S
+                ):
+                    last_stats_and_history_update = now
                     # generate signal stats
                     stats = {}
                     for signal_name, signal in data_loaded.items():
@@ -243,8 +254,6 @@ class RedPitayaControlService(BaseService, LinienControlService):
                         data_loaded,
                         self.parameters.control_signal_history_length.value,
                     )
-                else:
-                    self.parameters.acquisition_raw_data.value = new_data
             sleep(0.001)
 
     def _build_kalman_params(self) -> dict:
@@ -285,7 +294,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
         try:
             kalman_params = self._build_kalman_params()
-            loop_interval = kalman_params.get("dt", 0.01) or 0.01
+            loop_interval = kalman_params.get("dt", 0.001) or 0.001
 
             self.tracker_service = TPFCTrackerService(
                 device=self.registers,

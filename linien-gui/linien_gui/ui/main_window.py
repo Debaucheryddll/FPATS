@@ -138,9 +138,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.parameters.lock.add_callback(self.change_sweep_control_visibility)
 
-
-        self.parameters.to_plot.add_callback(self.update_std)
-        self.parameters.to_plot.add_callback(self.update_runtime_status)
+        self.app.add_decoded_to_plot_callback(self.update_std)
+        self.app.add_decoded_to_plot_callback(self.update_runtime_status)
 
         self.parameters.pid_on_slow_enabled.add_callback(
             lambda v: self.slowSignalHistoryLegendLabel.setVisible(v)
@@ -257,7 +256,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_std(self, to_plot, max_std_history_length=10):
         if self.parameters.lock.value and to_plot:
-            to_plot = pickle.loads(to_plot)
             if to_plot and check_plot_data(True, to_plot):
                 error_signal = to_plot.get("error_signal")
                 control_signal = to_plot.get("control_signal")
@@ -284,10 +282,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def update_runtime_status(self, to_plot) -> None:
-        if not to_plot:
-            return
-
-        to_plot = pickle.loads(to_plot)
         if not to_plot:
             return
 

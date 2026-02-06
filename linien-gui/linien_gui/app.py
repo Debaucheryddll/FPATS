@@ -48,7 +48,8 @@ class LinienApp(QtWidgets.QApplication):
         super(LinienApp, self).__init__(*args, **kwargs)
 
         self.settings = load_settings()
-        self.recorded_plot_data: list[tuple[float, bytes]] = []
+        self.recorded_plot_data: list[tuple[float, bytes | dict]] = []
+        self._decoded_to_plot_callbacks = []
 
         self.main_window = MainWindow()
         self.device_manager = DeviceManager()
@@ -64,7 +65,8 @@ class LinienApp(QtWidgets.QApplication):
         self.client = client    
         self.control = client.control
         self.parameters = client.parameters
-        self.parameters.to_plot.add_callback(self.record_plot_data)
+        self.parameters.to_plot.add_callback(self._dispatch_to_plot_data)
+
 
         self.connection_established.emit()
 
@@ -79,7 +81,7 @@ class LinienApp(QtWidgets.QApplication):
             except AttributeError:
                 logger.exception("check_for_changed_parameters() failed")
 
-            QtCore.QTimer.singleShot(1, self.periodically_check_for_changed_parameters)
+            QtCore.QTimer.singleShot(5, self.periodically_check_for_changed_parameters)
 
     def shutdown(self):
         self.client.control.exposed_shutdown()
@@ -113,7 +115,28 @@ class LinienApp(QtWidgets.QApplication):
             logger.info("No new version available")
             QtCore.QTimer.singleShot(1000 * 60 * 60, self.check_for_new_version)
 
-    def record_plot_data(self, to_plot: bytes | None) -> None:
+    def add_decoded_to_plot_callback(self, callback) -> None:
+        self._decoded_to_plot_callbacks.append(callback)
+
+    def _dispatch_to_plot_data(self, to_plot: bytes | dict | None) -> None:
+        self.record_plot_data(to_plot)
+
+        if to_plot is None:
+            return
+
+        decoded = to_plot
+        if isinstance(to_plot, (bytes, bytearray, memoryview)):
+            try:
+                decoded = pickle.loads(to_plot)
+            except Exception:
+                return
+        elif not isinstance(to_plot, dict):
+            return
+
+        for callback in self._decoded_to_plot_callbacks:
+            callback(decoded)
+
+    def record_plot_data(self, to_plot: bytes | dict | None) -> None:
         if to_plot is None:
             return
         timestamp = QtCore.QTime.currentTime().msecsSinceStartOfDay() / 1000.0

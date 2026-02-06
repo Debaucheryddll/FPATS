@@ -379,7 +379,6 @@ class Registers:
         return int(self.acquisition.exposed_get_csr(key))
 
 
-
     def read_error_signal(self) -> int:
         """Return the latest error-signal sample from ``err_calc.error_signal`` CSR.
 

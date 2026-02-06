@@ -47,7 +47,7 @@ FAST_IIR_SHIFT = 11
 
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000
-TARGET_RENDER_FPS = 30
+TARGET_RENDER_FPS = 100
 
 class TimeXAxis(pg.AxisItem):
     """Plots x axis as time in seconds instead of point number."""
@@ -184,7 +184,7 @@ class PlotWidget(pg.PlotWidget):
         self._latest_to_plot = None
         self._has_new_plot_frame = False
         self._render_timer = QtCore.QTimer(self)
-        self._render_timer.setInterval(int(1000 / TARGET_RENDER_FPS))
+        self._render_timer.setInterval(max(1, int(1000 / TARGET_RENDER_FPS)))
         self._render_timer.timeout.connect(self.render_latest_plot_frame)
         self._render_timer.start()
 
@@ -208,7 +208,7 @@ class PlotWidget(pg.PlotWidget):
         self.control_signal_history_data = self.parameters.control_signal_history.value
         self.monitor_signal_history_data = self.parameters.monitor_signal_history.value
 
-        self.parameters.to_plot.add_callback(self.on_new_plot_data_received)
+        self.app.add_decoded_to_plot_callback(self.on_new_plot_data_received)
         self.parameters.automatic_mode.add_callback(self.on_automatic_mode_changed)
 
         self._configure_simple_view()
@@ -285,7 +285,6 @@ class PlotWidget(pg.PlotWidget):
         self._has_new_plot_frame = False
 
         time_beginning = time()
-
         if self._should_reposition_reset_view_button:
             self._should_reposition_reset_view_button = False
             self.position_reset_view_button()
@@ -306,12 +305,7 @@ class PlotWidget(pg.PlotWidget):
             return
 
         if to_plot is not None:
-            if isinstance(to_plot, (bytes, bytearray, memoryview)):
-                try:
-                    to_plot = pickle.loads(to_plot)
-                except Exception:
-                    return
-            elif not isinstance(to_plot, dict):
+            if not isinstance(to_plot, dict):
                 return
 
             if to_plot is None:
@@ -374,7 +368,6 @@ class PlotWidget(pg.PlotWidget):
                     return
                 self.error_signal_history.append(float(np.mean(error_signal)))
                 error_series = np.array(self.error_signal_history)
-
             self.last_plot_data = [error_series]
 
             self.combinedErrorSignal.setVisible(True)
