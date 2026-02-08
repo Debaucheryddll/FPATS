@@ -387,6 +387,50 @@ class Parameters:
         Values between -2 * Vpp and 2 * Vpp are allowed.
         """
 
+        self.sine_source_a_frequency = Parameter(
+            min_=0, max_=0xFFFFFFFF, start=int(0.01 * MHz), restorable=True, loggable=True
+        )
+        """
+        Frequency of the DAC A sine source in internal units. Use MHz for conversion to
+        human-readable frequency, e.g:
+            `parameters.sine_source_a_frequency.value = 0.01 * MHz`
+        """
+
+        self.sine_source_a_amplitude = Parameter(
+            min_=0,
+            max_=(1 << 13) - 1,
+            start=1 * Vpp,
+            restorable=True,
+            loggable=True,
+        )
+        """
+        The amplitude of the DAC A sine source in internal units. Use Vpp for
+        conversion to volts peak-peak, e.g:
+            `parameters.sine_source_a_amplitude.value = 0.5 * Vpp`
+        """
+
+        self.sine_source_a_am_frequency = Parameter(
+            min_=0, max_=0xFFFFFFFF, start=0, restorable=True, loggable=True
+        )
+        """
+        AM frequency of the DAC A sine source in internal units. The GUI exposes this
+        value in Hz for low-frequency AM configuration.
+        """
+
+        self.sine_source_a_am_amplitude = Parameter(
+            min_=-(1 << 13),
+            max_=(1 << 13) - 1,
+            start=0,
+            restorable=True,
+            loggable=True,
+        )
+        """
+        AM amplitude of the DAC A sine source in internal units. Use Vpp for conversion
+        to volts peak-peak, e.g:
+            `parameters.sine_source_a_am_amplitude.value = 0.2 * Vpp`.
+        Values between -2 * Vpp and 2 * Vpp are allowed.
+        """
+
         self.pid_feedback_to_sine_enabled = Parameter(start=False, restorable=True)
         """
         If enabled, the PID control signal is used as the AM depth for the sine source.

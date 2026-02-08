@@ -164,6 +164,11 @@ class LinienModule(Module, AutoCSR):
             amplitude_scale=0.5,
             lut_bits=12,
         )
+        self.submodules.sine_source_a = SineSource(
+            width=width,
+            amplitude_scale=0.5,
+            lut_bits=12,
+        )
 
         self.state_names, self.signal_names = cross_connect(
             self.gpio_n,
@@ -192,6 +197,7 @@ class LinienModule(Module, AutoCSR):
             "kalman_targets": 10,
             "scan_tracker": 11,
             "sine_source": 12,
+            "sine_source_a":13,
         }
 
         self.submodules.csrbanks = csr_bus.CSRBankArray(
@@ -257,6 +263,7 @@ class LinienModule(Module, AutoCSR):
         self.comb += [
             control_signal_signed.eq(self.logic.control_signal),
             self.sine_source.pid_amplitude_input.eq(control_signal_signed),
+            self.sine_source_a.pid_amplitude_input.eq(0),
         ]
 
         # connect other analog outputs
@@ -271,7 +278,7 @@ class LinienModule(Module, AutoCSR):
             self.logic.limit_fast1.x.eq(pid_out),
             self.logic.control_signal.eq(self.logic.limit_fast1.y),
             # DAC 输出来自限幅后的信号
-            self.analog.dac_a.eq(self.logic.limit_fast1.y),
+            self.analog.dac_a.eq(self.sine_source_a.output),
             self.analog.dac_b.eq(self.sine_source.output),
         ]
 
@@ -309,5 +316,3 @@ class RootModule(Module):
             self.linien.scopegen.asg_sys,
             self.linien.syscdc.source,
         )
-
-

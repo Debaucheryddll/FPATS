@@ -267,11 +267,11 @@ class AcquisitionService(Service):
         fast_keys = [
             "err_calc_out_e",
             "err_calc_power_signal_out",
-            "logic_control_signal",
-            "scan_tracker_time_command_out",
-            "kalman_targets_x_target_cmd",
-            "kalman_targets_f_target_cmd",
-            "kalman_targets_t_target_cmd",
+            # "logic_control_signal",
+            # "scan_tracker_time_command_out",
+            # "kalman_targets_x_target_cmd",
+            # "kalman_targets_f_target_cmd",
+            # "kalman_targets_t_target_cmd",
         ]
         raw_values = self.csr.get_many(fast_keys)
 
@@ -289,16 +289,16 @@ class AcquisitionService(Service):
         power_signal_a, power_signal_b = _split_power_by_error(
             power_signal_raw, error_signal
         )
-        control_signal = _get_signed_from_raw("logic_control_signal", raw_values)
-        if control_signal is None:
-            raise KeyError("logic_control_signal")
-        scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
-        scan_tracker_time = _get_signed_from_raw(
-            "scan_tracker_time_command_out", raw_values
-        )
-        kalman_x = _get_signed_from_raw("kalman_targets_x_target_cmd", raw_values)
-        kalman_f = _get_signed_from_raw("kalman_targets_f_target_cmd", raw_values)
-        kalman_t = _get_signed_from_raw("kalman_targets_t_target_cmd", raw_values)
+        # control_signal = _get_signed_from_raw("logic_control_signal", raw_values)
+        # if control_signal is None:
+        #     raise KeyError("logic_control_signal")
+        # scan_tracker_time = _get_signed_csr(self.csr, "scan_tracker_time_command_out")
+        # scan_tracker_time = _get_signed_from_raw(
+        #     "scan_tracker_time_command_out", raw_values
+        # )
+        # kalman_x = _get_signed_from_raw("kalman_targets_x_target_cmd", raw_values)
+        # kalman_f = _get_signed_from_raw("kalman_targets_f_target_cmd", raw_values)
+        # kalman_t = _get_signed_from_raw("kalman_targets_t_target_cmd", raw_values)
         if self.slow_data_dirty or not self.slow_data_cache:
             self.slow_data_cache = self._read_slow_data(power_a_raw, power_b_raw)
             self.slow_data_dirty = False
@@ -307,11 +307,11 @@ class AcquisitionService(Service):
             "power_signal": power_signal,
             "power_signal_a": power_signal_a,
             "power_signal_b": power_signal_b,
-            "control_signal": control_signal,
-            "scan_tracker_time_command_out": scan_tracker_time,
-            "kalman_x_target": kalman_x,
-            "kalman_f_target": kalman_f,
-            "kalman_t_target": kalman_t,
+            # "control_signal": control_signal,
+            # "scan_tracker_time_command_out": scan_tracker_time,
+            # "kalman_x_target": kalman_x,
+            # "kalman_f_target": kalman_f,
+            # "kalman_t_target": kalman_t,
         }
         data.update(self.slow_data_cache)
         timestamp = datetime.utcnow().isoformat()

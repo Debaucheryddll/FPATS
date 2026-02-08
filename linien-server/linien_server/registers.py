@@ -144,6 +144,15 @@ class Registers:
             ),
             sine_source_am_amplitude=int(self.parameters.sine_source_am_amplitude.value),
             sine_source_pid_amplitude=int(pid_amplitude_override),
+            sine_source_a_phase_inc=int(self.parameters.sine_source_a_frequency.value),
+            sine_source_a_amplitude=int(self.parameters.sine_source_a_amplitude.value),
+            sine_source_a_am_phase_inc=int(
+                self.parameters.sine_source_am_frequency.value
+            ),
+            sine_source_a_am_amplitude=int(
+                self.parameters.sine_source_a_am_amplitude.value
+            ),
+            sine_source_a_pid_amplitude=0,
             kalman_targets_power_threshold_target_cmd=int(
                 self.parameters.scan_power_threshold.value
             ),

@@ -34,6 +34,11 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
     sineSourceAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmFrequencySpinBox: CustomDoubleSpinBoxNoSign
     sineSourceAmAmplitudeSpinBox: CustomDoubleSpinBox
+    sine_source_a_group = QtWidgets.QGroupBox
+    sineSourceAFrequencySpinBox: CustomDoubleSpinBoxNoSign
+    sineSourceAAmplitudeSpinBox: CustomDoubleSpinBoxNoSign
+    sineSourceAAmFrequencySpinBox: CustomDoubleSpinBoxNoSign
+    sineSourceAAmAmplitudeSpinBox: CustomDoubleSpinBox
     spectroscopyTabs: QtWidgets.QTabWidget
     spectroscopy_channel_1_page: QtWidgets.QWidget
     spectroscopy_channel_2_page: QtWidgets.QWidget
@@ -69,8 +74,23 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         self.sineSourceAmAmplitudeSpinBox.valueChanged.connect(
             self.change_sine_source_am_amplitude
         )
+        self.sineSourceAFrequencySpinBox.setKeyboardTracking(False)
+        self.sineSourceAFrequencySpinBox.valueChanged.connect(
+            self.change_sine_source_a_frequency
+        )
+        self.sineSourceAAmplitudeSpinBox.setKeyboardTracking(False)
+        self.sineSourceAAmplitudeSpinBox.valueChanged.connect(
+            self.change_sine_source_a_amplitude
+        )
+        self.sineSourceAAmFrequencySpinBox.setKeyboardTracking(False)
+        self.sineSourceAAmFrequencySpinBox.valueChanged.connect(
+            self.change_sine_source_a_am_frequency
+        )
+        self.sineSourceAAmAmplitudeSpinBox.setKeyboardTracking(False)
+        self.sineSourceAAmAmplitudeSpinBox.valueChanged.connect(
+            self.change_sine_source_a_am_amplitude
+        )
         self.sweepSpeedComboBox.currentIndexChanged.connect(self.change_sweep_speed)
-
         self.spectroscopyTabs.setCurrentIndex(0)
 
     def on_connection_established(self):
@@ -106,6 +126,26 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         param2ui(
             self.parameters.sine_source_am_amplitude,
             self.sineSourceAmAmplitudeSpinBox,
+            lambda value: value / Vpp,
+        )
+        param2ui(
+            self.parameters.sine_source_a_frequency,
+            self.sineSourceAFrequencySpinBox,
+            lambda value: value / MHz,
+        )
+        param2ui(
+            self.parameters.sine_source_a_amplitude,
+            self.sineSourceAAmplitudeSpinBox,
+            lambda value: value / Vpp,
+        )
+        param2ui(
+            self.parameters.sine_source_a_am_frequency,
+            self.sineSourceAAmFrequencySpinBox,
+            lambda value: value / AM_HZ,
+        )
+        param2ui(
+            self.parameters.sine_source_a_am_amplitude,
+            self.sineSourceAAmAmplitudeSpinBox,
             lambda value: value / Vpp,
         )
         self.parameters.dual_channel.add_callback(self.dual_channel_changed)
@@ -170,6 +210,29 @@ class ModulationAndSweepPanel(QtWidgets.QWidget):
         )
         self.control.write_registers()
 
+    def change_sine_source_a_frequency(self):
+        self.parameters.sine_source_a_frequency.value = (
+                self.sineSourceAFrequencySpinBox.value() * MHz
+        )
+        self.control.write_registers()
+
+    def change_sine_source_a_amplitude(self):
+        self.parameters.sine_source_a_amplitude.value = (
+                self.sineSourceAAmplitudeSpinBox.value() * Vpp
+        )
+        self.control.write_registers()
+
+    def change_sine_source_a_am_frequency(self):
+        self.parameters.sine_source_a_am_frequency.value = (
+                self.sineSourceAAmFrequencySpinBox.value() * AM_HZ
+        )
+        self.control.write_registers()
+
+    def change_sine_source_a_am_amplitude(self):
+        self.parameters.sine_source_a_am_amplitude.value = (
+                self.sineSourceAAmAmplitudeSpinBox.value() * Vpp
+        )
+        self.control.write_registers()
 
     def change_sweep_speed(self, decimation):
         self.parameters.sweep_speed.value = decimation
