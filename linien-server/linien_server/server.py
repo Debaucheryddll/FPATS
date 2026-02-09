@@ -347,7 +347,7 @@ class RedPitayaControlService(BaseService, LinienControlService):
 
     def exposed_start_tpfc_tracker(self) -> None:
         """Explicitly start the TPFC Kalman tracker thread."""
-        self._start_tpfc_tracker()
+        # self._start_tpfc_tracker()
 
     def exposed_stop_tpfc_tracker(self) -> None:
         """Explicitly stop the TPFC Kalman tracker thread."""

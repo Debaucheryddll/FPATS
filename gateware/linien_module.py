@@ -254,10 +254,12 @@ class LinienModule(Module, AutoCSR):
             If(
                 self.logic.pid_only_mode.storage,
                 # self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
-                self.logic.pid.input.eq(0),
+                # self.logic.pid.input.eq(0),
+                self.logic.pid.input.eq(self.err_calc.out_e),
             ).Else(
                 # self.logic.pid.input.eq(self.err_calc.out_e),
-                self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
+                # self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
+                self.logic.pid.input.eq(self.err_calc.out_e),
             ),
             pid_out.eq(self.logic.pid.pid_out >> s),
         ]

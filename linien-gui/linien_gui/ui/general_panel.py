@@ -79,15 +79,14 @@ class GeneralPanel(QtWidgets.QWidget):
         self.polarityComboBoxAnalogOut0.currentIndexChanged.connect(
             self.on_polarity_analog_out0_changed
         )
-
-        for idx in range(1, 4):
-            element: CustomDoubleSpinBoxNoSign = getattr(
-                self, f"analogOutComboBox{idx}"
-            )
-            element.setKeyboardTracking(False)
-            element.valueChanged.connect(
-                lambda _, idx=idx: self.on_analog_out_changed(idx)
-            )
+        # for idx in range(1, 4):
+        #     element: CustomDoubleSpinBoxNoSign = getattr(
+        #         self, f"analogOutComboBox{idx}"
+        #     )
+        #     element.setKeyboardTracking(False)
+        #     element.valueChanged.connect(
+        #         lambda _, idx=idx: self.on_analog_out_changed(idx)
+        #     )
 
     def on_connection_established(self) -> None:
         self.parameters = self.app.parameters
