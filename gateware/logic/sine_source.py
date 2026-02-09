@@ -30,7 +30,9 @@ class SineSource(Module, AutoCSR):
         sine_freq=10_000,
         am_freq=0,
         amplitude_scale=0.5,
+        use_am_modulation=True,
     ):
+        use_am_modulation = bool(use_am_modulation)
         phase_inc = int(round(sine_freq * (1 << phase_bits) / clk_freq))
         am_phase_inc = int(round(am_freq * (1 << phase_bits) / clk_freq))
         max_amplitude = (1 << (width - 1)) - 1
@@ -74,25 +76,41 @@ class SineSource(Module, AutoCSR):
         am_mod_depth = Signal((width + 2, True))
         envelope = Signal((width + 1, True))
 
-        self.sync += [
-            phase.eq(phase + self.phase_inc.storage),
-            am_phase.eq(am_phase + self.am_phase_inc.storage),
-        ]
-        self.comb += [
-            index.eq(phase[phase_bits - lut_bits:]),
-            base.eq(lut[index]),
-            am_index.eq(am_phase[phase_bits - lut_bits:]),
-            am_base.eq(lut[am_index]),
-            am_amplitude_signed.eq(self.am_amplitude.storage),
-            pid_product.eq(self.pid_amplitude_input * self.pid_amplitude.storage),
-            pid_scaled.eq(pid_product >> (width - 1)),
-            am_mod_depth_raw.eq(am_amplitude_signed - pid_scaled),
-            am_mod_depth.eq(am_mod_depth_raw),
-            am_product.eq(am_base * am_mod_depth),
-            am_scaled.eq(am_product >> (width - 1)),
-            amplitude_signed.eq(self.amplitude.storage),
-            envelope.eq(amplitude_signed + am_scaled),
-            product.eq(base * envelope),
-            scaled.eq(product >> (width - 1)),
-            self.output.eq(scaled),
-        ]
+        if use_am_modulation:
+            self.sync += [
+                phase.eq(phase + self.phase_inc.storage),
+                am_phase.eq(am_phase + self.am_phase_inc.storage),
+            ]
+            self.comb += [
+                index.eq(phase[phase_bits - lut_bits:]),
+                base.eq(lut[index]),
+                am_index.eq(am_phase[phase_bits - lut_bits:]),
+                am_base.eq(lut[am_index]),
+                am_amplitude_signed.eq(self.am_amplitude.storage),
+                pid_product.eq(self.pid_amplitude_input * self.pid_amplitude.storage),
+                pid_scaled.eq(pid_product >> (width - 1)),
+                am_mod_depth_raw.eq(am_amplitude_signed - pid_scaled),
+                am_mod_depth.eq(am_mod_depth_raw),
+                am_product.eq(am_base * am_mod_depth),
+                am_scaled.eq(am_product >> (width - 1)),
+                amplitude_signed.eq(self.amplitude.storage),
+                envelope.eq(amplitude_signed + am_scaled),
+                product.eq(base * envelope),
+                scaled.eq(product >> (width - 1)),
+                self.output.eq(scaled),
+            ]
+        else:
+            self.sync += [
+                phase.eq(phase + self.phase_inc.storage),
+            ]
+            self.comb += [
+                index.eq(phase[phase_bits - lut_bits:]),
+                base.eq(lut[index]),
+                pid_product.eq(self.pid_amplitude_input * self.pid_amplitude.storage),
+                pid_scaled.eq(pid_product >> (width - 1)),
+                amplitude_signed.eq(self.amplitude.storage),
+                envelope.eq(amplitude_signed + pid_scaled),
+                product.eq(base * envelope),
+                scaled.eq(product >> (width - 1)),
+                self.output.eq(scaled),
+            ]

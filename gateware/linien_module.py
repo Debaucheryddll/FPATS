@@ -163,6 +163,7 @@ class LinienModule(Module, AutoCSR):
             width=width,
             amplitude_scale=0.5,
             lut_bits=12,
+            use_am_modulation= False
         )
         self.submodules.sine_source_a = SineSource(
             width=width,
