@@ -1,0 +1,1393 @@
+Quantum-limited optical time transfer for future geosynchronous links
+面向未来地球同步链路的量子极限光学时间传输
+Emily D. Caldwell 1,2,5 , Jean-Daniel Deschenes 3,5 , Jennifer Ellis 1 , William C. Swann 1 , Benjamin K.
+Stuhl 4 , Hugo Bergeron 3 , Nathan R. Newbury 1,5 & Laura C. Sinclair 1,5
+Emily D. Caldwell 1,2,5 , Jean-Daniel Deschenes 3,5 , Jennifer Ellis 1 , William C. Swann 1 , Benjamin K.
+Stuhl 4 , Hugo Bergeron 3 , Nathan R. Newbury 1,5 & Laura C. Sinclair 1,5
+The combination of optical time transfer and optical clocks opens up the possibility of large-scale free-space
+networks that connect both ground-based optical clocks and future space-based optical clocks. Such networks
+promise better tests of general relativity 1−3 , dark-matter searches 4 and gravitational-wave detection 5 . The
+ability to connect optical clocks to a distant satellite could enable space-based very long baseline interferometry 6,7
+, advanced satellite navigation 8 , clock-based geodesy 2,9,10 and thousandfold improvements in intercontinental
+time dissemination 11,12 . Thus far, only optical clocks have pushed towards quantum-limited performance 13 .
+By contrast, optical time transfer has not operated at the analogous quantum limit set by the number of received
+photons. Here we demonstrate time transfer with near quantum-limited acquisition and timing at 10,000 times lower
+received power than previous approaches 14−24 . Over 300 km between mountaintops in Hawaii with launched
+powers as low as 40µW , distant sites are synchronized to 320 attoseconds. This nearly quantum-limited operation
+is critical for long-distance free-space links in which photons are few and amplification costly: at 4.0mW transmit
+power, this approach can support 102 dB link loss, more than sufficient for future time transfer to geosynchronous
+orbits.
+光学时间传输与光学原子钟的结合开启了构建大规模自由空间网络的可能，这些网络连接地面光学
+原子钟和未来的空间光学原子钟。此类网络有望实现更精确的广义相对论 (general relativity)测试、
+暗物质 (dark matter)搜索和引力波 (gravitational-wave)探测。将光学原子钟连接至远端卫星的能力，
+可支持空间基超长基线干涉测量 (very long baseline interferometry)、先进的卫星导航、基于原子钟的
+测地学 (clock-based geodesy)以及跨洲时间传播的千倍提升。迄今为止，只有光学原子钟达到了量
+子极限性能，而光学时间传输尚未达到由接收光子数决定的类似量子极限。本文展示了在接收功率
+比以往方法低 10,000倍的情况下，接近量子极限的时间传输与定时。在夏威夷山顶间 300公里的
+距离上，发射功率低至 40µW，远端站点实现了 320阿秒的同步。此近量子极限操作对于光子稀少
+且放大成本高昂的长距离自由空间链路至关重要:在 4.0mW发射功率下，该方法可支持 102 dB的
+链路损耗，完全满足未来地球同步轨道时间传输的需求。
+Comb-based optical time transfer (OTT) follows previous microwave two-way time-frequency transfer 25 .
+Optical pulses from coherent frequency combs located at remote sites are exchanged across a two-way free-space
+link. The difference in the detected pulse time-of-arrival between sites yields their clock offset, independent of
+the time-of-flight (assuming full reciprocality). Previous comb-based OTT used linear optical sampling (LOS)
+against a local frequency comb with an offset repetition rate to scan across the incoming comb pulses and measure
+their timing 14−24 . This approach is photon inefficient and requires signals of a few nanowatts, 40 dB above the
+quantum limit. Despite this, with a combination of 40 − cm aperture telescopes, adaptive optics and watt-level
+amplifiers, Shen et al. 24 achieved a working range of 113 km . The alternative approach of conventional optical
+frequency transfer (OFT) using continuous wave lasers achieves high performance 26−28 but is unable to measure
+the elapsed time between sites-the quantity of interest to many applications-in the presence of link disruption due
+1
+to atmospheric turbulence, weather or multiplexed operation.
+基于频率梳的光学时间传输 (OTT)继承了先前的微波双向时频传输技术。位于远端站点的相干频
+率梳发出的光脉冲通过双向自由空间链路交换。两站点检测到的脉冲到达时间差即为它们的时钟
+偏差，且独立于飞行时间 (假设完全互易)。先前基于频率梳的 OTT采用线性光学采样 (LOS)，通过
+本地频率梳的重复率偏移扫描入射频率梳脉冲并测量其定时。该方法光子效率低，需几纳瓦的信号
+功率，远高于量子极限。尽管如此，结合大口径望远镜、自适应光学和瓦级放大器，Shen等人实现
+了 113 km的工作距离。另一种传统光频传输 (OFT)方法使用连续波激光器，性能优异，但在大气
+湍流、天气变化或复用操作导致链路中断时，无法测量两站点间的经过时间——这是许多应用关注
+的关键量。
+In close analogy with optical clocks, the quantum-limited uncertainty for time transfer by means of an optical
+pulse of width τp (here roughly 350 fs) is simply
+与光学原子钟类似，利用脉冲宽度为 τp (此处约 350飞秒)的光学脉冲进行时间传输的量子极限不
+确定度可简洁表示为
+σt = γ
+τp√
+n
+(1)
+where n is the number of detected photons in the measurement interval and γ is a constant of order unity.
+Here, we demonstrate OTT at this quantum limit by exploiting the precision and agility of a time-programmable
+frequency comb (TPFC) 29 in conjunction with Kalman filter-based signal processing. The improvement over
+previous LOS-based OTT is large: the minimum received power decreases 10,000-fold from a few nanowatts to a
+few hundred femtowatts, which means only one out of 100 received frequency comb pulses contains a photon.
+其中 n 为测量区间内检测到的光子数，γ 为数量级为一的常数。本文通过利用时间可编程频率梳
+(TPFC) 与基于卡尔曼滤波的信号处理，展示了在该量子极限下的 OTT。相较于先前基于 LOS 的
+OTT，改进显著:最小接收功率降低了 10,000倍，从几纳瓦降至几百飞瓦，意味着每 100个接收的
+频率梳脉冲中仅含一个光子。
+We demonstrate this quantum-limited OTT by synchronizing two optical timescales across two different free-
+space links: a 2-km link with low turbulence in Boulder, CO, USA and a 300 km link with strong turbulence
+between two mountaintops in Hawaii. Under low turbulence, where the free-space path is indeed reciprocal, the
+two-way time transfer is nearly quantum-limited; the clocks are synchronized to 246as/
+√
+Pτ in time deviation
+and to 4.3 × 10−16/
+√
+Pτ3 in fractional frequency (modified Allan deviation), where P is the received power in
+picowatts and τ is the averaging time in seconds, with respective floors of roughly 35 attoseconds and below 10−18
+. Over the 300 km horizontal link, the one-way timing signals are still measured at nearly the quantum limit with
+a power threshold of 270fW . However, the strong integrated turbulence leads to excess non-reciprocal time-of-
+flight noise, attributed to multipath effects. Nevertheless, the clocks remain synchronized to 1.6fsτ−1/2 reaching
+a floor of 320 attoseconds in time and 2.8 × 10−15τ−3/2 reaching a floor of 3.1 × 10−19 in frequency. Finally,
+synchronization is achieved even at attenuated comb powers of 40µW with a median received power of 150fW
+. This low-power performance is enabled by the robust Kalman filter approach that can tolerate the greater than
+70% signal fades. In comparison to the longest previously reported range for LOS-based OTT 24 , quantum-limited
+OTT operates across three times the distance, at 20 times improved update rate using 200 times less comb power
+and at four times lower aperture diameter, with more than 14 dB greater tolerable link loss. The tolerable link loss
+of 102 dB exceeds that of future ground-to GEO links with similar 10 -cm apertures and milliwatt comb powers.
+2
+我们通过同步两个光学时间尺度，跨越两个不同的自由空间链路，展示了这一量子极限的 OTT:一
+个是美国科罗拉多州博尔德市的 2公里低湍流链路，另一个是夏威夷两座山顶之间 300公里的强湍
+流链路。在低湍流条件下，自由空间路径确实是互惠的，双向时间传输几乎达到量子极限；时钟同
+步的时间偏差为 246as/
+√
+Pτ ，分数频率 (修正艾伦偏差)为 4.3× 10−16/
+√
+Pτ3 ，其中 P 为接收功
+率 (皮瓦特)，τ 为平均时间 (秒)，相应的噪声底约为 35阿秒和低于 10−18 。在 300 km的水平链路
+上，单向定时信号仍接近量子极限测量，功率阈值为 270fW。然而，强湍流导致了多径效应引起的
+额外非互惠飞行时间噪声。尽管如此，时钟仍保持同步，时间达到 320阿秒的底噪 1.6fsτ−1/2，频
+率达到 3.1× 10−19的底噪 2.8× 10−15τ−3/2。最后，即使在衰减的频率梳功率 40µW和中值接收功
+率 150fW下，也实现了同步。这种低功率性能得益于鲁棒的卡尔曼滤波方法，能够容忍超过 70%
+的信号衰落。与先前报道的最长视距 (LOS)基 OTT距离 24 相比，量子极限 OTT实现了三倍距离，
+更新速率提高 20倍，频率梳功率降低 200倍，光学口径直径减小四倍，且可容忍的链路损耗提高
+超过 14 dB。102 dB的可容忍链路损耗超过了未来采用类似 10厘米口径和毫瓦级频率梳功率的地
+面至地球静止轨道 (GEO)链路。
+https://doi.org/10.1038/s41586-023-06032-5
+Received: 15 December 2022
+接收日期:2022年 12月 15日
+Accepted: 30 March 2023 Published online: 21 June 2023 (C) Check for updates
+接受日期:2023年 3月 30日在线发表:2023年 6月 21日 (C)查看更新
+1 National Institute of Standards and Technology (NIST), Boulder, CO, USA. 2 Department of Electrical, Energy and Computer Engineering,
+University of Colorado, Boulder, CO, USA.
+1 美国国家标准与技术研究院 (NIST)，科罗拉多州博尔德市。2 科罗拉多大学博尔德分校电气、能源与计算机工程系，美国
+科罗拉多州博尔德市。
+3 Octosig Consulting, Quebec City, Quebec, Canada. 4 Space Dynamics Laboratory, North Logan, UT, USA. 5 These authors contributed
+equally: Emily D. Caldwell, Jean-Daniel Deschenes,
+3 Octosig咨询公司，加拿大魁北克市。4 空间动力学实验室，美国犹他州北洛根市。5 这些作者贡献相同:Emily D. Caldwell，
+Jean-Daniel Deschenes，
+3
+Fig. 1 Quantum-limited OTT. a, The systemwas tested on a 300 km folded free-space link established between
+two sites, colocated at the Mauna Loa Observatory (elevation 3,400 m) and a cat-eye retroflector located on the
+summit of Haleakala (elevation 3,050 m). Colocation of the sites allows a direct, out-of-loop timing verification.
+b, Detailed schematic for site B. (Site A is identical except without the synchronization (Synch) lock.) Each site
+uses two TPFCs phase locked to a local optical reference. The clock TPFC output defines the local timescale. It is
+also transmitted across the bidirectional link through a 10-cm aperture free-space optical (FSO) terminal (Extended
+Data Fig. 1). The tracking TPFC is used to acquire, track and measure the timing of the incoming clock comb
+pulse train. Two-way combination of the measured timing signals generates an error signal that is applied at siteB
+for synchronization (text). The filtered comb output powers are 4.0 mW and 5.9 mW for sites A and B (Extended
+Data Fig. 2), but can be attenuated by the in-line attenuator to mimic links with higher loss. The fibre spools before
+the FSO terminals compensate for the 300 km of air dispersion. (See also Extended Data Fig. 3 and Methods.) The
+underlying map in a is from Google Earth with image data from Landsat and Copernicus. RF, radio frequency.
+图 1量子极限 OTT。a，系统在两个站点之间建立的 300 km折叠自由空间链路上进行了测试，两个
+站点均位于莫纳罗亚天文台 (海拔 3400米)和哈雷阿卡拉峰顶的猫眼反射镜 (海拔 3050米)。站点的
+共址布置允许直接的环外时序验证。b，站点 B的详细示意图。(站点 A相同，但无同步 (Synch)锁
+定。)每个站点使用两个锁相于本地光学参考的 TPFC(光学频率梳)。时钟 TPFC输出定义本地时间
+尺度。它还通过一个 10厘米口径的自由空间光学 (FSO)终端在双向链路上传输 (扩展数据图 1)。跟
+踪 TPFC用于捕获、跟踪并测量入射时钟梳脉冲列的时序。测得的时序信号的双向组合产生误差信
+号，应用于站点 B进行同步 (正文)。滤波后的梳输出功率分别为站点 A和 B的 4.0 mW和 5.9 mW
+(扩展数据图 2)，但可通过在线衰减器衰减以模拟更高损耗的链路。FSO终端前的光纤线圈补偿了
+空气色散的 300 km。(另见扩展数据图 3和方法部分。)底图 a来自 Google Earth，图像数据来源于
+Landsat和 Copernicus。RF，射频。
+4
+Quantum-limited time transfer using a TPFC
+使用 TPFC的量子极限时间传输
+The quantum-limited OTT was demonstrated first over a 2 km link at the NIST campus in Boulder and then
+over the 300 km link between the Hawaiian Islands shown in Fig. 1a. For both, a folded-link geometry enabled
+direct out-of-loop verification of the synchronization, at the cost of added link loss, but the system could ultimately
+be used in a point-to-point 21,24 or multi-node geometry 20 . For the Hawaii link, operation was mainly limited to
+overnight and early morning hours because of daytime clouds in the interisland convergence zone.
+量子极限 OTT首先在博尔德 NIST园区的 2 km链路上演示，随后在图 1a所示的夏威夷群岛之间
+的 300 km链路上演示。两者均采用折叠链路几何结构，实现了同步的直接环外验证，代价是增加
+了链路损耗，但该系统最终可用于点对点 21,24或多节点几何结构 20。对于夏威夷链路，运行主要
+限于夜间和清晨时段，因为岛间汇聚区白天多云。
+The system is centred around fibre-based, 200-MHz repetition frequency, TPFCs that provide real-time attosecond-
+level digital control of the pulse timing. A heterodyne timing discriminator 29 , as shown in Extended Data Fig. 4,
+measures the time offset between a local tracking TPFC and the incoming clock comb pulse signal with shot-noise
+limited sensitivity. This time offset acts as an error signal to adjust the digital control of the tracking TPFC to follow
+the incoming clock comb pulses (Methods). The commanded tracking-TPFC timing then replicates the timing of
+the incoming comb pulse train at each site, tA or tB , whose difference,
+系统以基于光纤的 200 MHz重复频率 TPFC为核心，提供脉冲时序的实时阿秒级数字控制。如扩
+展数据图 4所示，异频时序鉴别器 29 测量本地跟踪 TPFC与入射时钟梳脉冲信号之间的时间偏移，
+灵敏度受限于散粒噪声。该时间偏移作为误差信号，用于调整跟踪 TPFC的数字控制以跟踪入射时
+钟梳脉冲 (方法部分)。指令跟踪 TPFC时序随后复制每个站点入射梳脉冲列的时序，tA 或 tB ，其
+差值，
+∆t =
+tA − tB
+2
+= (∆Tosc −∆Tcntrl) + εNR, turb + εqn + ε combs (2)
+is a measure of the time offset between the two clock combs, (∆T osc −∆T cntrl ) , where ∆T osc is the time
+offset between the local reference oscillators and∆T cntrl is the synchronization feedback to the clock TPFC at site
+B (∆T cntrl = 0 for open-loop operation). The fundamental reciprocity of a single spatial mode
+30
+lik means that the
+time-of-flight, including turbulence effects, should cancel in this two-way comparison of equation (2). Neverthe-
+less, we include a non-reciprocal, turbulence noise term, ϵNR, turb , for reasons discussed later. The quantum noise
+term, ϵqn , has a standard deviation following equation (1). The system noise, ϵ combs , is typically negligible at
+short averaging times and low powers, but leads to the flicker floor at long averaging times.
+是两个时钟梳之间时间偏移的度量，(∆T osc −∆T cntrl )，其中 ∆T osc 是本地参考振荡器之间的时
+间偏移，∆T cntrl 是站点 B (∆T cntrl = 0 时钟 TPFC的同步反馈 (开环操作)。单一空间模式
+30
+lik的基
+本互易性意味着包括湍流效应在内的飞行时间应在方程 (2)的双向比较中相互抵消。然而，出于后
+文讨论的原因，我们引入了非互易湍流噪声项 ϵNR, turb 。量子噪声项 ϵqn的标准差遵循方程 (1)。系
+统噪声 ϵ combs 在短平均时间和低功率下通常可忽略，但在长平均时间下导致闪烁噪声底。
+To track the incoming pulses, the incoming clock comb and local tracking comb pulses must overlap in time
+5
+to within the roughly 2τp dynamic range of the timing discriminator. This initial alignment is accomplished by
+sweeping the tracking comb pulse position in time 29 and searching for peaks in the heterodyne signal (Fig. 2a).
+Scintillation from turbulence, however, causes random 100% intensity fluctuations that complicate mapping the
+peak heterodyne voltage to the incoming pulse location. Using a Kalman filter to aggregate intermittent obser-
+vations of pulse overlap, we can track the estimated temporal position of the incoming pulses, and the associated
+uncertainty, despite fades. As the estimated position uncertainty decreases, the search space narrows. When the
+estimated uncertainty reaches 500fs , the tracking lock is engaged. To detect the weakest possible incoming comb
+light, the detection bandwidth for the heterodyne timing discriminator should be as narrow as possible given the
+constraints of atmospheric turbulence phase noise and platform and fibre vibration. We settled on 26kHz here as a
+conservative compromise.
+为了跟踪入射脉冲，入射时钟梳和本地跟踪梳脉冲必须在时间上重叠，且重叠误差需控制在定时鉴
+别器的约 2τp 动态范围内。该初始对准通过在时间上扫动跟踪梳脉冲位置 29 并搜索外差信号峰值
+来实现 (图 2a)。然而，湍流引起的闪烁导致随机的 100%强度波动，增加了将峰值外差电压映射到
+入射脉冲位置的难度。利用卡尔曼滤波器对脉冲重叠的间歇观测进行聚合，我们能够在信号衰落期
+间跟踪入射脉冲的估计时间位置及其相关不确定性。随着估计位置不确定性的减小，搜索空间逐渐
+缩小。当估计不确定性达到 500fs时，跟踪锁定启动。为了检测尽可能弱的入射梳光，外差定时鉴别
+器的检测带宽应在大气湍流相位噪声及平台和光纤振动的限制下尽可能窄。我们在此选择了 26kHz
+作为保守的折中方案。
+Fig. 2 | Low-power acquisition and quantum-limited performance. a, Demonstrated signal acquisition over the
+300 kmHawaii link. Initially, the local tracking TPFC is swept over its full 5 ns non-ambiguity range in a triangular
+waveform. At roughly 3 s into the acquisition, a peak in the heterodyne signal indicates a transient temporal overlap
+between the tracking TPFC and the incoming clock comb (inset). On the basis of the observation of a heterodyne
+signal above the 135fW threshold, the signal processor steers the tracking comb back to this location for finer search
+before initiating the tracking lock at roughly 5 s into the acquisition. b , The timing noise (standard deviation over
+600 s ) in ∆t measured over a shorted link (open circles) and a 2 km free-space link (closed circles). Colours
+correspond to traces in c below. The timing follows the quantum limit from equation (1) for γ = 2.1γcl (grey line),
+where γcl ≈ 0.6 is the quantum limit for Gaussian pulses (ref. 29 and Extended Data Table 1). c, Time deviations
+6
+(TDEV) over the 2 km free-space link at received powers of 800fW and 20.6pW follow the quantum limit with
+γ = 2.1γol (dotted lines), until reaching the system noise floor at received powers above 10nW .
+图 2 |低功率捕获与量子极限性能。a，展示了在 300 km夏威夷链路上的信号捕获。最初，本地跟
+踪 TPFC在其完整的 5纳秒无歧义范围内以三角波形扫动。大约在捕获开始 3 s时，外差信号峰值
+表明跟踪 TPFC与入射时钟梳发生了瞬时时间重叠 (插图)。基于外差信号超过 135fW阈值的观测，
+信号处理器将跟踪梳导向该位置进行更精细的搜索，并在捕获开始约 5 s时启动跟踪锁定。b，在
+600 s内测量的∆t定时噪声 (标准差)，分别对应短路链路 (空心圆)和 2 km自由空间链路 (实心圆)。
+颜色对应下图 c中的曲线。定时噪声遵循方程 (1)中的量子极限 (灰线)，其中 γcl ≈ 0.6为高斯脉冲
+的量子极限 (参考文献 29及扩展数据表 1)。c，2 km自由空间链路上接收功率为 800fW和 20.6pW
+时的时间偏差 (TDEV)遵循带有 γ = 2.1γol 的量子极限 (虚线)，直到在接收功率高于 10nW时达到
+系统噪声底。
+For robust operation through signal fades, the timing samples, tA and tB , are input into the Kalman filter to
+generate optimal estimates of the timing with 10 − 25 Hz effective bandwidth. These Kalman-filtered values are
+used in equation (2) and input to a 15− Hz bandwidth synchronization lock to steer the site B clock comb. Here,
+the timing signals used in the two-way combining are communicated from sites A to B by coaxial cable but an
+optical communications link could be implemented as in ref. 15. The transceiver time delays are calibrated so the
+pulses from the two clock combs overlap at the out-of-loop verification reference plane located within siteB when
+∆t → 0 (Extended Data Figs. 5 and 6).
+为实现信号衰落期间的稳健运行，定时采样 tA和 tB被输入卡尔曼滤波器，以生成具有 10− 25 Hz
+有效带宽的最优定时估计。这些卡尔曼滤波值用于方程 (2)并输入至带宽为 15− Hz的同步锁，以
+控制 B站时钟梳。在此，双向合成中使用的定时信号通过同轴电缆从 A站传输至 B站，但也可如
+参考文献 15所示实现光通信链路。收发器时间延迟经过校准，使得当∆t → 0时，两个时钟梳的脉
+冲在位于 B 站内的环路外验证参考平面重叠 (扩展数据图 5和 6)。
+At low power and weak turbulence, the two-way time transfer is nearly quantum limited following equation
+(1) until it reaches the system noise floor (Fig. 2b, c). We apply a roughly 270fW threshold on the received
+power for a valid timing measurement, chosen such that the quantum-limited timing noise standard deviation was
+roughly one-sixth the full timing discriminator dynamic range (Supplementary Information). For comparison, the
+power threshold for signal acquisition is lower, at roughly 135fW , selected to limit false detections to fewer than
+one per day (Methods). These thresholds correspond to n = 40 and20photons per signal integration time (19µs)
+, respectively, or 0.01 and 0.005 mean photons per comb pulse. The values of n > 1 reflect the conservatively
+chosen threshold to ensure low probability of false detection. Both the acquisition and timingmeasurements operate
+at roughly twice the quantum limit because of detector noise power penalty and differential chirp between the
+tracking comb and incoming comb pulses. There is a negligible contribution from daylight; reflected sunlight
+would contribute only 10 attowatts within the single-mode heterodyne detection bandwidth.
+7
+在低功率和弱湍流条件下，双向时间传输几乎达到量子极限，遵循公式 (1)，直到达到系统噪声底
+(Fig. 2b, c)。我们对接收功率施加了大约 270fW的阈值，以确保有效的定时测量，该阈值选择使得
+量子极限定时噪声的标准差约为整个定时判别器动态范围的六分之一 (补充信息)。作为对比，信号
+捕获的功率阈值较低，大约为 135fW，选择该值是为了将误检率限制在每天少于一次 (方法部分)。
+这些阈值分别对应于信号积分时间内的 n = 40和 20个光子，或每个梳状脉冲平均 0.01和 0.005个
+光子。n > 1的数值反映了为确保低误检概率而保守选择的阈值。由于探测器噪声功率惩罚和跟踪
+梳与入射梳脉冲之间的差分啁啾，捕获和定时测量均以大约两倍量子极限运行。白天光照的贡献可
+忽略不计；反射的阳光在单模外差检测带宽内仅贡献约 10阿托瓦特功率。
+Demonstration over a 300 km terrestrial free-space link
+在 300 km地面自由空间链路上的演示
+Figure 3 compares the performance over the 300 and 2 km links in terms of timing synchronization, timing
+instability and frequency instability. Further data are provided in the Extended Data Figs. 7-10. Although the one-
+way timing measurements are quantum limited over the strongly turbulent 300 km link, unlike the shorted and 2 km
+link, their two-way subtraction, ∆t , does not reach the quantum limit for reasons discussed below. Nevertheless,
+it drops below state-of-the-art transportable optical atomic clocks 9 after only 6 s of averaging time and laboratory
+optical atomic clocks after 17 s of averaging time 21 .
+图 3比较了 300米和 2 km链路在定时同步、定时不稳定性和频率不稳定性方面的性能。更多数据
+见扩展数据图 7-10。尽管单向定时测量在强湍流的 300 km链路上达到量子极限，但与较短和 2 km
+链路不同，其双向差分 ∆t未能达到量子极限，原因将在下文讨论。尽管如此，经过 6 s的平均时
+间后，其性能已优于最先进的便携式光学原子钟 9，并在 17 s的平均时间后优于实验室光学原子钟
+21 。
+To demonstrate operation at extreme link loss, the comb power from site B was attenuated to 40µW leading to
+a median received power of 150 fW at site A. Despite signal fading 73% time below threshold, timing acquisition
+and synchronization were still achieved with minimal 2.8 times performance degradation at short times. This
+attenuation of the site B power is done in the two-way path and is equivalent to operation with 4.0 mW of comb
+power over a total link loss of 106 dB .
+为了演示极端链路损耗下的操作，站点 B的梳状光功率被衰减至 40µW，导致站点 A的中位接收
+功率为 150飞瓦。尽管信号有 73%的时间低于阈值，定时捕获和同步仍然实现，且短时间内性能
+仅下降 2.8倍。站点 B功率的这种衰减发生在双向路径中，相当于在总链路损耗为 106 dB的情况
+下以 4.0 mW的梳状光功率运行。
+Effects of turbulence on timing
+湍流对定时的影响
+The increased timing noise across the 300 km link is attributed to the strong integrated turbulence and a break-
+down in the expected reciprocity in time-of-flight over the single-mode link30 . Previous comb-based OTT has not
+8
+seen clear violations in reciprocity even at 100 km (refs. 14-24). However, the enhanced sensitivity of quantum-
+limited OTT means we can probe timing fluctuations at the attosecond-level during deep signal fades when the
+effects of multipath interference are at their strongest.
+在 300 km链路上定时噪声的增加归因于强烈的积分湍流以及单模 link30 中飞行时间预期互易性的
+破坏。先前基于梳状光的 OTT在即使达到 100 km时也未观察到明显的互易性违背 (参考文献 14-
+24)。然而，量子极限 OTT的增强灵敏度使我们能够在信号深度衰落期间探测到阿秒级的定时波动，
+此时多径干扰效应最为显著。
+This excess noise is illustrated best in the power spectral densities (PSDs) of ∆t and its counterpart t̄ =
+(tA + tB) /2 (Fig. 4). The latter measures the time-of-flight and shows the expected piston noise (time-of-flight
+pulse wander) with its f−8/3 Kolmogorov scaling 31,32 . A fit to this piston noise, assuming a 10 m s−1 wind
+speed on the basis of typical meteorological data, generates an estimate of the integrated turbulence strength, LC2
+n
+, where C2
+n is the turbulence structure function and L is the link distance. The values of LC2
+n range over two orders
+of magnitude, from 1 × 10−11 to 1 × 10−9 m1/3 , for measurements overnight and into the early morning hours
+(Fig. 4 inset). Note that the use of a folded-link geometry only increases, rather than cancels, the piston-induced
+time-of-flight noise.
+这种额外噪声在 ∆t及其对应的 t̄ = (tA + tB) /2的功率谱密度 (PSD)中表现得最为明显 (图 4)。后
+者测量飞行时间，显示了预期的活塞噪声 (飞行时间脉冲漂移)，其具有 f−8/3 的 Kolmogorov(科尔
+莫哥洛夫)标度 31,32。对该活塞噪声进行拟合，假设基于典型气象数据的 10 m s−1风速，生成了积
+分湍流强度 LC2
+n 的估计，其中 C2
+n 是湍流结构函数，L是链路距离。LC2
+n 的数值跨越两个数量级，
+从 1× 10−11到 1× 10−9 m1/3，对应夜间至清晨的测量 (图 4插图)。注意，使用折叠链路几何结构
+只会增加而非抵消由活塞引起的飞行时间噪声。
+9
+Fig. 3 | OTT measured by out-of-loop timing comparison. a, Clock time difference (out-of-loop verification)
+across the 300 km link for 4.0 mW comb power and 14pW median received power. b, c , Time deviation ( b ) and
+fractional frequency instability (c) (modified Allan deviation) across the 300 km link at 4.0mW comb power with
+14pWmedian received power (blue circles) and 40µWattenuated comb power with 150fWmedian received power
+(green triangles). Also shown are data from the 2 km link at 30pW received power (yellow stars) and shorted (grey
+dots). At low turbulence over the 2 km link, the performance is nearly quantum limited (yellow dashed line for
+γ = 3.4γol ). Over 300 km , performance is limited by non-reciprocal multipath atmospheric turbulence at short
+times. The time deviations follow 1.6 fs /
+√
+τ and49as /
+√
+τ for the 300 km and 2 km links, plateauing at 475 as.
+The corresponding modified Allan deviations follow 2.8×10−15τ−3/2 and 8.5×10−17τ−3/2 , reaching a floor of
+3.1×10−19 . For context, instability curves are provided for comparisons of physically separated clocks involving
+transportable 9 (light pink) and laboratory optical clocks 21 (dark pink).
+图 3 |通过环外时序比较测量的 OTT。a，300 km链路上 4.0 mW梳状光源功率和 14pW中值接收功
+率下的时钟时间差 (环外验证)。b, c，b时间偏差和分数频率不稳定性 (c)(修正的 Allan偏差)，在
+4.0mW梳状光源功率和 14pW中值接收功率 (蓝色圆点)以及 40µW衰减梳状光源功率和 150fW中
+值接收功率 (绿色三角) 下的 300 km 链路。还显示了在 30pW 接收功率 (黄色星号) 和短接 (灰点)
+条件下的 2 km 链路数据。在 2 km 链路的低湍流条件下，性能几乎达到量子极限 (黄色虚线表示
+γ = 3.4γol )。在 300 km链路上，性能在短时间内受非互易多路径大气湍流限制。时间偏差分别遵
+循 1.6 飞秒 /
+√
+τ 和 49 阿秒 /
+√
+τ ，并在 475 阿秒处达到平台期。相应的修正 Allan 偏差分别遵循
+2.8× 10−15τ−3/2 和 8.5× 10−17τ−3/2 ，达到 3.1× 10−19 的下限。作为参考，提供了涉及可运输 9
+(浅粉色)和实验室光学钟 21 (深粉色)的物理分离时钟的不稳定性曲线以供比较。
+The PSD of t̄ shows excess time-of-flight noise (shaded region), beyond the piston noise, out to the Greenwood
+frequency of roughly 300 Hz before dropping to the quantum-limited white noise floor. The PSD of∆t (open loop)
+follows the expected f−3 phase noise of the reference oscillators but shows similar excess timing noise (shaded
+purple region), although suppressed by roughly 7− 11 dB from t̄ . This excess noise on ∆t limits the out-of-loop
+synchronization, yielding the white noise floor shown in Fig. 4 and the corresponding elevated instabilities in
+Fig. 3. We attribute it to multipath interference due to strong atmospheric turbulence across the 300 km horizontal
+link. As the turbulence strength increases, the pulse shape itself can distort and spread after transmission 31,33,34 .
+We speculate these multipath related distortions will depend on the pulse chirp, which differs between clock combs
+leading to the limited 7−11 dB suppression in the reciprocal measurement. Whereas such strong turbulence effects
+are challenging to analyse theoretically, the noise should increase with integrated turbulence, which is indeed the
+case as illustrated in the inset of Fig. 4.
+t̄的功率谱密度 (PSD)显示出超出活塞噪声的额外飞行时间噪声 (阴影区域)，一直延伸到大约 300 Hz
+的格林伍德频率 (Greenwood frequency)，随后降至量子极限的白噪声底噪。∆t (开环)的 PSD遵循
+参考振荡器预期的 f−3相位噪声，但也显示出类似的额外定时噪声 (紫色阴影区域)，尽管相比 t̄被
+抑制了大约 7 − 11 dB。这种在 ∆t上的额外噪声限制了环外同步，导致图 4中所示的白噪声底噪
+以及图 3中相应的升高不稳定性。我们将其归因于通过 300 km水平链路的强大大气湍流引起的多
+路径干扰。随着湍流强度的增加，脉冲形状本身在传输后可能发生畸变和扩展 31,33,34 。我们推测
+这些多路径相关的畸变将依赖于脉冲啁啾 (chirp)，而不同的时钟梳 (clock combs)之间存在差异，导
+致互惠测量中仅有限的 7− 11 dB抑制。虽然如此强的湍流效应在理论上难以分析，但噪声应随积
+分湍流强度增加，正如图 4插图所示的情况。
+10
+Fig. 4 | PSDs measured over the strong turbulence of the 300 km link. Timing PSD for a representative
+90 min measurement for ∆t = (tA − tB) /2 (purple solid line), the time-of-flight term given by t̄ = (tA + tB) /2
+(green solid line) and out-of-loop synchronization verification (blue solid line). Shaded regions indicate excess
+noise beyond the expected reference oscillator noise and piston noise values, for ∆t and t̄ , respectively, as well
+as the shared quantum noise floor (dashed lines). The excess timing noise on ∆t sets the floor for the out-of-loop
+timing below the 15 Hz synchronization bandwidth. Inset shows the non-reciprocal excess versus LC2
+n for 10 min
+intervals over many runs (grey circles). The solid red line illustrates the linear trend with integrated turbulence
+strength.
+图 4 |在 300 km链路强湍流条件下测量的功率谱密度 (PSD)。代表性 90 min测量的定时 PSD，∆t =
+(tA − tB) /2 (紫色实线)、由 t̄ = (tA + tB) /2给出的飞行时间项 (绿色实线)以及环外同步验证 (蓝色
+实线)。阴影区域表示超出预期参考振荡器噪声和活塞噪声值的额外噪声，分别对应∆t和 t̄，以及
+共享的量子噪声底噪 (虚线)。∆t上的额外定时噪声设定了低于 15 Hz同步带宽的环外定时底噪。插
+图显示了多次运行中多个 10 min间隔的非互惠额外噪声与 LC2
+n的关系 (灰色圆点)。红色实线展示
+了与积分湍流强度的线性趋势。
+Future long-distance ground-to-space links
+未来的远距离地面到空间链路
+Figure 5 puts the performance and size, weight, power and cost (SWaP-C) of quantum-limited OTT in context
+with previous work and future space-based OTT. The current 10 cm apertures and 4.0 mW comb powers bode well
+for future low-SWaP-C space instruments 35 . Moreover, the use of 10 cm apertures for the ground as well as
+satellite terminals permits compact ground stations. For applications such as global time distribution, clock-based
+geodesy or very long baseline interferometry, the satellite would include OTT terminals and a high-performance
+oscillator 36−38 . Relativistic tests or dark-matter searches would require an atomic optical clock onboard the
+satellite, along with the OTT terminals.
+11
+图 5将量子极限 OTT的性能及其体积、重量、功耗和成本 (SWaP-C)与以往工作及未来基于空间的
+OTT进行了对比。目前的 10 cm口径和 4.0 mW梳状光源功率为未来低 SWaP-C空间仪器 35 奠定
+了良好基础。此外，地面和卫星终端均采用 10 cm口径，使地面站更加紧凑。对于全球时间分发、
+基于时钟的大地测量或甚长基线干涉测量等应用，卫星将配备 OTT终端和高性能振荡器 36−38。相
+对论测试或暗物质搜索则需要卫星搭载原子光钟以及 OTT终端。
+Whereas GEO-to-ground links are 100 times farther than the Hawaii link, the path integrated turbulence is
+roughly 100 times lower. As a result, for paired 10-cm aperture telescopes, the total link loss is similar to that
+shown in Fig. 5 (Supplementary Information) and the conservative 102 dB tolerable loss exceeds the estimated
+ground-to-GEO link loss by 11 dB . A fourfold increase in the ground aperture should increase the reach to cis-
+lunar orbits. Because the integrated turbulence is about 100 times lower than for the Hawaii link, ground-to-space
+OTT should not suffer from the same level of non-reciprocal timing noise from multipath effects. However, the
+turbulence-induced piston noise will no longer perfectly cancel as the up- and down-going comb pulses traverse
+the turbulent atmosphere with a 0.12 - stime offset, roughly the time-of-flight to GEO. As a result, there is a
+differential piston noise contribution that limits the time deviation to ≈ 2fs/
+√
+τ and modified Allan deviation to
+≈ 4 × 10−15τ−3/2 (Supplementary Information). Purely coincidentally, these values are close to the data of Fig.
+3 although of very different origin. Nevertheless, the residual instability is below state-of-the-art optical clocks
+for τ > 10 s of seconds. OTT could then compare two optical clocks in different locations without degradation
+by means of common view, or a ground clock to a space-based clock for tests of relativity 1−3 . Active clock
+synchronization would be limited to a bandwidth of roughly 1/ (8× 0.12 s) = 1 Hz , or roughly ten times lower
+than the Hawaii link. Therefore, applications that require high coherence between ground and space might combine
+active synchronization (for observation times beyond 2 s) with near-real-time postprocessing of the time samples
+(for observation times below 2 s).
+虽然地球同步轨道 (GEO) 到地面的链路距离是夏威夷链路的 100 倍，但路径积分湍流大约低 100
+倍。因此，对于配对的 10厘米口径望远镜，总链路损耗与图 5(补充信息)中所示相似，且保守的
+102 dB可容忍损耗超过估计的地面到 GEO链路损耗 11 dB。地面口径增加四倍应能将覆盖范围扩
+展至近月轨道。由于积分湍流比夏威夷链路低约 100倍，地面到空间的光学时频传输 (OTT)不应受
+到多径效应引起的非互易定时噪声的同等影响。然而，湍流引起的活塞噪声将不再完全抵消，因为
+上行和下行的梳状脉冲以约 0.12秒的时间偏移穿越湍流大气层，这大致是飞行到 GEO的时间。因
+此，存在差分活塞噪声贡献，限制了时间偏差至≈ 2fs/
+√
+τ 和修正的 Allan偏差至≈ 4× 10−15τ−3/2
+(补充信息)。纯属巧合，这些数值与图 3的数据接近，尽管来源截然不同。尽管如此，残余不稳定
+性低于当前最先进的光学钟在 τ > 10 s秒内的表现。OTT因此可以通过共视方式比较不同地点的
+两台光学钟，或将地面钟与空间钟进行相对论测试而不产生性能下降 1−3。主动时钟同步的带宽将
+限制在大约 1/ (8× 0.12 s) = 1 Hz，约为夏威夷链路的十分之一。因此，需要地面与空间高相干性
+的应用可能会结合主动同步 (用于超过 2秒的观测时间)与近实时的时间样本后处理 (用于低于 2秒
+的观测时间)。
+12
+Fig. 5 | Ground-to-space time transfer. Future free-space OTT will require operation at long distance, set by
+tolerable link loss, and low SWaP-C, largely set by the power-aperture product. The current demonstration (large
+yellow star) achieves the highest tolerable loss of 102 dB at the very low power-aperture product of 0.3 W cm2 as
+compared to previous comb-based time-frequency transfer or OFT (magenta circles) 20,24,27,28 . The linear trade-
+off (white dashed lines) between tolerable loss or maximum (Max.) distance and power-aperture product is set by
+the received power threshold, as shown for the LOS comb-based OTT (2.5 nW) and quantum-limited OTT (250
+fW) with both curves assuming a 10 cm aperture. For an additional comparison, several optical communication
+missions are shown (orange circles for GEO and orange crosses for LEO) 44−49 . The lower bottom and far right
+axes assume matched 10 cm apertures, 2 dB channel loss, 6 dB total transceiver loss and 6 dB additional coupling
+loss (Supplementary Information). The maximum projected distance for the current OTT exceeds the 35,786 km
+GEO altitude and even reaches the 10 times farther cis-lunar distances if the ground aperture is increased to 40 cm
+, while leaving the space-based aperture at 10 cm (small yellow star).
+图 5 |地面到空间的时间传输。未来的自由空间 OTT将需要在由可容忍链路损耗决定的长距离下运
+行，并且低 SWaP-C(尺寸、重量、功耗和成本)，这主要由功率-口径积决定。当前演示 (大黄星)在极
+低的功率-口径积 0.3 W cm2下实现了最高可容忍损耗 102 dB，相比之前基于梳状激光的时频传输
+或光学频率传输 (OFT)(品红色圆点) 20,24,27,28 。可容忍损耗或最大距离与功率-口径积之间的线性
+权衡 (白色虚线)由接收功率阈值决定，如视距 (LOS)梳状激光 OTT(2.5纳瓦)和量子极限 OTT(250
+飞瓦)所示，两条曲线均假设口径为 10 cm。作为额外对比，展示了若干光学通信任务 (橙色圆点代
+表 GEO，橙色叉号代表低地轨道 LEO) 44−49 。下方和最右侧坐标轴假设匹配的 10 cm口径，2 dB
+通道损耗，6 dB总收发器损耗及 6 dB额外耦合损耗 (补充信息)。当前 OTT的最大预计距离超过了
+35,786公里的 GEO高度，若地面口径增加至 40 cm，甚至可达到 10倍于此的近月距离，同时空间
+端口径保持在 10 cm (小黄星)。
+Although the link margin is more than sufficient for OTT to low to mid-Earth orbits (LEO/MEO), these in-
+volve up to 8 km s−1 velocities with significant resulting Doppler shifts, other relativistic effects and point-ahead.
+Relativistic effects are in principle calculable and non-reciprocity from point-ahead have been shown to be negligi-
+ble after correction 39−41 . However, the strong Doppler shifts will significantly complicate signal acquisition and
+signal processing, while potentially introducing systematics. For example, signal acquisition within the 26− kHz
+detection bandwidth requires orbit velocity knowledge to ±2 cm s−1 . In addition, coupling of Doppler shifts
+to optical dispersion can mimic time shifts, causing systematic errors. For these reasons, quantum-limited OTT
+13
+to LEO/MEO orbits will require an even more advanced system. It is likely such a system will require a hybrid
+approach that combines comb-based OTT with continuous wave laser-based OFT to assist with the frequency ac-
+quisition and tracking of the large Doppler shifted signals.
+尽管链路裕度对于 OTT到低地球轨道/中地球轨道 (LEO/MEO)来说绰绰有余，但这些轨道涉及高
+达 8 km s−1 的速度，伴随显著的多普勒频移、其他相对论效应以及预瞄效应。相对论效应原则上
+是可计算的，且预瞄引起的非互易性经校正后已被证明可忽略不计 39−41。然而，强烈的多普勒频
+移将显著增加信号捕获和信号处理的复杂性，同时可能引入系统误差。例如，在 26 − kHz检测带
+宽内进行信号捕获需要轨道速度知识达到±2 cm s−1。此外，多普勒频移与光学色散的耦合可能模
+拟时间偏移，导致系统误差。基于这些原因，量子极限的 OTT到 LEO/MEO轨道将需要更先进的
+系统。很可能该系统将采用一种混合方法，结合基于频率梳的 OTT与基于连续波激光的光频传输
+(OFT)，以辅助频率捕获和跟踪大幅多普勒频移信号。
+Figure 5 includes several optical communication missions. Quantum-limited OTT might piggyback on future
+coherent optical communication links, which would be facilitated by its low power threshold of−96dBm either by
+use of a shared aperture or separately steered subaperture. It also includes several demonstrations of OFT by means
+of two-way transmission of a continuous wave laser, which reaches extremely low instabilities over low turbulence,
+kilometre-scale links 26−28 . The tolerable loss (and therefore distance) for OFT could be significantly extended
+by operation near the shot-noise limit depending on the tolerance for cycle slips 42 . However, signal interruptions
+from turbulence, weather, platform motion and/or multiplexed operation to different sites will result in penalties
+in the frequency transfer 43 and, critically, prevent measurement of the relative time offset between clocks, the
+quantity of interest for many applications. Quantum-limited OTT, on the other hand, can track the relative time
+with femtosecond precision even if the link availability is limited to seconds interspersed across hours, days or
+longer.
+图 5涵盖了若干光学通信任务。量子极限 OTT可能搭载未来的相干光通信链路，这得益于其低至
+<b0></b0的功率阈值，可通过共享孔径或独立转向的子孔径实现。此外，图中还展示了通过双向连
+续波激光传输实现的多次 OFT演示，该方法在低湍流、公里级链路上达到极低的不稳定性 26−28 。
+OFT的可容忍损耗 (进而距离)可通过接近光子计数噪声极限的操作显著延长，具体取决于对周期
+跳变的容忍度 42 。然而，湍流、天气、平台运动及/或多址操作导致的信号中断将对频率传输造成
+惩罚 43，且关键的是，阻碍了对时钟间相对时间偏移的测量，而这正是许多应用关注的量。相比之
+下，量子极限 OTT即使链路可用性仅为数秒且分布在数小时、数天甚至更长时间内，也能以飞秒
+级精度跟踪相对时间。
+Conclusion
+结论
+By operating near the quantum limit, this OTT requires 10,000 times less power than previous LOS ap-
+proaches. Here, we show attosecond time transfer over record distances of 300 km and record link losses of 102 dB
+, while transmitting only the 4.0 mW output from a compact, unamplified frequency comb. At low turbulence
+strengths, the time deviation is as low as 35 attoseconds at 3 s averaging. Under strong turbulence, the time de-
+viation drops as low as 220 attoseconds at roughly 300 s of averaging: well below what is needed for distributed
+coherent sensing, redefinition of the second and tests of fundamental physics 1−12 .
+14
+通过接近量子极限运行，该 OTT所需功率比以往视距 (LOS)方法低一万倍。本文展示了在创纪录
+的 <b0></b0距离和创纪录的 102 dB链路损耗下实现的阿秒级时间传输，同时仅传输来自紧凑型无
+放大频率梳的 4.0 mW输出。在低湍流强度下，时间偏差在 3 s平均时间内低至 35阿秒。在强湍流
+条件下，时间偏差在约 300 s平均时间内降至 220阿秒，远低于分布式相干传感、秒的重新定义及
+基础物理测试所需的水平 1−12 。
+The combination of this level of performance, low-power aperture product and the ability to operate at 102 dB
+link losswithout adaptive opticswill enable future lowSWaP-COTT fromgeosynchronous orbits (GEO) to portable
+ground-based clocks for time transfer, geodesy, relativity tests or distributed sensing. Indeed, with a four times
+increase in ground terminal aperture, future OTT could even reach cis-lunar orbits.
+这种性能水平、低功率孔径积以及在无自适应光学条件下可承受 <b0></b0链路损耗的能力，将使
+未来从地球同步轨道 (GEO)到便携式地面时钟的低 SWaP-C OTT成为可能，应用于时间传输、大
+地测量、相对论测试或分布式传感。事实上，若地面终端孔径增加四倍，未来 OTT甚至可覆盖近
+月轨道。
+Online content
+在线内容
+Anymethods, additional references, Nature Portfolio reporting summaries, source data, extended data, supple-
+mentary information, acknowledgements, peer review information; details of author contributions and competing
+interests; and statements of data and code availability are available at https://doi.org/10.1038/s41586-023-06032-5.
+任何方法、附加参考文献、Nature Portfolio报告摘要、源数据、扩展数据、补充信息、致谢、同行评审
+信息；作者贡献和竞争利益详情；以及数据和代码可用性声明均可在 https://doi.org/10.1038/s41586-
+023-06032-5获取。
+1. Derevianko, A. et al. Fundamental physics with a state-of-the-art optical clock in space. Quantum Sci.
+Technol. 7, 044002 (2022).
+1. Derevianko, A. 等. 利用最先进的空间光学时钟进行基础物理研究。Quantum Sci. Technol. 7,
+044002 (2022)。
+2. Mehlstäubler, T. E., Grosche, G., Lisdat, C., Schmidt, P. O. & Denker, H. Atomic clocks for geodesy. Rep.
+Prog. Phys. 81, 064401 (2018).
+2. Mehlstäubler, T. E., Grosche, G., Lisdat, C., Schmidt, P. O. & Denker, H.用于大地测量的原子钟。Rep.
+Prog. Phys. 81, 064401 (2018)。
+3. Altschul, B. et al. Quantum tests of the Einstein equivalence principle with the STE-QUEST space mission.
+Adv. Space Res. 55, 501-524 (2015).
+15
+3. Altschul, B.等. 利用 STE-QUEST空间任务对爱因斯坦等效原理的量子测试。Adv. Space Res. 55,
+501-524 (2015)。
+4. Derevianko, A. & Pospelov, M. Hunting for topological dark matter with atomic clocks. Nat. Phys. 10,
+933-936 (2014).
+4. Derevianko, A. & Pospelov, M.利用原子钟探测拓扑暗物质。Nat. Phys. 10, 933-936 (2014)。
+5. Kolkowitz, S. et al. Gravitational wave detection with optical lattice atomic clocks. Phys. Rev. D 94,
+124043 (2016).
+5. Kolkowitz, S.等. 利用光学晶格原子钟进行引力波探测。Phys. Rev. D 94, 124043 (2016)。
+6. The Event Horizon Telescope Collaboration. First M87 event horizon telescope results. II. Array and
+instrumentation. Astrophys. J. Lett. 875, L2 (2019).
+6. 事件视界望远镜合作组. M87事件视界望远镜首次结果。II.阵列与仪器。Astrophys. J. Lett. 875,
+L2 (2019)。
+7. Kurczynski, P. et al. The Event Horizon Explorer mission concept. In Proc. Space Telescopes and In-
+strumentation 2022: Optical, Infrared, and Millimeter Wave (eds Coyle, L. E. et al.) Vol. 12180, 215-224 (SPIE,
+2022).
+7. Kurczynski, P.等. 事件视界探测器任务构想。载于《2022年空间望远镜与仪器:光学、红外及毫
+米波》会议论文集 (主编 Coyle, L. E.等)，第 12180卷，215-224页 (SPIE, 2022)。
+8. Warren, Z. & Fields, R. Optical crosslinks and satellite synchronization for GNSS, communications, and
+beyond. GPS Solut. 26, 64 (2022).
+8. Warren, Z. & Fields, R.用于全球导航卫星系统 (GNSS)、通信及其他领域的光学交叉链路与卫星
+同步。GPS Solut. 26, 64 (2022)。
+9. Takamoto, M. et al. Test of general relativity by a pair of transportable optical lattice clocks. Nat. Photonics
+https://doi.org/10.1038/s41566-020-0619-8 (2020).
+9. Takamoto, M. 等. 通过一对可运输光学晶格原子钟测试广义相对论。Nat. Photonics
+https://doi.org/10.1038/s41566-020-0619-8 (2020)。
+10. Lisdat, C. et al. A clock network for geodesy and fundamental science. Nat. Commun. 7, 12443 (2016).
+10. Lisdat, C.等. 用于大地测量和基础科学的时钟网络。Nat. Commun. 7, 12443 (2016)。
+11. Riehle, F. Towards a redefinition of the second based on optical atomic clocks. C.R. Phys. 16, 506-515
+(2015).
+11. Riehle, F.基于光学原子钟的秒定义重构展望。C.R. Phys. 16, 506-515 (2015)。
+16
+12. Bize, S. The unit of time: present and future directions. C.R. Phys. 20, 153-168 (2019).
+12. Bize, S.时间单位:现状与未来方向。C.R. Phys. 20, 153-168 (2019)。
+13. Itano, W. M. et al. Quantum projection noise: population fluctuations in two-level systems. Phys. Rev.
+A 47, 3554-3570 (1993).
+13. Itano, W. M.等. 量子投影噪声:两能级系统中的群体波动。Phys. Rev. A 47, 3554-3570 (1993)。
+14. Giorgetta, F. R. et al. Optical two-way time and frequency transfer over free space. Nat. Photonics 7,
+434-438 (2013).
+14. Giorgetta, F. R.等. 自由空间中的光学双向时间与频率传输。Nat. Photonics 7, 434-438 (2013)。
+15. Deschênes, J.-D. et al. Synchronization of distant optical clocks at the femtosecond level. Phys. Rev. X
+6, 021016 (2016).
+15. Deschênes, J.-D.等. 远距离光学时钟的飞秒级同步。Phys. Rev. X 6, 021016 (2016)。
+16. Bergeron, H. et al. Tight real-time synchronization of a microwave clock to an optical clock across a
+turbulent air path. Optica 3, 441 (2016).
+16. Bergeron, H. 等. 通过湍流空气路径实现微波时钟与光学时钟的紧密实时同步。Optica 3, 441
+(2016)。
+17. Sinclair, L. C. et al. Synchronization of clocks through 12 km of strongly turbulent air over a city. Appl.
+Phys. Lett. 109, 151104 (2016).
+17. Sinclair, L. C.等. 通过 12 km强湍流城市空气实现时钟同步。Appl. Phys. Lett. 109, 151104 (2016)。
+18. Sinclair, L. C. et al. Comparing optical oscillators across the air to milliradians in phase and 10-17 in
+frequency. Phys. Rev. Lett. 120, 050801 (2018).
+18. Sinclair, L. C.等. 跨空气比较光学振荡器，达到毫弧度相位和 10-￿17频率精度。Phys. Rev. Lett.
+120, 050801 (2018)。
+19. Bergeron, H. et al. Femtosecond time synchronization of optical clocks off of a flying quadcopter. Nat.
+Commun. 10, 1819 (2019).
+19. Bergeron, H. 等. 利用飞行四旋翼实现光学时钟的飞秒级时间同步。Nat. Commun. 10, 1819
+(2019)。
+20. Bodine, M. I. et al. Optical time-frequency transfer across a free-space, three-node network. APL Pho-
+tonics 5, 076113 (2020).
+20. Bodine, M. I.等. 跨越自由空间三节点网络的光学时频传输. APL Photonics 5, 076113 (2020).
+17
+21. Boulder Atomic Clock Optical Network (BACON) Collaboration. et al. Frequency ratio measurements
+at 18-digit accuracy using an optical clock network. Nature 591, 564-569 (2021).
+21. 博尔德原子钟光学网络 (BACON)合作组. 使用光学钟网络实现 18位精度的频率比测量. Nature
+591, 564-569 (2021).
+22. Ellis, J. L. et al. Scaling up frequency-comb-based optical time transfer to long terrestrial distances. Phys.
+Rev. Appl. 15, 034002 (2021).
+22. Ellis, J. L.等. 基于频率梳的光学时频传输向长距离地面扩展. Phys. Rev. Appl. 15, 034002 (2021).
+23. Shen, Q. et al. Experimental simulation of time and frequency transfer via an optical satellite-ground link
+at 10-18 instability. Optica 8, 471-476 (2021).
+23. Shen, Q. 等. 通过光学卫星-地面链路进行时频传输的实验模拟，达到 10-￿18 不稳定度. Optica
+8, 471-476 (2021).
+24. Shen, Q. et al. Free-space dissemination of time and frequency with 10-19 instability over 113 km. Nature
+610,661-666 (2022).
+24. Shen, Q.等. 自由空间时频传播，113公里距离实现 10-￿19不稳定度. Nature 610, 661-666 (2022).
+25. Fujieda, M. et al. Carrier-phase two-way satellite frequency transfer over a very long baseline. Metrologia
+51, 253 (2014).
+25. Fujieda, M.等. 载波相位双向卫星频率传输，超长基线实验. Metrologia 51, 253 (2014).
+26. Djerroud, K. et al. Coherent optical link through the turbulent atmosphere. Opt. Lett. 35, 1479-1481
+(2010).
+26. Djerroud, K.等. 通过湍流大气的相干光学链路. Opt. Lett. 35, 1479-1481 (2010).
+27. Kang, H. J. et al. Free-space transfer of comb-rooted optical frequencies over an 18 km open-air link.
+Nat. Commun. 10, 4438 (2019).
+27. Kang, H. J.等. 通过 18 km开放空气链路的梳根光学频率自由空间传输. Nat. Commun. 10, 4438
+(2019).
+28. Gozzard, D. R. et al. Ultrastable free-space laser links for a global network of optical atomic clocks. Phys.
+Rev. Lett. 128, 020801 (2022).
+28. Gozzard, D. R.等. 用于全球光学原子钟网络的超稳定自由空间激光链路. Phys. Rev. Lett. 128,
+020801 (2022).
+29. Caldwell, E. D., Sinclair, L. C., Newbury, N. R. & Deschenes, J.-D. The time-programmable frequency
+comb and its use in quantum-limited ranging. Nature 610, 667-673 (2022).
+18
+29. Caldwell, E. D., Sinclair, L. C., Newbury, N. R. & Deschenes, J.-D.可编程时间频率梳及其在量子极
+限测距中的应用. Nature 610, 667-673 (2022).
+30. Shapiro, J. H. Reciprocity of the turbulent atmosphere. J. Opt. Soc. Am. 61, 492-495 (1971).
+30. Shapiro, J. H.湍流大气的互易性. J. Opt. Soc. Am. 61, 492-495 (1971).
+31. Andrews, L. C. & Phillips, R. L. Laser Beam Propagation through Random Media (SPIE, 2005).
+31. Andrews, L. C. & Phillips, R. L.激光束在随机介质中的传播 (SPIE, 2005).
+32. Sinclair, L. C. et al. Optical phase noise from atmospheric fluctuations and its impact on optical time-
+frequency transfer. Phys. Rev. A 89, 023805 (2014).
+32. Sinclair, L. C.等. 大气波动引起的光学相位噪声及其对光学时频传输的影响. Phys. Rev. A 89,
+023805 (2014).
+33. Liu, C. H. & Yeh, K. C. Pulse spreading and wandering in random media. Radio Sci. 14, 925-931 (1979).
+33. Liu, C. H. & Yeh, K. C.随机介质中的脉冲展宽与漂移. Radio Sci. 14, 925-931 (1979).
+34. Young, C. Y. in Free-Space Laser Communication and Laser Imaging II Vol. 4821 (eds Ricklin, J. &
+Voelz, D. G.) 74-81 (SPIE, 2002).
+34. Young, C. Y. 载于《自由空间激光通信与激光成像 II》卷 4821 (主编 Ricklin, J. & Voelz, D. G.)
+74-81 (SPIE, 2002).
+35. Stahl, H. P., Stephens, K. R., Henrichs, T., Smart, C. & Prince, F. A. Single-variable parametric cost
+models for space telescopes. OE 49, 073006 (2010).
+35. Stahl, H. P., Stephens, K. R., Henrichs, T., Smart, C. & Prince, F. A.空间望远镜的单变量参数成本
+模型. OE 49, 073006 (2010).
+36. Abich, K. et al. In-orbit performance of the GRACE follow-on laser ranging interferometer. Phys. Rev.
+Lett. 123, 031101 (2019).
+36. Abich, K.等. GRACE后续激光测距干涉仪的轨道内性能. 物理评论快报 123, 031101 (2019).
+37. Swierad, D. et al. Ultra-stable clock laser system development towards space applications. Sci. Rep. 6,
+33973 (2016).
+37. Swierad, D.等. 面向空间应用的超稳定时钟激光器系统开发. 科学报告 6, 33973 (2016).
+38. Numata, K. et al. Progress and plans for a U.S. laser system for the LISA mission. In Proc. International
+Conference on Space Optics-ICSO 2018(eds Cugny, B. et al.) Vol. 11180, 152-159 (SPIE, 2019).
+19
+38. Numata, K.等. 美国激光系统在 LISA任务中的进展与规划. 载于国际空间光学会议-ICSO 2018
+论文集 (主编 Cugny, B.等)，第 11180卷，152-159页 (SPIE，2019年)。
+39. Swann, W. C. et al. Measurement of the impact of turbulence anisoplanatism on precision free-space
+optical time transfer. Phys. Rev. A 99, 023855 (2019).
+39. Swann,W.C.等. 湍流各向异性对精密自由空间光学时间传输影响的测量. 物理评论A99, 023855
+(2019).
+40. Robert, C., Conan, J.-M. & Wolf, P. Impact of turbulence on high-precision ground-satellite frequency
+transfer with two-way coherent optical links. Phys. Rev. A 93, 033860 (2016).
+40. Robert, C., Conan, J.-M.和 Wolf, P.湍流对双向相干光学链路高精度地面-卫星频率传输的影响。
+物理评论 A 93, 033860 (2016)。
+41. Stuhl, B. K. Atmospheric refraction corrections in ground-to-satellite optical time transfer. Opt. Express
+29, 13706 (2021).
+41. Stuhl, B. K.地面到卫星光学时间传输中的大气折射校正。光学快报 29, 13706 (2021)。
+42. Francis, S. P. et al. Weak-light phase tracking with a low cycle slip rate. Opt. Lett., OL 39, 5251-5254
+(2014).
+42. Francis, S. P.等. 低周期跳变率的弱光相位跟踪. 光学快报 (Opt. Lett.), OL 39, 5251-5254 (2014).
+43. Tønnes, M. B. K. et al. Coherent fiber links operated for years: effect of missing data. Metrologia 59,
+065004 (2022).
+43. Tønnes, M. B. K.等. 运行多年的相干光纤链路:数据缺失的影响. Metrologia 59, 065004 (2022).
+44. Kuwahara, T. et al. Laser data downlink system of micro-satellite RISESAT. In Proc. Small Satellite
+Conference https://digitalcommons.usu.edu/smallsat/2013/all2013/57 (2013).
+44. Kuwahara, T. 等. 微卫星 RISESAT 的激光数据下行系统. 载于小卫星会议论文集
+https://digitalcommons.usu.edu/smallsat/2013/all2013/57 (2013).
+45. Kolev, D. et al. Status update on laser communication activities in NICT. In Proc. 2022 IEEE International
+Conference on Space Optical Systems and Applications (ICSOS) 36-39 (IEEE, 2022).
+45. Kolev, D.等. NICT激光通信活动的最新进展. 载于 2022年 IEEE国际空间光学系统与应用会议
+(ICSOS)论文集 36-39页 (IEEE, 2022).
+46. Carrasco-Casado, A. & Mata-Calvo, R. in Springer Handbook of Optical Networks (eds. Mukherjee, B.
+et al.) 1057-1103 (Springer, 2020).
+20
+46. Carrasco-Casado, A. 和 Mata-Calvo, R. 收录于《斯普林格光学网络手册》(主编 Mukherjee, B.
+等)1057-1103(斯普林格，2020年)。
+47. Robinson, B. S. et al. TeraByte InfraRed Delivery (TBIRD): a demonstration of large-volume direct-to-
+Earth data transfer from low-Earth orbit. In Proc. Free-Space Laser
+47. Robinson, B. S.等. 太字节红外传输 (TBIRD):低地球轨道大容量直达地面数据传输的演示。载
+于自由空间激光会议论文集
+Communication and Atmospheric Propagation XXX (eds Boroson, D. M. & Hemmati, H.) Vol. 10524, 253-
+258 (SPIE, 2018).
+通信与大气传播 XXX(编辑 Boroson, D. M.和 Hemmati, H.)第 10524卷，253-258页 (SPIE，2018年)。
+48. Wright, M. W., Kovalik, J., Morris, J., Abrahamson, M. & Biswas, A. LEO-to-ground optical communi-
+cations link using adaptive optics correction on the OPALS downlink. In Proc. Free-Space Laser Communication
+and Atmospheric Propagation XXVIII (eds Boroson, D. M. & Hemmati, H.) Vol. 9739, 973904 (International
+Society for Optics and Photonics, 2016).
+48. Wright, M.W., Kovalik, J., Morris, J., Abrahamson, M.和Biswas, A.使用自适应光学校正的OPALS
+下行链路的低地轨道 (LEO) 到地面光学通信链路。载于《自由空间激光通信与大气传播 XXVIII》
+会议论文集 (编辑 Boroson, D. M.和 Hemmati, H.)，第 9739卷，973904页 (国际光学与光子学学会，
+2016年)。
+49. Gregory, M. et al. Commercial optical inter-satellite communication at high data rates. Opt. Eng. 51,
+031202 (2012).
+49. Gregory, M.等. 高速率商业光学星间通信. 光学工程 51, 031202 (2012).
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and
+institutional affiliations.
+出版者声明:施普林格·自然 (Springer Nature)对已发布地图中的司法管辖权声明及机构隶属关系保
+持中立。
+Springer Nature or its licensor (e.g. a society or other partner) holds exclusive rights to this article under a
+publishing agreement with the author(s) or other rightsholder(s); author self-archiving of the accepted manuscript
+version of this article is solely governed by the terms of such publishing agreement and applicable law.
+Springer Nature或其许可方 (例如学会或其他合作伙伴)根据与作者或其他权利持有者签订的出版协
+议，拥有本文的独家权利；作者对本文已接受手稿版本的自存档仅受该出版协议条款及适用法律的
+约束。
+(C) This is a U.S. Government work and not under copyright protection in the US; foreign copyright protection
+may apply 2023
+21
+(C)这是美国政府作品，在美国不受版权保护；2023年可能适用外国版权保护。
+Methods
+方法
+Overview of OTT operation
+OTT运行概述
+The steps necessary for operation of the time transfer system are as follows (Extended Data Fig. 3):
+时频传递系统运行所需步骤如下 (扩展数据图 3):
+(1) Initial calibration (done once after transceiver construction):
+(1)初始校准 (在收发器构建后进行一次):
+(a) Calibrate the transceiver time delay between the tracking comb reference plane (used to measure the time
+offset between the local tracking and clock combs at the tracking comb initialization step below) and the clock
+comb reference plane (used as out-of-loop verification plane). This calibrated time delay depends only on fibre
+path lengths in the transceiver, which are minimized and temperature controlled to reduce drift (Extended Data Fig.
+5).
+(a)校准跟踪梳参考平面 (用于测量本地跟踪梳与时钟梳在下述跟踪梳初始化步骤中的时间偏移)与
+时钟梳参考平面 (用作环外验证平面)之间的收发器时间延迟。该校准时间延迟仅依赖于收发器内
+光纤路径长度，路径长度经过最小化和温度控制以减少漂移 (扩展数据图 5)。
+(b) Calibrate the timing discriminator for both optical timing error and incoming optical power (Extended Data
+Fig. 4).
+(b)校准光学定时鉴别器，针对光学定时误差和入射光功率进行校准 (扩展数据图 4)。
+(c) Calibrate the out-of-loop verification channel voltage-to-time scaling.
+(c)校准环外验证通道的电压到时间的比例关系。
+(2) Pre-operation steps (done before every time transfer measurement): (a) Lock the clock comb and tracking
+comb to the local reference oscillator (portable cavity-stabilized laser in this experiment).
+(2)预操作步骤 (在每次时间传输测量前进行):(a)将时钟梳和跟踪梳锁定到本地参考振荡器 (本实验
+中为便携式腔稳定激光器)。
+22
+(b) Initialize the tracking comb time offset by adjusting its zero-time offset to coincide with its pulse overlap-
+ping the local clock comb at the tracking comb reference plane.
+(b)通过调整零时间偏移，使跟踪梳的脉冲在跟踪梳参考平面与本地时钟梳脉冲重合，从而初始化
+跟踪梳时间偏移。
+(c) Generate an initial estimate of the carrier frequency offset between the local tracking comb and incom-
+ing clock comb. Here, this estimate is based on measured cavity-stabilized laser frequencies and comb locking
+parameters.
+(c)生成本地跟踪梳与入射时钟梳之间载波频率偏移的初始估计。该估计基于测量的腔稳定激光器
+频率和梳锁定参数。
+(3) Optical link acquisition. Establish bidirectional coupling of the transmitted clock comb light into single-
+mode optical fibre after propagation across the free-space link (Extended Data Fig. 1).
+(3)光链路获取。建立双向耦合，将传输的时钟梳光通过自由空间链路传播后耦合入单模光纤 (扩展
+数据图 1)。
+(4) Tracking comb timing acquisition. Search for timing overlap between the incoming clock comb and local
+tracking comb at each site (Fig. 2a and later discussion in Methods).
+(4)跟踪梳定时获取。在每个站点搜索入射时钟梳与本地跟踪梳的定时重合 (图 2a及方法部分后续
+讨论)。
+(5) Tracking comb lock. Actively feedback to the local tracking comb timing to maintain overlap with the
+incoming clock comb pulses to within the dynamic range of the optical timing discriminator (Extended Data Fig. 4).
+In addition, actively feedback to the tracking comb frequency to keep the heterodyne signal between the tracking
+and local clock combs centred within the 26kHz detection bandwidth.
+(5)跟踪梳锁定。主动反馈调整本地跟踪梳定时，使其与入射时钟梳脉冲在光学定时鉴别器的动态
+范围内保持重合 (扩展数据图 4)。此外，主动反馈调整跟踪梳频率，使跟踪梳与本地时钟梳之间的
+外差信号保持在 26kHz检测带宽中心。
+(6) Note that the Kalman filter continuously tracks of the timing uncertainty between the local tracking and
+incoming clock comb. In the event of a signal fade from turbulence, if this uncertainty is too large, the tracking
+comb timing is re-acquired as discussed below and in the main text.
+(6)注意卡尔曼滤波器持续跟踪本地跟踪梳与入射时钟梳之间的定时不确定性。若因湍流导致信号
+衰落且不确定性过大，则如下文及正文所述重新获取跟踪梳定时。
+(7) Communication between sites (site A to B). Site A continuously transmits back the received timing to site
+B so that the clock timing offset can be calculated by means of the two-way timing calculation.
+(7)站点间通信 (站点 A至 B)。站点 A持续将接收的定时返回给站点 B，以便通过双向定时计算得
+出时钟定时偏移。
+23
+(8) Synchronization (site B). The clock timing offset is input to the synchronization loop to adjust the clock
+comb at site B. At the initiation of the synchronization loop, the tracking comb timing at site A is adjusted to avoid
+loss of tracking (Methods).
+(8)同步 (站点 B)。将时钟定时偏移输入同步环路，调整站点 B的时钟梳。在同步环路启动时，调
+整站点 A的跟踪梳定时以避免跟踪丢失 (方法部分)。
+(9) Out-of-loop verification. Once synchronization has been activated, measure the timing overlap of the two
+clock combs at the out-of-loop verification channel (Extended Data Fig. 6).
+(9)环外验证。一旦激活同步，测量两个时钟梳在环外验证通道的定时重合 (扩展数据图 6)。
+Timing discriminator operation
+定时鉴别器操作
+As shown in Extended Data Fig. 5, the optical timing discriminator uses the birefringence of polarization-
+maintaining (PM) optical fibre to generate two interferograms in which the lead and lag positions of the incoming
+clock comb pulse and local tracking comb pulses are switched 29 . The signals that are output from each balanced
+detector sit at a heterodyne frequency set by the offset between the two comb’s carrier frequencies. Because
+we demodulate the signals, this frequency offset must be known a priori to ±13kHz during acquisition, but after
+acquisition the frequency offset is tracked and adjusted to centre the demodulation frequency. Initial knowledge
+of the carrier frequency offset to within ±13kHz (fractional frequency knowledge of 6.8 × 10−11 at the optical
+carrier frequency) can be provided by (1) measuring the reference oscillator frequencies against a GPS disciplined
+oscillator, (2) use of a coarser frequency transfer over a comms link as has been done previously or (3) past estimates
+from a Kalman filter. Alternatively, the acquisition could include a search over frequency, but this additional search
+has not been implemented here. The demodulation frequency is set to differ between sites, nominally at values of
+10 and 12MHz to avoid cross talk from internal reflections within the free-space optical terminals.
+如扩展数据图 5所示，光学定时鉴别器利用偏振保持 (PM)光纤的双折射效应生成两个干涉图，其
+中入射时钟梳脉冲与本地跟踪梳脉冲的领先和滞后位置被切换 29 。每个平衡探测器输出的信号位
+于由两梳载波频率偏移设定的外差频率上。由于我们对信号进行解调，该频率偏移必须在采集期间
+预先知道 ±13kHz，但采集后频率偏移会被跟踪并调整以使解调频率居中。载波频率偏移的初始知
+识精度达到 ±13kHz (光学载波频率的分数频率精度为 6.8 × 10−11 )可通过 (1)将参考振荡器频率
+与 GPS锁定振荡器测量对比，(2)利用先前实现的通信链路上的粗略频率传输，或 (3)来自卡尔曼
+滤波器的历史估计获得。或者，采集过程可包括频率搜索，但此附加搜索在此未实现。解调频率在
+站点间设定为不同值，名义上为 10和 12MHz，以避免自由空间光学终端内部反射引起的串扰。
+The output of the timing discriminator is then the magnitude of the two demodulated signals, |V1| and |V2|
+. After calibration, the sum of their squares provides a measure of the incoming clock comb power, in watts, and
+their normalized relative values provides a measure of the relative timing of the incoming clock comb pulse train
+with respect to the local tracking comb, in femtoseconds.
+24
+时序鉴别器的输出是两个解调信号 |V1|和 |V2|的幅值。校准后，它们平方和提供了入射时钟梳功率
+的度量，单位为瓦特，而它们归一化的相对值则提供了入射时钟梳脉冲列相对于本地跟踪梳的相对
+时序，单位为飞秒。
+Timing discriminator signal power calibration
+时序鉴别器信号功率校准
+As with previous comb-based OTT using LOS, the input power is measured by calibrating the heterodyne
+signal amplitude 15,24 but in this case the signals from the timing discriminator are used. (Direct detection of the
+incoming power at the 100fW level would otherwise be challenging). For this heterodyne detection, the power is
+given by P = Cp
+[(
+|V1|2 + |V2|2
+)
+/2
+]
+, where the calibration factor,Cp has units of WV−2 and is a function of the
+local tracking comb power on the detector, pulse shape and dispersion, and timing imbalance of the optical timing
+discriminator. To measure this calibration constant, the link is shorted, attenuated to low powers and synchronized.
+We then measure the value of
+(
+|V1|2 + |V2|2
+)
+/2 . Next, we measure the total clock comb optical power at the
+input of the four balanced detector input ports using a calibrated power meter. On the basis of repeated calibrations,
+we expect this calibration constant to be accurate to within ±20% .
+与先前基于梳状光源的 OTT(光时域传输)使用 LOS(光学本地振荡器)相同，输入功率通过校准异
+频信号幅度 15,24来测量，但此处使用的是时序鉴别器的信号。(直接在 100fW级别检测入射功率将
+非常困难)。对于该异频检测，功率由 P = Cp
+[(
+|V1|2 + |V2|2
+)
+/2
+]
+给出，其中校准因子 Cp 的单位
+为 WV−2 ，且是探测器上本地跟踪梳功率、脉冲形状与色散以及光学时序鉴别器时序不平衡的函
+数。为了测量该校准常数，链路被短接，衰减至低功率并同步。然后测量
+(
+|V1|2 + |V2|2
+)
+/2的值。
+接着，使用校准功率计测量四个平衡探测器输入端口处的总时钟梳光功率。基于多次校准，我们预
+计该校准常数的准确度在 ±20%以内。
+This power calibration applies to the normal operation in which the demodulated signals are around half their
+peak values (Extended Data Fig. 5). During acquisition, the two demodulated squared signals are added together
+with a temporal delay that reflects the linearly scanned tracking comb. As a result, the peak demodulated voltages
+are roughly twice higher for the same optical power, and the calibration factor is ideally four times lower. In reality,
+for the delays here, the increase is closer to a factor of two as the operation point is not fully half of the peak voltage
+giving Cp,acq ≈ Cp/2 .
+该功率校准适用于解调信号约为其峰值一半时的正常操作 (扩展数据图 5)。在采集过程中，两个解
+调平方信号在反映线性扫描跟踪梳的时间延迟下相加。因此，对于相同的光功率，峰值解调电压大
+约是平时的两倍，校准因子理想情况下降低四倍。实际上，对于此处的延迟，增幅更接近两倍，因
+为操作点未完全达到峰值电压的一半，导致 Cp,acq ≈ Cp/2。
+Timing discriminator timing error calibration
+时序鉴别器时序误差校准
+25
+The timing error is calculated on the basis of the normalized difference of the two demodulated voltages by
+δt = f td (E) , where E = (|V1| − |V2|) / (|V1|+ |V2|) and f td (E) is the calibration function. f td (E) is de-
+termined in a separate shorted calibration by deliberately offsetting the clock and tracking comb pulse and then
+measuring the corresponding error signal, as shown in Extended Data Fig. 4. Because the error signal is normal-
+ized by the sum of the two demodulated signals, the timing error is insensitive to common-mode (for example,
+turbulence-induced) amplitude fluctuations between the channels. Furthermore, the performance of the overall
+system is insensitive to small changes in the calibration function, for example because of changes in the differential
+pulse dispersion, as the feedback seeks to lock this error signal δt to zero (Extended Data Fig. 4). Moreover, the
+fact that the timing discriminator’s differential delay arises from the difference in propagation constant of the two
+fibre polarization modes means that the temperature stability requirements are loose.
+时序误差基于两个解调电压的归一化差值计算，公式为 δt = f td (E) ，其中 E =
+(|V1| − |V2|) / (|V1|+ |V2|)和 f td (E)为校准函数。f td (E)通过在单独的短接校准中故意偏移时钟
+和跟踪梳脉冲并测量相应误差信号确定，如扩展数据图 4所示。由于误差信号被两个解调信号之和
+归一化，时序误差对通道间的共模 (例如湍流引起的)幅度波动不敏感。此外，整体系统性能对校准
+函数的小幅变化不敏感，例如由于差分脉冲色散变化，因为反馈机制旨在将该误差信号 δt锁定为
+零 (扩展数据图 4)。此外，时序鉴别器的差分延迟源自两种光纤偏振模式传播常数的差异，因此对
+温度稳定性的要求较宽松。
+Quantum-limited operation
+量子极限操作
+Both quantum-limited acquisition and quantum-limited operation depend on the signal-to-noise ratio of the
+timing discriminator. If that signal-to-noise ratio is shot-noise limited, then the timing discriminator is operating at
+the standard quantum limit. We consider that limit under the assumption of heterodyne detection.
+量子极限采集和量子极限操作均依赖于时序鉴别器的信噪比。如果该信噪比受限于散粒噪声，则时
+序鉴别器处于标准量子极限。我们在异频检测假设下考虑该极限。
+We first consider acquisition. Acquisition uses the average mean-squared voltage detected by the timing
+discriminator,
+(
+|V1|2 + |V2|2
+)
+/2 to search for pulse overlap. The detector noise level is 1.7 dB above shot noise
+set by the local tracking comb. On the basis of this noise level, we very conservatively set a threshold value
+of roughly (98µV)2 , which yields a false trigger rate of less than once per day. Given Cp,acq , this threshold
+corresponds to P thresh, acq ≈ 135fW , or roughly 20 photons for the sample time of (2× 26kHz)−1
+= 19µs (or
+0.005 mean photons per comb pulse) corresponding to the 26kHz heterodyne detection bandwidth.
+我们首先考虑获取。获取使用定时鉴别器检测到的平均均方电压，
+(
+|V1|2 + |V2|2
+)
+/2来搜索脉冲重
+叠。探测器噪声水平比由本地跟踪梳设定的散粒噪声高出 1.7 dB。基于此噪声水平，我们非常保守
+地设定了大约 (98µV)2的阈值，该阈值产生的误触发率低于每天一次。鉴于 Cp,acq，该阈值对应于
+P thresh, acq ≈ 135fW，或大约 20个光子，采样时间为 (2× 26kHz)−1
+= 19µs (或每个梳脉冲 0.005个
+平均光子)，对应于 26kHz频率混合检测带宽。
+Next, we consider quantum-limited operation of the timing discriminator in its estimate of the timing error,
+26
+δt , between the clock comb and tracking comb pulses, for example, the value of γ in equation (1). To find the
+quantum limit, we consider heterodyne detection between two unchirped, Gaussian pulses offset in time. (The
+Gaussian shape avoids sidelobes that can lead to false timing error values and also corresponds to the Gaussian
+filters used in our apparatus). This simple configuration is equivalent to considering the output from only one arm
+of the timing discriminator. For timing measurements, we define δt = 0 to correspond to a pulse separation equal
+to the full-width at half-maximum, τp , of the pulse intensity. As discussed in ref. 29, this yields a timing error
+of equation (3) with γal,1 =
+(
+2 ln (2)√η
+)−1 , where η is the detector quantum efficiency. For the two-way time
+transfer, assuming an equal number of received photons at each site, there is an additional factor of
+√
+2 , giving
+接下来，我们考虑定时鉴别器在估计时钟梳和跟踪梳脉冲之间的定时误差 δt (例如方程 (1)中的 γ
+值)时的量子极限操作。为了找到量子极限，我们考虑两个无啁啾、高斯脉冲在时间上的异频检测。
+(高斯形状避免了可能导致错误定时误差值的旁瓣，同时也对应于我们装置中使用的高斯滤波器)。
+这一简单配置等同于仅考虑定时鉴别器一个臂的输出。对于定时测量，我们定义 δt = 0对应于脉
+冲间隔等于脉冲强度半高宽 τp 。如参考文献 29 所述，这产生了方程 (3) 中的定时误差，系数为
+γal,1 =
+(
+2 ln (2)√η
+)−1，其中 η是探测器量子效率。对于双向时间传输，假设每个站点接收的光子
+数相等，还需乘以额外因子 √
+2，得到
+γql =
+1
+2
+√
+2 ln (2)√η
+≈ 0.6 (3)
+In the actual system, we use the dual outputs of the unbalanced Mach-Zehnder interferometer. In that case,
+n is the total number of received photons. Furthermore, there is a roughly 1.7 dB penalty, D , owing to detector
+noise, as discussed above. Finally, in our system, the largest penalty results from differential dispersion between
+the incoming clock comb pulses and the local tracking comb pulse. To lowest order, this causes broadening of the
+temporal signal by a factor C and a corresponding reduction in peak height by C , leading to a C2 increase in γ
+. The differential dispersion contains higher orders that lead to distortions of the pulse shape beyond broadening,
+but this first-order model is sufficient to characterize the degradation in the factor γ , as
+在实际系统中，我们使用不平衡马赫-曾德尔干涉仪的双输出。在这种情况下，n是接收光子的总
+数。此外，如上所述，由于探测器噪声存在大约 1.7 dB的惩罚，D。最后，在我们的系统中，最大
+惩罚来自于入射时钟梳脉冲与本地跟踪梳脉冲之间的差分色散。最低阶近似下，这导致时间信号展
+宽了一个因子 C ，峰值高度相应降低了 C ，从而使 γ 增加了 C2 。差分色散包含更高阶项，导致
+脉冲形状除了展宽外还有失真，但该一阶模型足以表征 γ 因子的退化，具体为
+γ =
+(
+DC2
+)
+γql (4)
+Experimental values for γ, C and other relevant parameters are given in Extended Data Table 1. We set a
+power threshold for a ’valid’ timing discriminator measurement of 264fW at site A and 283fW at site B (Extended
+Data Fig. 2). These are chosen conservatively to remain in the linear regime of the timing discriminator curve
+(Extended Data Fig. 4) despite the additive shot noise in the detected signal (and including the 1.7 dB detector
+noise penalty). At this threshold, additive noise leads to a noise level in E of±0.3 (two sigma), which covers 40%
+of the shaded region in Extended Data Fig. 4. This power level corresponds to roughly40photons in a sample time
+of (2× 26kHz)−1
+= 19µs (or 0.01 mean photons per comb pulse).
+27
+实验中 γ, C及其他相关参数的数值见扩展数据表 1。我们在站点 A设定了“有效”定时鉴别器测量
+的功率阈值为 264fW，在站点 B设定为 283fW (扩展数据图 2)。这些阈值选择非常保守，以保持在
+定时鉴别器曲线的线性区间内 (扩展数据图 4)，尽管检测信号中存在叠加的散粒噪声 (包括 1.7 dB
+探测器噪声惩罚)。在该阈值下，叠加噪声导致 E 中的噪声水平为 ±0.3 (两倍标准差)，覆盖了扩展
+数据图 4中阴影区域的 40%。该功率水平对应于采样时间 (2× 26kHz)−1
+= 19µs内大约 40个光子
+(或每个梳脉冲 0.01个平均光子)。
+Free-space optical terminals
+自由空间光学终端
+The terminals are low loss, fibre coupled, single-transversal-mode and fully reciprocal for the frequency comb
+light following the design of ref. 50. For the pair of terminals used here (Extended Data Fig. 1), the total ’fibre-
+to-fibre’ loss for comb light between them over a short distance is measured to be 3.3 dB , which includes roughly
+2 dB of loss from the optical components and an additional roughly 1.3 dB of coupling loss into the single-mode
+fibre.
+这些端口具有低损耗、光纤耦合、单横模且对频率梳光完全互易，设计遵循文献 50。对于此处使用
+的一对端口 (扩展数据图 1)，它们之间短距离内频率梳光的总“光纤到光纤”损耗测量值为 3.3 dB
+，其中包括光学元件约 2 dB的损耗以及耦合到单模光纤的额外约 1.3 dB的耦合损耗。
+Unlike ref. 50, we use a larger 10 cm beam expander and use a focal plane array (FPA) for detection of the
+beacon laser for the much longer span of 300 km . The 10 cm aperture was chosen on the basis of commercially
+available optics and to be larger than the maximum expected Fried parameter. The received beacon is directed
+to the FPA of an InGaAs camera (Extended Data Fig. 1). For operation at low received powers, the beacon is
+synchronouslymodulated and detected at half the camera frame rate, allowing for real-time background subtraction.
+The beam position on the FPA is maintained at a precalibrated location through feedback to the galvo mirror.
+Additionally, the beacon power integrated over the region of interest and recorded.
+与文献 50不同，我们使用了更大的 10 cm光束扩展器，并采用焦平面阵列 (FPA)检测信标激光，以
+适应更长的 300 km跨度。10 cm孔径的选择基于市售光学元件，并且大于预期的最大弗里德参数
+(Fried parameter)。接收的信标光被引导至 InGaAs相机的 FPA(扩展数据图 1)。在低接收功率下，信
+标同步调制并以相机帧率的一半进行检测，实现实时背景扣除。通过反馈至振镜，保持光束在 FPA
+上的位置于预先校准的位置。此外，信标功率在感兴趣区域内积分并记录。
+The use of galvo mirrors as in ref. 50 and the FPA provides means of a broad search for the beacon enabling
+link acquisition after coarse initial pointing. A visible camera with telescopic lens provides the gross initial pointing,
+aided by an 830 nm , broad angle beacon transmitted through the cat-eye reflector and a matched 830 nm bandpass
+filter in front of the camera.
+如文献 50所述，振镜和 FPA的使用提供了广泛搜索信标的手段，使得在粗略初始指向后能够实现
+链路捕获。配备望远镜镜头的可见光相机提供粗略初始指向，辅以通过猫眼反射镜发射的 830 nm
+宽角信标及相机前置的匹配 830 nm带通滤波器。
+28
+Dispersion balancing over the 300 km link
+300 km链路的色散平衡
+As dispersion amounts to a decrease in both the detection sensitivity and the timing sensitivity, we must
+compensate for the additional group delay dispersion of the 300 km of air (and also to maintain the accuracy of the
+power and timing slope calibrations). Using 70,000 pascal for air pressure, 10◦C for air temperature, 25% relative
+humidity and 450ppm for CO2 mole fraction, we estimate the group velocity dispersion of the air in Hawaii to
+be β2 = 7.43 × 10−30 s2 m−1 . In comparison, at 1, 560 nm, PM1550 fibre has dispersion of β2 = −2.18 ×
+10−26 s2 m−1 . Therefore, we can compensate for the 297 km of air by adding 101 m of PM1550 fibre to the fibre
+path length already in place for a shorted measurement. As a final fine-tuning step, we measure the pulse widths
+across the atmosphere and minimize the width of the interference signal. This optimization yields a total PM1550
+fibre length of 105 m .
+由于色散会降低检测灵敏度和时序灵敏度，我们必须补偿 300 km空气的附加群时延色散 (同时保
+持功率和时序斜率校准的准确性)。采用 70,000帕斯卡的气压，10◦C的气温，25%的相对湿度以及
+450ppm的 CO2 摩尔分数，我们估算夏威夷空气的群速度色散为 β2 = 7.43 × 10−30 s2 m−1 。相比
+之下，1, 560 nm, PM1550光纤的色散为 β2 = −2.18 × 10−26 s2 m−1 。因此，我们可以通过在已有
+的短距离测量光纤路径中加入 101 m的 PM1550光纤来补偿空气的 297 km。作为最终的微调步骤，
+我们测量大气中的脉冲宽度并最小化干涉信号的宽度。该优化得到的 PM1550光纤总长度为 105 m
+。
+Tracking comb timing acquisition and lock
+跟踪梳时序捕获与锁定
+At the onset of operation or after a long fade, the system must acquire the tracking lock between the lo-
+cal tracking comb and the incoming clock comb. This acquisition is accomplished with a Kalman filter-based
+search. As discussed in the main text, this search is based on the timing discriminator signal power output value of(
+|V1 (t)|2 + |V2 (t− rτp)|2
+)
+/2 , where r is the scanning rate of the tracking comb. This signal is proportional to
+the input clock comb pulse power. A voltage threshold is applied that corresponds to roughly 135fW at zero pulse
+time offset (Timing discriminator operation).
+在操作开始或长时间信号消失后，系统必须实现本地跟踪梳与入射时钟梳之间的跟踪锁定。该
+捕获通过基于卡尔曼滤波器的搜索完成。如正文所述，该搜索基于时序鉴别器信号功率输出值(
+|V1 (t)|2 + |V2 (t− rτp)|2
+)
+/2 ，其中 r 为跟踪梳的扫描速率。该信号与输入时钟梳脉冲功率成正
+比。施加的电压阈值对应于零脉冲时间偏移时约为 135fW (时序鉴别器操作)。
+The search for temporal overlap is complicated by turbulence and by differential clock drift between the
+unsynchronized sites. Intensity scintillation from turbulence causes the signal intensity to fluctuate randomly,
+complicating the mapping between peak heterodyne signals and the location of the incoming clock comb pulses
+in time. Additionally, differential drift between the two cavity-stabilized lasers will cause the incoming clock
+comb pulses to move in time relative to the local comb pulses on the timescale of the search. To overcome these
+challenging conditions, we tightly couple the acquisition algorithm with a Kalman filter that keeps track of the
+29
+estimated position of the incoming clock comb time and most critically, its associated uncertainty.
+由于湍流和不同步站点之间的时钟漂移差异，寻找时间重叠变得复杂。湍流引起的强度闪烁导致
+信号强度随机波动，增加了峰值外差信号与入射时钟梳脉冲时间位置映射的难度。此外，两台腔稳
+定激光器之间的差异漂移会使入射时钟梳脉冲相对于本地梳脉冲在搜索时间尺度上发生时间移动。
+为克服这些挑战性条件，我们将采集算法与卡尔曼滤波器紧密结合，卡尔曼滤波器跟踪入射时钟梳
+时间的估计位置及其最关键的相关不确定性。
+Starting from a completely unknown received comb timing with respect to the tracking comb, the search
+controller sweeps the tracking comb through the full 5 ns non-ambiguity range until a signal is observed above
+threshold, indicating a momentary coincidence between the tracking comb and the received clock comb. This
+signal is then used to update the Kalman filter’s state and uncertainty estimates.
+从完全未知的接收梳时序相对于跟踪梳开始，搜索控制器将跟踪梳在完整的 5 ns非歧义范围内扫
+描，直到观察到超过阈值的信号，表明跟踪梳与接收时钟梳瞬时重合。该信号随后用于更新卡尔曼
+滤波器的状态和不确定性估计。
+The effect of the Kalman filter (KF) is to aggregate these intermittent observations of the temporal overlap
+into a consistent picture for the estimated trajectories of tKFa and σ2
+KF,ta (for the measurement of the received clock
+comb pulse time from site B at site A). These are in turn used by the search controller to decide the search pattern
+swept by the tracking comb. Specifically, the tracking comb timing is swept as a triangle waveform through a
+search space set by tKFa ± 3σKF,ta . Each individual observation of the interference signal improves the accuracy of
+tKFa and reduces its estimated uncertainty σ2
+KF,ta , narrowing the size of the search span and rapidly converging on
+the true position of the received comb pulses. Finally, once the position uncertainty is small enough (σKF,ta < 2τp)
+, the tracking comb control switches to tracking ta continuously.
+卡尔曼滤波器 (KF)的作用是将这些间歇性的时间重叠观测聚合成对 tKFa 和 σ2
+KF,ta (用于测量站点 B
+在站点 A接收的时钟梳脉冲时间)的估计轨迹的一致图景。这些估计反过来被搜索控制器用来决定
+跟踪梳扫描的搜索模式。具体而言，跟踪梳时序以三角波形在由 tKFa ± 3σKF,ta设定的搜索空间内扫
+描。每次干涉信号的单独观测都提高了 tKFa 的准确性并减少了其估计不确定性 σ2
+KF,ta ，缩小了搜索
+范围并迅速收敛到接收梳脉冲的真实位置。最终，一旦位置不确定性足够小 (σKF,ta < 2τp)，跟踪梳
+控制切换为连续跟踪 ta。
+In practice, given the good performance of the cavity-stabilized continuous wave reference lasers and the high
+timing accuracy of each detection of temporal overlap between the tracking and incoming clock comb pulses, the
+first observation event collapses the uncertainty of the prediction from 5 ns to roughly 1ps . This leaves almost
+exclusively a contribution from the unknown initial frequency offset between the sites, which produces a ramp in
+time offset. As soon as a second observation is produced, the frequency offset is determined and the uncertainty
+becomes very small, dominated by the random link delay fluctuations. Depending on the received link fades,
+acquisition either completes almost immediately after these initial observations, or the tracking comb sweeps over
+a small range centred on the predicted location until the received power crosses threshold again.
+30
+实际上，鉴于腔稳定连续波参考激光器的良好性能以及每次检测跟踪与入射时钟梳脉冲时间重叠的
+高时序精度，首次观测事件将预测不确定性从 5纳秒压缩至大约 1ps。这几乎完全消除了除站点间
+未知初始频率偏移外的贡献，该频率偏移导致时间偏移呈线性变化。一旦产生第二次观测，频率偏
+移被确定，不确定性变得非常小，主要受随机链路延迟波动支配。根据接收链路的衰落情况，采集
+要么在这些初始观测后几乎立即完成，要么跟踪梳在以预测位置为中心的小范围内扫描，直到接收
+功率再次超过阈值。
+However, at the lower received powers, there is a significant probability that the signal is not observable (below
+threshold) at the moment in the sweep that the tracking comb and incoming clock comb pulses overlap temporally.
+This lack of signal does not have a direct effect on the Kalman filter’s estimates, but it does have an indirect one: the
+uncertainty in the clock time offset grows over time in the absence of observations due to the inherent statistics of
+the reference oscillator noises. Thus, if too much time passes between observations, the search space will naturally
+increase, up to the maximum of the full 5 ns search space, essentially resetting the search process.
+然而，在较低接收功率下，存在信号在跟踪梳与入射时钟梳脉冲时间重叠时刻不可观测 (低于阈值)
+的显著概率。信号缺失不会直接影响卡尔曼滤波器的估计，但会间接影响:由于参考振荡器噪声的
+固有统计特性，缺乏观测时钟时间偏移的不确定性会随时间增长。因此，如果观测间隔过长，搜索
+空间将自然扩大，直至最大 5纳秒的完整搜索空间，实质上重置了搜索过程。
+Similarly, when the system is in tracking mode but experiences a fade, the Kalman filter’s uncertainty can be
+used to decide whether a new search is necessary (σKF, ta > τp) , and if so, the search can occur over a fraction of
+the 5ns non-ambiguity range if 6σKF,t a < 5 ns , greatly speeding up the process.
+同样，当系统处于跟踪模式但经历衰落时，可以利用卡尔曼滤波器的不确定性来决定是否需要重新
+搜索 (σKF, ta > τp)，如果需要，搜索可以在 5ns非歧义范围的一部分内进行，前提是 6σKF,t a < 5 ns
+，从而大大加快过程。
+Synchronization
+同步
+On initiation of synchronization, the time offset of the site B clock comb can suddenly change by up to the full
+5 ns non-ambiguity range. As a consequence, the tracking comb at site A (the guide site) can lose acquisition and
+an entire re-acquisition cycle would need to be initiated. To avoid this issue, on initiation of synchronization site B
+transmits a short data packet by means of the digital communication channel indicating the size of the timing jump
+it is about to commit to its local clock comb along with the magnitude of the frequency error. When site A receives
+this packet, it temporarily pauses the active feedback to the site A tracking comb and instead implements exactly
+the same timing jump and timing slope in an open-loop manner. Once this open-loop time jump is completed, the
+site A tracking comb re-acquires the incoming clock comb but using a very short and restricted temporal search to
+account for any accumulated timing error during this open-loop operation either from atmospheric time-of-flight
+fluctuations or the relative reference oscillator drift. This restricted search is implemented by resetting the Kalman’s
+filter’s uncertainty to roughly 50ps . After re-acquisition, site B is fully synchronized to site A, as shown by the
+out-of-loop verification.
+31
+在同步启动时，站点 B的时钟梳的时间偏移可能会突然变化，幅度可达完整的 5纳秒非歧义范围。
+因此，站点 A(引导站点)的跟踪梳可能会失去捕获，需要启动整个重新捕获周期。为避免此问题，
+在同步启动时，站点 B通过数字通信通道发送一个短数据包，指示其即将对本地时钟梳执行的时间
+跳变大小及频率误差的幅度。当站点 A接收到该数据包时，会暂时暂停对站点 A跟踪梳的主动反
+馈，转而以开环方式实施完全相同的时间跳变和时间斜率。一旦该开环时间跳变完成，站点 A的跟
+踪梳会重新捕获输入的时钟梳，但采用非常短且受限的时间搜索，以补偿在此开环操作期间因大气
+飞行时间波动或相对参考振荡器漂移而积累的任何时间误差。该受限搜索通过将卡尔曼滤波器的
+不确定性重置为大约 50ps来实现。重新捕获后，站点 B与站点 A完全同步，如环外验证所示。
+Out-of-loop verification
+环外验证
+The folded-link geometry used here allows for out-of-loop verification of the synchronization by measuring
+the relative timing of the pulses from the clock comb on site A and the synchronized clock on site B. The clock
+comb from site A was routed to site B by means of a fibre and combined with the synchronized clock comb on site
+B, filtered with a 12-nm wide filter at 1,560 nm, and detected on a balanced photodetector. The resulting signal
+is centred at the frequency offset between the two clock combs. The demodulated signal voltage depends on the
+relative timing between pulses. (Because there is no scintillation present, the full timing discriminator approach is
+not necessary.) The calibration between the demodulated voltage and the time offset of the clock combs is shown in
+Extended Data Fig. 6, which was generated by digitally stepping the offset applied to the synchronization feedback
+loop. For normal operation, we set the synchronization calibration offset so that zero-time offset falls at the half-
+way level so as to provide maximum dynamic range for measurements of the out-of-loop timing. From a fifth-order
+polynomial fit to the curve in Extended Data Fig. 6, we generate a calibration function that yields the out-of-loop
+time offset as a function of measured voltage.
+此处使用的折叠链路几何结构允许通过测量站点 A的时钟梳脉冲与站点 B同步时钟的相对时序来
+进行环外同步验证。站点 A的时钟梳通过光纤传输至站点 B，并与站点 B的同步时钟梳合并，经过
+中心波长为 1560纳米、带宽为 12纳米的滤波器滤波后，在平衡光电探测器上检测。所得信号以两
+个时钟梳之间的频率偏移为中心。解调信号电压取决于脉冲间的相对时序。(由于不存在闪烁现象，
+故无需采用完整的时序鉴别器方法。)解调电压与时钟梳时间偏移的校准见扩展数据图 6，该图通
+过数字步进施加于同步反馈环的偏移生成。正常操作时，我们将同步校准偏移设置为零时间偏移位
+于中间水平，以提供最大动态范围用于环外时序测量。通过对扩展数据图 6中的曲线进行五阶多项
+式拟合，我们生成了一个校准函数，可根据测量电压计算环外时间偏移。
+Data availability
+数据可用性
+All data for the figures in this manuscript are available at https://data.nist.gov/od/id/mds2-2967.
+本文图表所用的所有数据均可在 https://data.nist.gov/od/id/mds2-2967获取。
+32
+Code availability
+代码可用性
+The algorithms necessary to perform this experiment are described between the main text and the Methods.
+执行本实验所需的算法描述见正文及方法部分。
+50. Swann, W. C. et al. Low-loss reciprocal optical terminals for two-way time-frequency transfer. Appl.
+Opt. 56, 9406-9413 (2017).
+50. Swann, W. C.等. 用于双向时频传输的低损耗互惠光学终端。应用光学 (Appl. Opt.) 56, 9406-9413
+(2017)。
+Acknowledgements We acknowledge comments from T. Bothwell, F. Giorgetta and B. Washburn. We ac-
+knowledge technical assistance from S. Syed, M. Bodine, H. Leopardi, T. Wright, M. Martinsen, D. Kuniyuki, S.
+Baumann, the NOAA Mauna Loa Observatory and the Haleakala MEES Observatory. We acknowledge the Air
+Force Office of Scientific Research (grant no. MIPR F4FGA02152G001), Air Force Research Laboratory (grant
+no. FA9453-16-D-0004), NSF QLCI Award (grant no. OMA - 2016244), NSF GRFP (grant no. DGE 1650115),
+OSD and DARPADSO through a CRADAwith Vector Atomic and NIST for funding. Approved for public release;
+distribution is unlimited. Approval no. AFRL-2022-5993.
+致谢我们感谢 T. Bothwell、F. Giorgetta和 B. Washburn的意见。感谢 S. Syed、M. Bodine、H. Leop-
+ardi、T. Wright、M. Martinsen、D. Kuniyuki、S. Baumann、美国国家海洋和大气管理局 (NOAA)莫
+纳罗亚观测站及哈雷阿卡拉 MEES 观测站的技术支持。感谢空军科学研究办公室 (资助号 MIPR
+F4FGA02152G001)、空军研究实验室 (资助号 FA9453-16-D-0004)、国家科学基金会量子信息科学中
+心 (QLCI，资助号 OMA - 2016244)、国家科学基金会研究生研究奖学金计划 (GRFP，资助号 DGE
+1650115)、国防部和国防高级研究计划局 (DARPA)通过与 Vector Atomic及 NIST的合作研究与开
+发协议 (CRADA)提供的资助。已获公开发布许可；分发无限制。批准号 AFRL-2022-5993。
+Author contributions J.-D.D., L.C.S. and N.R.N. conceived the experiment. E.D.C., J.-D.D., L.C.S. and
+N.R.N. acquired and analysed the synchronization data from Hawaii, and wrote the paper. J.-D.D. and H.B. devel-
+oped the signal acquisition processing. J.E., E.D.C. and L.C.S. constructed the optical system and acquired 2 km
+data. W.C.S. and B.K.S. designed and built the free-space optical terminals and contributed to the writing.
+作者贡献 J.-D.D.、L.C.S.和 N.R.N.构思了实验。E.D.C.、J.-D.D.、L.C.S.和 N.R.N.采集并分析了夏
+威夷的同步数据，并撰写了论文。J.-D.D.和 H.B.开发了信号采集处理。J.E.、E.D.C.和 L.C.S.构建
+了光学系统并采集了 2 km数据。W.C.S.和 B.K.S.设计并制造了自由空间光学终端，并参与了论文
+撰写。
+Competing interests The authors declare no competing interests. Additional information
+利益冲突作者声明无利益冲突。附加信息
+Supplementary information The online version contains supplementarymaterial available at https://doi.org/10.1038/s41586-
+023-06032-5.
+33
+补充信息在线版本包含补充材料，见 https://doi.org/10.1038/s41586-023-06032-5。
+Correspondence and requests for materials should be addressed to Nathan R. Newbury or Laura C. Sinclair.
+通讯及材料请求请联系 Nathan R. Newbury或 Laura C. Sinclair。
+Peer review information Nature thanks David Gozzard and Jungwon Kim and the other, anonymous, re-
+viewer(s) for their contribution to the peer review of this work. Peer reviewer reports are available.
+同行评审信息自然杂志感谢 David Gozzard、Jungwon Kim及其他匿名审稿人对本工作的同行评审
+贡献。同行评审报告可供查阅。
+Reprints and permissions information is available at http://www.nature.com/reprints.
+重印和许可信息可在 http://www.nature.com/reprints获取。
+Extended Data Fig. 1 | Free space optical terminal design. Each terminal transmits both the comb light (at
+a few mW ) and a beacon laser signal at similar low power ( −2 mW at the aperture) through a 10 cm aperture
+with an 8 cm1/e2 beam diameter. To avoid sacrificing comb light to active tip/tilt stabilization, a separate beacon
+beam at 1532 nm or 1542 nm is polarization multiplexed directly onto the comb beam. (The beacon wavelengths
+differ for the two terminals, allowing wavelength demultiplexing of the transmitted and received beacon beams). A
+terminal’s transmitted beacon beam, originating from a polarization maintaining fiber-coupled laser, is collimated
+through a fiber collimator, reflected off the face of an interference filter (which acts as a mirror), and directed to
+the polarization coupler. The combined, -3.3-mm diameter beam is directed to a galvo mirror that provides tip/tilt
+control, and then passes through a 24:1,10 cm aperture beam expander. The beacon light is detected at the far
+end by a focal plane array. The images are processed, and the beam position fed back to adjust the tip/tilt of the
+outgoing combined comb light and beacon light. This corrects for atmospheric turbulence and optimizes coupling
+of the incoming frequency comb light into the polarization maintaining single-mode optical fiber.
+34
+扩展数据图 1 |自由空间光学终端设计。每个终端通过一个 10 cm口径和 8 cm1/e2光束直径同时发
+射梳状光 (在几个 mW )和类似低功率的信标激光信号 (口径处为 −2 mW )。为避免牺牲梳状光用
+于主动倾斜/偏转稳定，单独的信标光束在 1532 nm或 1542 nm处通过偏振复用直接叠加到梳状光
+束上。(两个终端的信标波长不同，允许对发射和接收的信标光束进行波长解复用)。终端发射的信
+标光束源自偏振保持光纤耦合激光器，通过光纤准直器准直，经干涉滤光片表面反射 (作为镜面)，
+并引导至偏振耦合器。合成的直径为 3.3毫米的光束被引导至提供倾斜/偏转控制的振镜，然后通过
+24:1、10厘米口径的光束扩展器。信标光在远端由焦平面阵列检测。图像被处理后，光束位置反馈
+用于调整发射的合成梳状光和信标光的倾斜/偏转，以校正大气湍流并优化入射频率梳光耦合入偏
+振保持单模光纤。
+Extended Data Fig. 2 | Total link loss. (a) Diagram of link loss. The aperture-to-aperture link loss, which
+includes the channel loss ℓ channel , is reciprocal as is any excess loss from coupling into single-mode fiber, ℓsmf ,
+whereas the transceiver-specific losses ℓrcv and ℓxmit are not. While ℓsmf is reciprocal for both sites, the loss is
+unidirectional, that is it only occurs when the incoming light is coupled into the fiber. (b) Measured median total
+loss over different runs plotted against the integrated turbulence, as measured by the piston noise and assuming a
+wind velocity of 10 m/s . The mean loss across runs is 91 dB giving 11 − dB margin over the tolerable loss of
+102 dB .
+35
+扩展数据图 2 |总链路损耗。(a)链路损耗示意图。口径对口径链路损耗，包括通道损耗 ℓ channel ，是
+互易的，单模光纤耦合的额外损耗 ℓsmf 也是互易的，而收发器特定的损耗 ℓrcv 和 ℓxmit则不是。虽
+然 ℓsmf 对两个站点均为互易，但该损耗是单向的，即仅在入射光耦合入光纤时发生。(b)不同运行
+中测得的中位总损耗与通过活塞噪声测量并假设风速为 10 m/s的积分湍流的关系图。各运行的平
+均损耗为 91 dB，相较于可容忍损耗 102 dB有 11− dB的裕度。
+Extended Data Fig. 3 | System diagram emphasizing signal processing. Each site has a local reference oscil-
+lator (cavity stabilized laser), to which both the clock comb and tracking comb are self-referenced. As shown for
+site A, after both the clock and tracking combs are phase-locked to the reference oscillator, they have an arbitrary
+local time offset between each other. This local time offset is directly zeroed by digitally adjusting the tracking
+comb timing until there is a maximum heterodyne overlap with the clock comb pulses. Subsequent timing values
+for the local tracking comb are then referenced to the local clock comb. After acquisition, the timing discriminator
+measures the (small) time offset δta between the incoming clock comb and local tracking comb. This timing dif-
+ference is summed with the tracking comb time offset, to generate an estimate of the incoming clock comb pulse
+time, ta . This estimate, along with the corresponding measured incoming power, is input to the Kalman filter,
+whose output provides an optimized, filtered estimate of the incoming clock comb pulse time, tKF
+a . This value
+is fed into a final feedback controller for the tracking comb, GLO . Due to the feedback loop, the tracking comb
+output itself (both the physical optical pulse time and the corresponding digital value), is now a filtered, estimated
+value of the incoming clock comb pulse timing with respect to the local clock comb pulse time. This value is
+transmitted over a communication link from site A to site B , where it is combined with the corresponding local
+value of tb to generate an error signal for the site B clock comb. When both sites have acquired their lock onto the
+incoming clock comb pulses, the final synchronization feedback controller Gsy is activated and the site B clock
+comb is actively synchronized to the site A clock comb, at their local reference point. The effective bandwidth of
+the Kalman Filter depends on the input power, and ranges from 10 Hz to 25 Hz . The bandwidth of the subsequent
+lock of the tracking comb (H track ) is ∼ 450 Hz . The bandwidth of the synchronization lock (H synch ) is ∼ 15 Hz
+. The communication link is over rf coaxial cable here. For a future point-to-point link, it would be over free space
+by either rfor optical as in ref. 15. The message rate (for update of ta ) is 400 Hz and the total bit rate is 26 kbps
+. red solid lines: optical comb pulses, red dashed line: CW optical laser light, black lines: digital values, P : input
+optical power.
+36
+扩展数据图 3 |强调信号处理的系统示意图。每个站点都有一个本地参考振荡器 (腔体稳定激光器)，
+时钟梳和跟踪梳均以此为自参考。如图示站点 A，时钟梳和跟踪梳在相位锁定到参考振荡器后，它
+们之间存在任意的本地时间偏移。该本地时间偏移通过数字调整跟踪梳的时序直接归零，直到与时
+钟梳脉冲的异频重叠达到最大。随后，本地跟踪梳的时序值参考本地时钟梳。采集后，时序鉴别器
+测量入射时钟梳与本地跟踪梳之间的 (微小)时间偏移 δta。该时序差与跟踪梳时间偏移相加，生成
+入射时钟梳脉冲时间的估计值 ta 。该估计值及对应的入射功率测量值输入卡尔曼滤波器 (Kalman
+filter)，其输出提供入射时钟梳脉冲时间的优化滤波估计 tKF
+a 。该值被送入跟踪梳的最终反馈控制
+器 GLO 。由于反馈回路，跟踪梳输出本身 (包括物理光脉冲时间及对应数字值)现为相对于本地时
+钟梳脉冲时间的入射时钟梳脉冲时序的滤波估计值。该值通过通信链路从站点A传输至站点B，并
+与对应的本地值 tb结合，生成站点 B时钟梳的误差信号。当两个站点均锁定入射时钟梳脉冲后，最
+终同步反馈控制器 Gsy 被激活，站点 B时钟梳在其本地参考点主动同步至站点 A时钟梳。卡尔曼
+滤波器的有效带宽取决于输入功率，范围为 10 Hz至 25 Hz。随后跟踪锁定的带宽为 comb (H track )
+，为 ∼ 450 Hz。同步锁定的带宽为 (H synch )，为 ∼ 15 Hz。此处通信链路为射频同轴电缆。未来
+点对点链路将通过自由空间传输，采用参考文献 15中的 rfor 光学方式。消息速率 (用于更新 ta )
+为 400 Hz，总比特率为 26 kbps。红色实线:光学梳脉冲，红色虚线:连续波光激光，黑线:数字值，
+P :输入光功率。
+Extended Data Fig. 4 | Tracking comb timingmeasurement using an optical timing discriminator. (a) Subset of
+system diagram from Extended Data Fig. 4 showing how the timing of the incoming clock comb is measured with
+the local tracking comb. (b) System diagram of the optical timing discriminator and subsequent signal processing.
+The optical timing discriminator generates two measurement channels with the lead and lag positions between
+37
+the two combs switched between channels. After measuring these channels on balanced photodiodes (BPD), the
+heterodyne output voltages are demodulated to generate IQ (complex) signals, which are then low pass filtered
+(LPF). The phase of one signal is used in a phase-locked loop to adjust the demodulation frequency, fDDS , and
+centre the baseband signals at DC. The magnitudes of the signals are combined to generate an estimate of the
+power (from their mean squared values) and a timing offset value, δtb , from their normalized difference. BS, beam
+splitter; ADC, analog to digital converter; NCO, numerically controlled oscillator. (c) Absolute value of the timing
+discriminator output voltages, |V1| and |V2| , as a function of the time offset between the local tracking comb and
+incoming clock comb. (d) The error signal generated from the two channels along with the polynomial fit used in
+the digital processing to generate the timing error value based on the normalized error signal, E .
+扩展数据图 4 |使用光学时序鉴别器的跟踪梳时序测量。(a)来自扩展数据图 4的系统示意图子集，
+展示如何用本地跟踪梳测量入射时钟梳的时序。(b)光学时序鉴别器及后续信号处理的系统示意图。
+光学时序鉴别器生成两个测量通道，两个梳子的领先和滞后位置在通道间切换。通过平衡光电二极
+管 (BPD)测量这些通道后，异频输出电压被解调生成 IQ(复数)信号，随后进行低通滤波 (LPF)。其
+中一个信号的相位用于锁相环调整解调频率 fDDS ，使基带信号居中于直流。信号幅度结合生成功
+率估计 (基于均方值)和时序偏移值 δtb (基于归一化差值)。BS，分束器；ADC，模数转换器；NCO，
+数控振荡器。(c)时序鉴别器输出电压的绝对值 |V1|和 |V2|，随本地跟踪梳与入射时钟梳时间偏移
+变化。(d)由两个通道生成的误差信号及数字处理使用的多项式拟合，用于基于归一化误差信号生
+成时序误差值 E 。
+ExtendedData Fig. 5 | Optical time transfer transceiver design for a single site. This transceiver routes the local
+clock comb to the FSO terminals and the incoming remote clock comb to the optical timing discriminator for mixing
+and detection with the local tracking comb. To minimize excess fiber optic delays, the transceiver also includes the
+necessary fiber optic components to generate the RF optical beat signals, f opt , used for locking the two clock and
+tracking combs to the local cavity stabilized laser (CW in) reference, and the out-of-loop verification beat signals.
+The reference plane for the out-of-loop verification is defined by the point at which the two clock combs overlap
+within the 50:50 splitter. A calibration step with a fiber-shorted link determines the time offset for the two clock
+combs due to path delays in the transceivers. This time offset is included in the overall synchronization loop so that
+38
+the clock pulses remain overlapped when the system is operated over the link. All fiber is PM1550.50:50, 50/50
+splitter; 90:10, 90/10 splitter; BPF, band-pass filter; iso, isolator; DWDM, dense wavelength division multiplexer
+at the cavity-stabilized laser wavelength; 45◦BS , polarization beam splitter with the input fiber rotated 45◦ .
+扩展数据图 5 |单站点光学时间传输收发器设计。该收发器将本地时钟梳路由至自由空间光 (FSO)
+终端，将接收到的远程时钟梳路由至光学定时鉴别器，与本地跟踪梳进行混频和检测。为最小化额
+外的光纤延迟，收发器还包含生成射频光学拍频信号所需的光纤组件，f opt ，用于将两个时钟梳和
+跟踪梳锁定到本地腔稳定激光器 (CW in)参考，以及环外验证拍频信号。环外验证的参考平面定义
+为两个时钟梳在 50:50分光器内重叠的点。通过光纤短路链路的校准步骤确定由于收发器路径延迟
+引起的两个时钟梳的时间偏移。该时间偏移包含在整体同步环路中，以确保系统在链路上运行时时
+钟脉冲保持重叠。所有光纤均为 PM1550。50:50，50/50分光器；90:10，90/10分光器；BPF，带通
+滤波器；iso，隔离器；DWDM，腔稳定激光波长处的密集波分复用器；45◦BS，输入光纤旋转的偏
+振分束器 45◦ 。
+Extended Data Fig. 6 | Out-of-loop verification. Calibration curve of heterodyne voltage vs time offset be-
+tween the two clock combs used for out-of-loop verification. A fifth order polynomial is fit to the curve to generate
+a mapping from the measured demodulated heterodyne voltage to the time offset.
+扩展数据图 6 |环外验证。用于环外验证的两个时钟梳之间时间偏移与异频电压的校准曲线。对曲
+线拟合五阶多项式，以生成从测量的解调异频电压到时间偏移的映射关系。
+39
+Extended Data Fig. 7 | Traces for synchronization over 300 km for 4.0 mW of comb power at site B (left, blue
+traces) and for reduced, 40µW comb power at site B (right, green curves). (a) Time trace of received power, Prec
+, measured at the output of the timing discriminator for site A with the applied threshold shown as a dashed black
+line. (b) The control effort, ∆T cntrl , applied on site B to maintain synchronization between the two site’s clock
+combs. As such, it is also a measurement of the time offset between the two cavity-stabilized reference lasers. (c)
+Changes in the time-of-flight. These changes are due to temperature drifts in the 300 km of air and in the fiber paths
+up to the terminals, atmospheric turbulence, and mechanical movement in the terminals. (d) The out-of-loop timing
+verification or ’Truth’ data indicates constant temporal overlap between the clock combs at both sites despite 100
+’s of ps changes in the time-of-flight and 100’s of ns changes in ∆T cntrl . This truth data is used to generate the
+instability deviations of Fig. 3.
+40
+扩展数据图 7 | 300 km上同步的轨迹，站点 B的梳功率为 4.0 mW (左，蓝色轨迹)及站点 B的减小
+梳功率为 40µW (右，绿色曲线)。(a)接收功率的时间轨迹，Prec，在站点 A的定时鉴别器输出处测
+量，施加的阈值以黑色虚线表示。(b)施加于站点 B的控制努力，∆T cntrl ，用于维持两个站点时钟
+梳的同步。因此，它也是两个腔稳定参考激光器之间时间偏移的测量。(c)飞行时间的变化。这些
+变化由空气中 300 km的温度漂移、到终端的光纤路径、气象湍流及终端的机械运动引起。(d)环外
+定时验证或“真值”数据表明，尽管飞行时间变化达数百皮秒，且 ∆T cntrl 变化达数百纳秒，两个
+站点的时钟梳仍保持恒定的时间重叠。该真值数据用于生成图 3中的不稳定度偏差。
+Extended Data Fig. 8 | Additional fractional frequency instabilities.
+扩展数据图 8 |额外的分数频率不稳定度。
+Modified Allan deviations of the out-of-loop verification data (’truth’ data) for 4 different days across the
+300 km link. Data from June 27 th and early on June 28 th (purple and pink curves) have an elevated MDEV at
+long averaging times due to a malfunctioning temperature controller on the out-of-loop verification fiber and both
+transceivers. The data from June 29 th (blue curve) also appears in Fig. 3 of the main text.
+跨越 300 km链路的 4个不同日期的环外验证数据 (“真值”数据)的修正艾伦偏差。6月 27 th 和 6
+月 28 th 初期的数据 (紫色和粉色曲线)在长时间平均时显示出较高的MDEV，原因是环外验证光纤
+及两个收发器的温控器故障。6月 29 th 的数据 (蓝色曲线)也出现在正文图 3中。
+41
+Extended Data Fig. 9 | Received power and fade statistics over the 300 km link at site A for 4.0 mW of comb
+power from site B . (a-c) Received power over 600 - seconds, 6 s , and 0.06 s . Red line indicates the 270fW
+detection threshold. (d) Normalized histogram (i.e., probability density function, PDF) of the received power for
+the 600-second segment. (e) PDF of the fade durations. For the 4.0mW comb power sent from site B , no fades
+exceeded a duration of 10 ms - a direct consequence of the low detection threshold at site A .
+扩展数据图 9 |位于站点 A的 300 km链路上接收功率及衰落统计，针对来自站点 B 的 4.0 mW梳
+状光功率。(a-c)600秒内的接收功率，6 s，及 0.06 s。红线表示 270fW检测阈值。(d)600秒段接
+收功率的归一化直方图 (即概率密度函数，PDF)。(e)衰落持续时间的 PDF。对于从站点 B 发送的
+4.0mW梳状光功率，没有衰落持续时间超过 10 ms，这是站点 A低检测阈值的直接结果。
+42
+Extended Data Fig. 10 | Received power and fade statistics over the 300 km link at site A for 40µW of comb
+power from site B . (a-c) Received power over 600− seconds, 6 s , and 0.06 s . Red line indicates the 270fW
+detection threshold. (d) Normalized histogram (i.e., probability density function, PDF) of the received power for
+the 600-second segment. (e) PDF of the fade durations. For the greatly reduced launch power, fades are more
+frequency and of longer duration than the data of Extended Data Fig. 9.
+扩展数据图 10 |位于站点 A的 300 km链路上接收功率及衰落统计，针对来自站点 B 的 40µW梳
+状光功率。(a-c) 600−秒内的接收功率，6 s，及 0.06 s。红线表示 270fW检测阈值。(d)600秒段接
+收功率的归一化直方图 (即概率密度函数，PDF)。(e)衰落持续时间的 PDF。对于大幅降低的发射功
+率，衰落更频繁且持续时间更长，较扩展数据图 9中的数据明显不同。
+Extended Data Table 1 | Experimental parameters for the data in Figs. 2-4 related to quantum-limited operation
+扩展数据表 1 |图 2-4中与量子极限操作相关的数据的实验参数
+43
+Quantity Figure 2 (square filters) Figures 3 and 4 (Gaussian filters)
+Pulse width for zero chirp, τn 245 fs 355 fs
+Detector quantum efficiency, η 0.80 0.80
+Detector noise penalty,D 1.2 (1.7 dB) 1.2 (1.7 dB)
+Pulse broadening, C 1.35 1.7 (2-km link) 1.5 (300-km link)
+Quantum-limit, γgl 0.6 0.6
+Actual γ 2.1γql 3.5γql (2− km link) 2.7γql (300− km link)
+数量 图 2(方形滤波器) 图 3和图 4(高斯滤波器)
+零啁啾脉冲宽度，τn 245飞秒 355飞秒
+探测器量子效率，η 0.80 0.80
+探测器噪声惩罚，D 1.2(1.7分贝) 1.2(1.7分贝)
+脉冲展宽，C 1.35 1.7(2公里链路) 1.5(300公里链路)
+量子极限，γgl 0.6 0.6
+实际 γ 2.1γql 3.5γql (2− km link) 2.7γql (300− km link)
+Pulse width is defined as the full-width half-maximum value. The values for C vary between sites, but the
+effective averaged value is provided here.
+脉冲宽度定义为全宽半高值。C 的数值因地点而异，但此处提供了有效的平均值。
+44

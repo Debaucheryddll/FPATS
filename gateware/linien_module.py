@@ -30,7 +30,7 @@ from migen import (
 from misoc.interconnect import csr_bus
 from misoc.interconnect.csr import AutoCSR, CSRStatus, CSRStorage
 
-from gateware.logic.chains import FastChain, SlowChain, cross_connect
+from gateware.logic.chains import FastChain, cross_connect
 from gateware.logic.decimation import Decimate
 from gateware.logic.KalmanTargets import KalmanTargets
 from gateware.logic.delta_sigma import DeltaSigma
@@ -98,14 +98,31 @@ class LinienModule(Module, AutoCSR):
         signal_width = 25
         coeff_width = 25
         chain_factor_bits = 8
+        signal_fractional_bits = 10
 
         self.init_submodules(
-            width, signal_width, coeff_width, chain_factor_bits, platform
+            width,
+            signal_width,
+            coeff_width,
+            chain_factor_bits,
+            signal_fractional_bits,
+            platform,
         )
-        self.connect_everything(width, signal_width, coeff_width, chain_factor_bits)
+        self.connect_everything(
+            width,
+            signal_width,
+            coeff_width,
+            chain_factor_bits,
+        )
 
     def init_submodules(
-        self, width, signal_width, coeff_width, chain_factor_bits, platform
+        self,
+        width,
+        signal_width,
+        coeff_width,
+        chain_factor_bits,
+        signal_fractional_bits,
+        platform,
     ):
         sys_double = ClockDomainsRenamer("sys_double")
 
@@ -154,7 +171,9 @@ class LinienModule(Module, AutoCSR):
         # self.clock_domains.cd_decimated_clock = ClockDomain()
         # decimated_clock = ClockDomainsRenamer("decimated_clock")
         # self.submodules.slow_chain = decimated_clock(SlowChain())
-        self.submodules.err_calc = ErrorSignalCalculator(width=signal_width)
+        self.submodules.err_calc = ErrorSignalCalculator(
+            width=signal_width, fractional_bits=signal_fractional_bits
+        )
         # 实例化 KalmanTargets 模块
         self.submodules.kalman_targets = KalmanTargets(width=signal_width)
         self.submodules.scan_tracker = ScanTrackingController(width=signal_width)
@@ -254,12 +273,10 @@ class LinienModule(Module, AutoCSR):
             If(
                 self.logic.pid_only_mode.storage,
                 # self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
-                # self.logic.pid.input.eq(0),
-                self.logic.pid.input.eq(self.err_calc.out_e),
+                self.logic.pid.input.eq(0),
             ).Else(
                 # self.logic.pid.input.eq(self.err_calc.out_e),
-                # self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
-                self.logic.pid.input.eq(self.err_calc.out_e),
+                self.logic.pid.input.eq(self.scan_tracker.time_command_out << s),
             ),
             pid_out.eq(self.logic.pid.pid_out >> s),
         ]

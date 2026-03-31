@@ -707,7 +707,7 @@ class Parameters:
         # These parameters configure the Kalman Filter for FPATS time transfer.
         # They are used only in the PS-side TPFCTrackerService and do not interact with FPGA.
 
-        self.tpfc_kalman_dt = Parameter(start=0.01, min_=1e-6, max_=1.0, restorable=True)
+        self.tpfc_kalman_dt = Parameter(start=0.001, min_=1e-6, max_=1.0, restorable=True)
         """
         Kalman filter update interval dt in seconds.
         Typically matches TPFCTrackerService loop interval.

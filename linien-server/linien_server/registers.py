@@ -366,7 +366,6 @@ class Registers:
             # self.set_slow_pid(slow_strength, slow_slope)
 
     def set_pid(self, p, i, d, slope, reset=None, request_lock=None):
-
         sign = -1 if slope else 1
         self.set("logic_pid_kp", p * sign)
         self.set("logic_pid_ki", i * sign)

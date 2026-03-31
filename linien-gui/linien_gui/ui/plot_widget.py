@@ -43,7 +43,8 @@ pg.setConfigOptions(
 
 # relation between counts and 1V
 V = 8192
-FAST_IIR_SHIFT = 11
+# FAST_IIR_SHIFT = 11
+FAST_IIR_SHIFT = 14
 
 # pyqt signals enforce type, so...
 INVALID_POWER = -1000

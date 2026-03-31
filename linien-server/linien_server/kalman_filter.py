@@ -65,7 +65,7 @@ class KalmanFilterTimeFrequency:
         Q_time = np.diag([q_t_var * dt, 0, 0])
         self.Q = Q_drift + Q_freq + Q_time
 
-        # --- (修改) 存储两种测量噪声 ---
+        # --- 存储两种测量噪声 ---
         self.R_base = np.array([[base_measurement_noise_std ** 2]])
         self.R_fade = np.array([[fade_measurement_noise_std ** 2]])  # <-- 衰落时的 R
 
@@ -95,11 +95,11 @@ class KalmanFilterTimeFrequency:
 
     def update(self, z: float, power_level: float) -> np.ndarray:
         """
-        (修改) 卡尔曼滤波器更新步骤 (三维)。
+        卡尔曼滤波器更新步骤 (三维)。
         使用动态 R 来处理信号衰落，而不是跳过更新。
         """
 
-        # --- (关键修改) 动态 R 逻辑 ---
+        # ---  动态 R 逻辑 ---
         if power_level < self.power_threshold:
             # 功率低：使用极大的测量噪声 R_fade
             current_R = self.R_fade

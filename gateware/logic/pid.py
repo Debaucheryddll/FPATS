@@ -53,7 +53,7 @@ class PID(Module, AutoCSR):
 
     def calculate_p(self):
         self.kp = CSRStorage(self.coeff_width,name="kp")
-        self.p_shift = self.coeff_width - 2
+        self.p_shift = self.coeff_width - 6
         kp_signed = Signal((self.coeff_width, True))
         self.comb += [kp_signed.eq(self.kp.storage)]
 
@@ -67,7 +67,7 @@ class PID(Module, AutoCSR):
 
     def calculate_i(self):
         self.ki = CSRStorage(self.coeff_width,name="ki")
-        self.i_shift = 10
+        self.i_shift = 8
         self.reset = CSRStorage(name="reset")
 
         ki_signed = Signal((self.coeff_width, True))

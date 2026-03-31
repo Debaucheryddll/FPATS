@@ -1,0 +1,1586 @@
+The time-programmable frequency comb and its use in quantum-limited
+ranging
+时间可编程频率梳及其在量子极限测距中的应用
+Emily D. Caldwell 1,2 , Laura C. Sinclair 1⊠ , Nathan R. Newbury 1⊠ &Jean-Daniel Deschenes 3
+Emily D. Caldwell 1,2 , Laura C. Sinclair 1⊠ , Nathan R. Newbury 1⊠ &Jean-Daniel Deschenes 3
+Two decades after its invention, the classic self-referenced frequency comb laser is an unrivalled ruler for
+frequency, time and distance metrology owing to the rigid spacing of its optical output 1,2 . As a consequence, it is
+now used in numerous sensing applications that require a combination of high bandwidth and high precision 3−5 .
+Many of these applications, however, are limited by the trade-offs inherent in the rigidity of the comb output and
+operate far from quantum-limited sensitivity. Here we demonstrate an agile programmable frequency comb where
+the pulse time and phase are digitally controlled with ±2-attosecond accuracy. This agility enables quantum-limited
+sensitivity in sensing applications as the programmable comb can be configured to coherently track weak returning
+pulse trains at the shot-noise limit. To highlight its capabilities, we use this programmable comb in a ranging system,
+reducing the required power to reach a given precision by about 5,000-fold compared with a conventional dual-
+comb system. This enables ranging at a mean photon per pulse number of 1/77 while retaining the full accuracy
+and precision of a rigid frequency comb. Beyond ranging and imaging 6−12 , applications in time and frequency
+metrology 1,2,5,13−23 , comb-based spectroscopy 24−32 , pump-probe experiments 33 and compressive sensing 34,35
+should benefit from coherent control of the comb-pulse time and phase.
+自发明以来二十年，经典的自参照频率梳激光器因其光学输出的严格间隔，成为频率、时间和距离
+计量领域无可匹敌的标尺 1,2 。因此，它现已广泛应用于需要高带宽和高精度结合的众多传感应用
+中 3−5 。然而，这些应用中的许多受限于频率梳输出刚性的固有权衡，远未达到量子极限灵敏度。
+本文展示了一种灵活可编程的频率梳，其脉冲时间和相位通过数字方式以 ±2阿秒 (attosecond)精度
+控制。这种灵活性使得可编程频率梳能够在传感应用中实现量子极限灵敏度，因为它可以配置为在
+散粒噪声极限下相干跟踪微弱的返回脉冲序列。为突出其能力，我们在测距系统中使用该可编程频
+率梳，将达到特定精度所需的功率相比传统双频率梳系统降低约 5000倍。这使得在每脉冲平均光
+子数为 1/77的条件下实现测距，同时保持刚性频率梳的全部准确性和精度。除测距和成像 6−12外，
+时间和频率计量 1,2,5,13−23 、基于频率梳的光谱学 24−32 、泵浦-探测实验 33 及压缩感知 34,35 等应
+用均可从频率梳脉冲时间和相位的相干控制中受益。
+As applications of frequency combs have expanded, their uses have extended beyond functioning simply as a
+reference ruler 3−5 . For example, many experiments combine two or more frequency combs for active sensing, in-
+cluding precision ranging and imaging 6−12 , linear and nonlinear spectroscopy 24−32 , and time transfer 13−20,23 .
+In these applications, the multiple fixed combs serve as differential rulers by phase-locking them to have a vernier-
+like offset between their frequency comb lines, or their pulses in time. Although these applications exploit the
+accuracy and precision of frequency combs, they operate nowhere near the quantum (or shot noise) limit, despite
+the use of heterodyne detection, because of effective dead time owing to sensing the incoming signal-comb light
+via a comb with a deliberately mismatched repetition frequency. Consequently, there are strong trade-offs in mea-
+surement speed, sensitivity and resolution 24,36,37 . In some dual-comb ranging and spectroscopy demonstrations,
+these penalties have been partially addressed by incoherent modulation of the comb 38−41 but not eliminated.
+1
+随着频率梳应用的扩展，其用途已超越单纯作为参考标尺 3−5。例如，许多实验结合两个或多个频
+率梳进行主动传感，包括精密测距和成像 6−12、线性与非线性光谱学 24−32以及时间传输 13−20,23。
+在这些应用中，多个固定频率梳通过相位锁定，使其频率梳线之间或脉冲时间上具有类似游标卡尺
+的偏移，从而作为差分标尺。尽管这些应用利用了频率梳的准确性和精度，但由于通过重复频率故
+意不匹配的频率梳感测入射信号梳光导致的有效死区时间，它们的操作远未达到量子 (或散粒)噪
+声极限，即使采用了外差检测。因此，测量速度、灵敏度和分辨率之间存在强烈权衡 24,36,37。在某
+些双频率梳测距和光谱演示中，这些缺陷通过频率梳的非相干调制得到了部分缓解 38−41，但尚未
+完全消除。
+Here we overlay a self-referenced optical frequency comb with synchronous digital electronics for real-time
+coherent control of the comb’s pulse train output. We manipulate the frequency comb’s two phase locks to dynam-
+ically control and track the time and phase of the frequency comb’s output pulses at will. The temporal placement
+of the comb pulses is set with ±2 -attosecond (as) accuracy with a range limited only by slew-rate considerations.
+This time-programmable frequency comb (TPFC) goes beyond the ’mechanical gear box’ analogy often applied
+to optically self-referenced combs 5 , replacing it with a digitally controllable, agile, coherent optical pulse source.
+The agility of the TPFC enables many more measurement modalities than a rigid frequency comb. In sensing ap-
+plications, the TPFC can enable quantum-limited detection with the full accuracy and precision of the frequency
+comb, avoiding the penalties discussed previously. To achieve these combined advantages, the TPFC is configured
+as a tracking optical oscillator in time and phase so that it effectively locks onto an incoming weak signal pulse
+train for coherent signal integration.
+本文将自参照光学频率梳与同步数字电子技术叠加，实现对频率梳脉冲序列输出的实时相干控制。
+我们操控频率梳的两个相位锁，动态控制并跟踪频率梳输出脉冲的时间和相位。脉冲的时间位置以
+±2阿秒 (as)精度设定，范围仅受斜率速率限制。该时间可编程频率梳 (TPFC)超越了常用于光学自
+参照频率梳的“机械齿轮箱”类比 5 ，取而代之的是数字可控、灵活且相干的光脉冲源。TPFC的
+灵活性使其支持比刚性频率梳更多的测量模式。在传感应用中，TPFC能够实现量子极限检测，同
+时保持频率梳的全部准确性和精度，避免了前述的权衡。为实现这些综合优势，TPFC被配置为时
+间和相位上的跟踪光振荡器，有效锁定入射的微弱信号脉冲序列，实现相干信号积分。
+As an immediate example, we incorporate the TPFC into a dual-comb ranging system. The result is quantum-
+limited sensing that sacrifices none of the exquisite accuracy and precision of frequency-combmeasurements. Here
+we show a precision floor of 0.7 nm(4.8 as in time of flight) in ranging, which exceeds previous conventional dual-
+comb ranging demonstrations 6−8,42−44 . In addition, the tracking dual-comb ranging detects a weak reflected
+signal-comb pulse train with a mean photon number per pulse of only 1/77 at a sensitivity within a factor of two
+of the quantum limit. Detection of signals at even lower mean photon per pulse numbers is possible by reducing
+the measurement bandwidth. In contrast, conventional dual-comb ranging would require a return signal 37 dB or
+5,000-times stronger to reach the same level of performance.
+作为一个直接的例子，我们将 TPFC(追踪光频梳) 整合到双梳测距系统中。结果是实现了量子极
+限的传感，同时不牺牲频率梳测量的卓越准确性和精密度。这里我们展示了测距中的精度下限为
+0.7 nm(4.8 (以飞行时间计)，超过了以往传统双梳测距的演示 6−8,42−44。此外，追踪双梳测距能够
+检测到平均每脉冲光子数仅为 1/77的微弱反射信号梳脉冲列，其灵敏度接近量子极限的两倍以内。
+通过降低测量带宽，可以实现对更低平均每脉冲光子数信号的检测。相比之下，传统双梳测距需要
+返回信号强度高出 37 dB或 5000倍，才能达到相同的性能水平。
+2
+The uses of the TPFC go well beyond acting as a tracking optical oscillator. It should enable many more time-
+based measurement schemes than the conventional vernier approaches using fixed frequency combs. For example,
+in multi-comb sensing, the relative time offset between the frequency combs can be adjusted to mimic a higher-
+repetition-rate system while retaining the benefits of a lower-repetition-rate system, for example, higher pulse
+energy and tight stabilization. Arbitrary patterns can enable future compressive sampling 35 . In time and frequency
+metrology, the comb can provide accurately adjustable timing signals, modulation capabilities for noise suppression
+and optically based time-interval standards 45 . Multiple TPFCs could be used for pump-probe experiments with
+digital control of pulse spacing replacing delay lines or chirp-induced delays 33 .
+TPFC的用途远不止作为追踪光学振荡器。它应能支持比使用固定频率梳的传统游标法更多的基于
+时间的测量方案。例如，在多梳传感中，频率梳之间的相对时间偏移可以调整，以模拟更高重复率
+系统，同时保留低重复率系统的优势，如更高的脉冲能量和严格的稳定性。任意模式可支持未来的
+压缩采样 35 。在时间和频率计量中，该梳可提供精确可调的定时信号、用于噪声抑制的调制能力
+以及基于光学的时间间隔标准 45 。多个 TPFC可用于泵浦-探测实验，通过数字控制脉冲间隔替代
+延迟线或啁啾引起的延迟 33 。
+https://doi.org/10.1038/s41586-022-05225-8
+Received: 16 April 2022 Accepted: 11 August 2022 Published online: 5 October 2022 (C) Check for updates
+接收日期:2022年 4月 16日接受日期:2022年 8月 11日在线发表:2022年 10月 5日 (C)查看更新
+1 National Institute of Standards and Technology (NIST), Boulder, CO, USA. 2 Department of Electrical, Computer and Energy Engineering,
+University of Colorado, Boulder, CO, USA.
+1 美国科罗拉多州博尔德国家标准与技术研究院 (NIST)。2 美国科罗拉多大学博尔德分校电气、计算机与能源工程系。
+3
+Fig. 1 A time-programmable frequency comb. a, The TPFC output is measured with respect to a second fixed
+frequency comb through linear optical sampling (LOS) against a third frequency comb with an offset repetition
+frequency. The frequency combs operate at f rep ≈ 200MHz with a5-ns pulse spacing. All pulses are spectrally
+filtered to a Gaussian 10.1-nm-wide shape, corresponding to 355-fs pulse duration (Methods). b, Schematic of
+the TPFC. A self-referenced erbium:fibre frequency comb is controlled with digital electronics clocked off the
+detected comb repetition rate signal (V rep ) . The digital section receives the carrier-envelope offset signal (V0)
+and the optical beat signal (VN ) , along with the comb-pulse timing and phase commands, XC and θC , which are
+combined to give the control phases θC0 and θCN through the (trivial) matrixM . These are passed to their respective
+digital control loop (Methods). The control efforts for θC0 and θCN adjust the PLLs controlling the comb’s two degrees
+of freedom. The system tracks the actual phases, θ0 and θN , as fixed-point numbers, which are combined to give
+the actual pulse timing and phase, X (k) and θ (k) , for every comb-pulse number k . ADC, analogue-to-digital
+converter; cmd, command; DAC, digital-to-analogue converter; Diff, difference operator; IQ, in-phase/quadrature
+demodulator; NCO, numerically controlled oscillator; PII, proportional-integral-integral controller; PZT, piezo-
+electric transducer; Ref. osc., reference oscillator; r0 and rN , offset frequencies of the phase locks in units of f rep
+(Methods). c, LOS (blue trace) and their envelopes (red trace) for the fixed comb (at X = 0 ) and the TPFC at
+the given (X, θ) values with sequential measurements offset vertically for clarity. The LOS magnification of the
+time axis is 106 . Grey dashed vertical lines are provided as a guide to the eye to show alignment of pulse envelope
+centres across vertically stacked measurements.
+4
+图 1可编程时间频率梳。a，TPFC输出通过线性光学采样 (LOS)相对于第二个固定频率梳进行测
+量，并与具有偏移重复频率的第三个频率梳进行比较。频率梳在 f rep ≈ 200MHz工作，脉冲间隔为
+5纳秒。所有脉冲经过光谱滤波，呈高斯形状，带宽为 10.1纳米，对应脉冲持续时间为 355飞秒 (方
+法部分)。b，TPFC示意图。一个自参照铒光纤频率梳由数字电子设备控制，时钟信号取自检测到
+的梳重复频率信号 (V rep )。数字部分接收载波包络偏移信号 (V0)和光学拍频信号 (VN )，以及梳脉
+冲时序和相位指令 XC 和 θC ，这些信号通过 (简单的)矩阵M 组合生成控制相位 θC0 和 θCN 。这些
+控制相位传递到各自的数字控制环路 (方法部分)。对 θC0 和 θCN 的控制调整锁相环 (PLL)，控制梳的
+两个自由度。系统以定点数形式跟踪实际相位 θ0和 θN ，并将其组合生成每个梳脉冲编号 k的实际
+脉冲时序和相位X (k)和 θ (k)。ADC，模数转换器；cmd，命令；DAC，数模转换器；Diff，差分
+算子；IQ，同相/正交解调器；NCO，数字控制振荡器；PII，比例-积分-积分控制器；PZT，压电换
+能器；Ref. osc.，参考振荡器；r0和 rN ，锁相环的偏移频率，单位为 f rep (方法部分)。c，固定频
+率梳 (在 X = 0 )和 TPFC在给定 (X, θ)值下的 LOS(蓝色曲线)及其包络 (红色曲线)，为清晰起见，
+顺序测量结果在垂直方向上有偏移。LOS时间轴的放大倍数为 106。灰色虚线作为视觉引导，显示
+垂直堆叠测量中脉冲包络中心的对齐情况。
+In this paper, we first describe the TPFC and its capabilities generally. We then explore a specific application
+by integrating the TPFC into a dual-comb ranging system. Finally, we discuss the potential benefits of a TPFC in
+comb-based sensing more generally, including in LIDAR, spectroscopy and time transfer.
+本文首先介绍 TPFC及其一般功能，随后通过将 TPFC集成到双梳测距系统中，探讨其具体应用。
+最后，我们讨论 TPFC在基于频率梳的传感领域的潜在优势，包括激光雷达 (LIDAR)、光谱学和时
+间传输等方面。
+The time-programmable frequency comb
+可编程时间频率梳
+The TPFC requires two parts: an optically self-referenced frequency comb and the electronics to track and
+control the time and phase of the comb pulses. (See equation (3) for a definition of the time and phase of the comb
+pulses.) Although the electronic system need not be exclusively digital, it does need to track the programmed
+comb time and phase at the attosec-ond level over long (hours to weeks) durations. Here we use a fixed-point
+number whose least-significant bit corresponds to a less than 1-as shift in time. When combined with an integer
+pulse number in an 80-bit number, the pulse timing can be specified with zero loss of accuracy for over 1 week
+at 1-as precision, thereby providing well beyond 1019 -level control of the comb timing, commensurate with next-
+generation optical clocks. As for the comb, any self-referenced comb could be converted into a TPFC; here, we
+generate a TPFC using a fibre-based comb.
+TPFC由两部分组成:一个光学自参照频率梳和用于跟踪及控制梳脉冲时间与相位的电子系统。(梳
+脉冲的时间和相位定义见公式 (3)。)虽然电子系统不必完全数字化，但必须能够在长时间 (数小时
+至数周)内以阿秒级精度跟踪编程的梳时间和相位。这里我们使用一个定点数，其最低有效位对应
+小于 1阿秒的时间偏移。结合 80位数中的整数脉冲编号，脉冲时序可在 1阿秒精度下无精度损失
+地指定超过 1周时间，从而实现远超 1019 级的梳时序控制，达到下一代光学时钟的要求。至于频
+率梳，任何自参照频率梳均可转换为 TPFC；本文采用基于光纤的频率梳生成 TPFC。
+5
+Figures 1 and 2 describe the TPFC and its output characterization. In a self-referenced comb, phase-locked
+loops (PLLs) stabilize the frequency of theN th comb tooth, fN , with respect to a continuous-wave (CW) reference
+laser, and the frequency of the 0th comb tooth, f0 (the carrier-envelope offset frequency). The PLL locks both
+frequencies to a known fraction of f rep , which is self-referentially defined as f ren ≡ (fN − f0) /N (refs. 1,2,4,5
+). These PLLs also set the phases of the N th and 0th comb-tooth frequencies, θN and θ0 , to arbitrary but fixed
+values. Here we manipulate these phases to control both the comb-pulse phase, θ , and the comb-pulse-time offset
+which is given by X = (θ0 − θN ) / (2πNf rep ) in direct analogy to the definition of f rep above. The digital
+control exploits the optical frequency division ofN inherent to optically self-referenced combs so a single 2π shift
+in the phase of either PLL leads to a time shift of about 5 fs . The TPFC outputs both a train of optical pulses and
+the corresponding synchronous digital values of pulse time,X , and pulse phase, θ (Fig. 1b).
+图 1和图 2描述了 TPFC及其输出特性。在自参照光频梳中，相位锁定环 (PLLs)稳定第N 个梳齿的
+频率 fN ，相对于连续波 (CW)参考激光器，以及第 0个梳齿的频率 f0 (载波包络偏移频率)。PLL将
+这两个频率锁定到 f rep 的已知分数，该分数自参照地定义为 f ren ≡ (fN − f0) /N (参考文献 1,2,4,5
+)。这些 PLL还将第N 个和第 0个梳齿频率的相位 θN 和 θ0设定为任意但固定的值。这里我们操控
+这些相位以控制梳脉冲相位 θ 和梳脉冲时间偏移，其定义为 X = (θ0 − θN ) / (2πNf rep )，与上述
+f rep 的定义直接类比。数字控制利用了自参照光频梳固有的第 N 个频率的光学频率除法，因此任
+一 PLL相位的单个 2π移位会导致约 5 fs的时间偏移。TPFC输出一列光脉冲及对应的同步数字脉
+冲时间值 X 和脉冲相位 θ (图 1b)。
+6
+Fig. 2 | Illustration and characterization of the time programmability of the TPFC through LOS. a, The TPFC
+pulse train, presented as a surface plot, where each slice in lab time represents a complete LOS measurement as in
+Fig. 1c. Data acquired using the setup in Fig.1a. The TPFC pulse is located at the LOS signal peak and follows
+the commanded arbitrary step pattern (red line). Multiple reflections within the set-up appear as small satellite
+pulses. b, Repeated stepping of the TPFC timing to verify accuracy. Steps are performed at 1 Hz , measured by
+LOS at 6kHz (blue line) and the commanded step size (red line) is changed every 3 min . The 1− Hz modulation
+allows accurate measurement of the step size by removing fibre-optic path-length drifts. c , The error between
+the actual and commanded pulse times for the data in b (red circles). Each point is a 3-min average over about
+1 million individual LOS measurements. This measurement was repeated for multiple different commanded time
+steps (black circles). The uncertainty bars are based on the LOSmeasurement noise and residual comb timing jitter.
+The average difference is 0.66 as±1.73 as (standard error). There is no observed reduction in accuracy or precision
+despite moving the TPFC over the full 5 ns non-ambiguity range.
+图 2 |通过 LOS展示和表征 TPFC的时间可编程性。a，TPFC脉冲列的表面图，每个实验室时间切
+片代表一次完整的 LOS测量，如图 1c所示。数据采集使用图 1a的装置。TPFC脉冲位于 LOS信号
+峰值处，并跟随指令的任意阶跃模式 (红线)。装置内的多重反射表现为小卫星脉冲。b，重复阶跃调
+整 TPFC时序以验证精度。阶跃在 1 Hz处执行，通过 LOS在 6kHz测量 (蓝线)，指令阶跃大小 (红
+线)每 3 min变化一次。1−Hz调制允许通过消除光纤路径长度漂移精确测量阶跃大小。c，数据中
+实际与指令脉冲时间误差 (红圈)，数据来自 b。每点为约 100万次 LOS测量的 3分钟平均。该测
+量对多种指令时间阶跃重复 (黑圈)。误差条基于 LOS测量噪声和剩余梳齿时序抖动。平均差异为
+0.66飞秒 ±1.73 (标准误差)。尽管 TPFC在完整 5纳秒无歧义范围内移动，精度和准确度无明显下
+降。
+The TPFC is both agile and accurate (Figs.1c and 2); the output time of a comb pulse can be adjusted arbitrarily.
+Yet at any instant, we know exactly, to fractions of an optical cycle, by how much the output time (and phase) has
+been shifted. For rapid changes in the TPFC output, the settling time of the PLLs can be taken into account either
+through modelling or by including the digital phase error signal from the two PLLs. It is the exactness of the
+7
+performed step relative to the commanded step (Fig.2b) and the ability to control the steps in real time that stand in
+contrast to earlier work. As shown in Fig. 2c, the accuracy of the timing control,X , with respect to the underlying
+CW reference laser is 0.66± 1.73 as.
+TPFC既灵活又精确 (图 1c和图 2)；梳脉冲的输出时间可任意调节。但在任一时刻，我们都能精确
+知道输出时间 (及相位)相对于光学周期的分数偏移。对于 TPFC输出的快速变化，PLL的稳定时间
+可通过建模或包含两个 PLL的数字相位误差信号加以考虑。与早期工作相比，区别在于执行阶跃
+相对于指令阶跃的精确性 (图 2b)及实时控制阶跃的能力。如图 2c所示，时序控制的精度 X 相对
+于基础 CW参考激光器为 0.66± 1.73飞秒。
+Here themaximum slew rate between time steps was conservatively set to 40 ns s−1 to eliminate the possibility
+of cycle slips in the PLL during motion. The use of an input tracking filter for the PLL signals should enable slew
+rates as high as 1µss−1 , limited only by the actuators (Methods).
+这里在时间步之间的最大转换速率被保守地设置为 40 ns s−1 ，以消除运动过程中锁相环 (PLL)中
+周期跳变的可能性。对 PLL信号使用输入跟踪滤波器应能实现高达 1µss−1的转换速率，唯一受限
+于执行器 (方法部分)。
+Application to dual-comb ranging
+双梳测距的应用
+To demonstrate the advantages of the TPFC in dual-comb sensing, we consider ranging 6−8 . In dual-comb
+ranging, pulses with bandwidth τ−1
+p from a comb are reflected off an object, and their time of flight is detected by
+heterodyning them against a second comb. This measurement has a resolution of∆R = cτp/2 , which characterizes
+the ability to distinguish two adjacent reflections, where c is the speed of light. It has a non-ambiguity range
+RNA = c/ (2f rep ) , associated with ’which pulse’is detected. (This ambiguity can be removed by changing
+f rep and repeating the measurement 7 .) The accuracy is set by the comb’s reference oscillator or knowledge of
+the index of refraction. In certain applications, absolute calibration and instability of the reference plane will also
+factor into the accuracy. The precision is the uncertainty in the peak location of the reflection. At best, the precision
+is equal to the resolution divided by the signal-to-noise ratio (SNR):
+为了展示 TPFC在双梳传感中的优势，我们考虑测距 6−8。在双梳测距中，来自一把梳状光源的带
+宽为 τ−1
+p 的脉冲被物体反射，其飞行时间通过与第二把梳状光源的异频相干检测来测量。该测量的
+分辨率为 ∆R = cτp/2，用于表征区分两个相邻反射的能力，其中 c是光速。其无歧义测距范围为
+RNA = c/ (2f rep )，与检测到的“哪一个脉冲”相关。(该歧义可通过改变 f rep 并重复测量 7来消除。
+)精度由梳状光源的参考振荡器或折射率的知识决定。在某些应用中，参考平面的绝对校准和不稳
+定性也会影响精度。精密度是反射峰位置的不确定性。最佳情况下，精密度等于分辨率除以信噪比
+(SNR):
+σR =
+C
+2 ln (2)
+∆R
+SNRS
+(1)
+where the (2 ln (2))−1 factor arises from assumingGaussian pulses (Methods). The shot-noise limited SNRSNRS =
+√
+ηns where η is the detector quantum efficiency and ns = P rec T/ (hv) is the number of signal photons for a re-
+8
+ceived power P rec , integration time, T , and a photon energy given by the optical frequency, v , and Planck’s
+constant, h . The constant C quantifies how far the precision is from the quantum limit. It can be related to the
+power penalty as Pp = C2 . An optimal quantum-limited ranging system operates at C = Pp = 1 .
+其中 (2 ln (2))−1 因子源自假设高斯脉冲 (方法部分)。受散粒噪声限制的 SNRSNRS =
+√
+ηns ，其中
+η是探测器量子效率，ns = P rec T/ (hv)是信号光子数，接收功率为 P rec ，积分时间为 T ，光子能
+量由光学频率 v 和普朗克常数 h给出。常数 C 量化了精密度距离量子极限的远近。它可以与功率
+损耗相关联，表示为 Pp = C2 。一个最优的量子极限测距系统在 C = Pp = 1处运行。
+Conventional dual-comb ranging operates at a high power penalty and with significant trade-offs. In these
+systems, the second comb’s repetition rate is offset by∆fr to serve as a linear sampling comb. It repeatedly scans
+the entire non-ambiguity range,RNA , at a measurement rate T−1 = ∆fr ≤ f ren ∆R/ (4RNA) . The inherent trade-
+offs in T,RNA and∆R have led to dual-comb ranging implementations using very different frequency combs and
+covering three orders of magnitude in T and ∆R but all facing these strong constraints 6−8,42−44 . Moreover, in
+all cases, the power penalty Pp ≈ ∆R/RNA = frτp is severe, ranging from 14 dB to 38 dB (refs. 7,42 ), because of
+the repeated scanning of the entire non-ambiguity range.
+传统的双梳测距在高功率损耗和显著权衡下运行。在这些系统中，第二把梳状光源的重复频率偏移
+为∆fr，用作线性采样梳。它以测量速率 T−1 = ∆fr ≤ f ren ∆R/ (4RNA)重复扫描整个无歧义范围
+RNA。T,RNA和∆R的固有权衡导致双梳测距实现采用了非常不同的频率梳，覆盖了三个数量级的
+T 和∆R，但都面临这些强约束 6−8,42−44。此外，在所有情况下，功率损耗 Pp ≈ ∆R/RNA = frτp
+都很严重，范围从 14 dB到 38 dB (参考文献 7,42 )，这是由于反复扫描整个无歧义范围造成的。
+Fig. 3 | Dual-comb ranging with a time-programmable frequency comb. a, System diagram. The TPFC can
+be run in two modes, acquisition or tracking, as described in the main text. b , The timing discriminator is a
+dual Mach-Zehnder interferometer constructed with polarization-maintaining fibre optics in which (1) both comb
+pulses enter with the same polarization and (2) the TPFC pulse is rotated to the fast axis. Then (3) the pulses are
+9
+mixed, a delay between pulses is added to one arm and (4) the pulses are projected back into the same polarization
+for balanced heterodyne detection to yield the two output signals Vch1 and Vch2 . These signals are demodulated
+and their magnitudes combined to generate a power-insensitive error signal of the differential comb-pulse-time
+offset, while their phase yields the differential comb-pulse phase. c , Range precision (deviation) σR (left axis) and
+corresponding time deviation TDEV (right axis) at 200-ms averaging time versus the signal-comb power at the
+balanced photodetectors. The measured precision follows the quantum limit (equation (1)) from 0.33± 0.03pW to
+10± 1.0nW with a penalty of C = 2.16 , reaching a systematic noise floor below 1 nm (7 as), which is 2-10 times
+below previous dual-comb ranging experiments 6−8,42−44 and attributed to residual fibre path-length fluctuations.
+At the three high power points, the deviation is given both for the full data trace and for a subset of the data without
+approximately 6 sudden ranging/timing jumps of < 50 − nm amplitude which are attributed to nonlinear optical
+feedback (and only appear at these higher powers). d , Example handover between acquisition and tracking modes.
+Here the TPFC was commanded to move from X (t) = −5 ps to X (t) = 0 ps where it acquires the signal pulse.
+图 3 |具有时间可编程频率梳的双梳测距。a，系统示意图。TPFC(时间可编程频率梳)可运行于两种
+模式，采集模式或跟踪模式，如正文所述。b，时序鉴别器是由保持偏振光纤构成的双马赫-曾德干
+涉仪，其中 (1)两个梳脉冲以相同偏振进入，(2)TPFC脉冲被旋转至快轴方向，(3)脉冲混合后，在
+一臂中加入脉冲间延迟，(4)脉冲被投影回相同偏振以进行平衡外差检测，产生两个输出信号 Vch1
+和 Vch2。这些信号被解调，其幅度合成生成一个对功率不敏感的差分梳脉冲时间偏移误差信号，而
+其相位则提供差分梳脉冲相位。c，测距精度 (偏差) σR (左轴)及对应的 200毫秒平均时间下的时间
+偏差 TDEV(右轴)与平衡光电探测器信号梳功率的关系。测得的精度遵循量子极限 (方程 (1))，从
+0.33± 0.03pW到 10± 1.0nW，伴随 C = 2.16的惩罚，达到低于 1 nm (7阿秒)的系统噪声底，较
+之前的双梳测距实验低 2至 10倍，归因于残余光纤路径长度波动。在三个高功率点，偏差同时给
+出完整数据轨迹和去除约 6次幅度为 < 50 − nm的突发测距/时序跳变的数据子集，这些跳变归因
+于非线性光反馈 (仅在高功率下出现)。d，采集模式与跟踪模式之间的示例切换。此处 TPFC被指
+令从 X (t) = −5皮秒移动至 X (t) = 0皮秒以采集信号脉冲。
+Here, as shown in Fig. 3, we replace the sampling frequency comb by the TPFC to overcome these trade-offs
+and stiff power penalty. A coherent timing discriminator, shown in Fig. 3b, measures the relative time and phase
+between the TPFC and signal-comb pulses. Creating two time-shifted copies effectively shapes the TPFC pulse to
+optimize detection of the time of the incoming signal-comb pulses 46,47 . The two heterodyne signals output by
+the timing discriminator have a nominal carrier frequency of 10MHz , set by the relative phase locks of the two
+combs. The signals are then bandpass filtered and demodulated. The choice of bandwidth is a trade-off between
+update rate and sensitivity. Here, we use 26kHz to be well above typical roughly kilohertz mechanical vibrations
+while allowing for a fairly long 38µs coherent integration time. The amplitudes of the two demodulated signals are
+combined to compute the time offset between the TPFC and signal comb (Fig.3b) whereas their phase yields the
+differential carrier phase of the TPFC and signal-comb pulses whose derivative is the Doppler shift. Critically, the
+combination of the two channels from the timing discriminator gives a time offset measurement that is independent
+of the incoming signal power.
+10
+如图 3所示，我们用 TPFC替代采样频率梳，以克服这些权衡和严格的功率惩罚。图 3b所示的相
+干时序鉴别器测量 TPFC与信号梳脉冲之间的相对时间和相位。通过创建两个时间偏移的副本，有
+效地塑形 TPFC脉冲以优化对入射信号梳脉冲时间的检测 46,47 。时序鉴别器输出的两个外差信号
+的名义载波频率为 10MHz，由两梳的相对相位锁定设定。信号随后经过带通滤波和解调。带宽的
+选择是在更新速率和灵敏度之间的权衡。这里我们使用 26kHz，远高于典型的千赫兹级机械振动，
+同时允许较长的 38µs相干积分时间。两个解调信号的幅度合成计算 TPFC与信号梳之间的时间偏
+移 (图 3b)，其相位则提供 TPFC与信号梳脉冲的差分载波相位，其导数即多普勒频移。关键是，时
+序鉴别器两个通道的组合提供了一个与入射信号功率无关的时间偏移测量。
+This system runs in two modes: acquisition mode and tracking mode, both of which differ from conventional
+dual-comb ranging. In acquisition mode,X (t) is scanned until the tracking comb’s timing matches the incoming
+signal pulse train. Although it is possible to scan the entire non-ambiguity range, we can also make use of a priori
+information to scan the TPFC over much less than the non-ambiguity range. The information could be provided
+from external sources or from a Kalman filter if previous range and Doppler measurements are available. Once
+the system acquires the appropriate reflection, it switches to tracking mode (Fig.3d). Tracking mode implements a
+pulse-timing lock and a carrier-frequency lock based on the timing discriminator outputs (Methods). The combina-
+tion of the control and error signals from the time and frequency locks in turn yield the range and Doppler velocity
+of the target object.
+该系统运行于两种模式:采集模式和跟踪模式，二者均不同于传统双梳测距。在采集模式下，X (t)
+被扫描，直到跟踪梳的时序与入射信号脉冲列匹配。虽然可以扫描整个非歧义范围，但我们也可利
+用先验信息将 TPFC扫描范围缩小至远小于非歧义范围。该信息可由外部来源提供，或在已有先前
+测距和多普勒测量的情况下由卡尔曼滤波器提供。一旦系统捕获到合适的反射信号，即切换至跟踪
+模式 (图 3d)。跟踪模式基于时序鉴别器输出实现脉冲时序锁定和载波频率锁定 (方法部分)。时间和
+频率锁定的控制与误差信号结合，进而得到目标物体的距离和多普勒速度。
+In tracking mode, the ranging precision nearly reaches the quantum limit of equation (1) (Fig. 3c). This
+nearly quantum-limited precision ranging is demonstrated at a rapid 26 − kHz measurement rate with as little as
+0.33± 0.03pW of return power (SNRs = 9.5) , which corresponds to only 1/77 mean photons per pulse. There is
+a slight penalty of C = 2.16 owing primarily to differential dispersion between the comb pulses (Methods). With
+additional optimization, C could be reduced to 1, and with squeezing, to less than 1 (ref. 46 ). With these same
+200 − MHz combs, conventional dual-comb ranging would suffer from a power penalty Pp = 37 dB (C = 71)
+. Finally, momentary loss of signal is not an issue. If brief enough that the object position does not differ from
+prediction, for example, from a Kalman filter, by more than about ±2∆R ≈ ±100µm , tracking simply resumes.
+For even a 10g acceleration, an approximately 1.5-ms-duration loss of signal is tolerable. Sometimes the signal
+loss may be too long, for example, in strong air turbulence 48 , in which case the system can transition to acquisition
+mode using previous data to limit the scan, as discussed above.
+11
+在跟踪模式下，测距精度几乎达到了方程 (1)的量子极限 (图 3c)。这种近乎量子极限的高精度测距
+在快速 26− kHz测量速率下实现，返回功率仅为 0.33± 0.03pW (SNRs = 9.5)，对应每脉冲平均光
+子数仅为 1/77。由于梳脉冲间的差分色散 (方法部分)，存在轻微的 C = 2.16损失。通过进一步优
+化，C可降低至 1，利用压缩态则可降至小于 1(参考文献 46 )。使用相同的 200−MHz梳，传统的双
+频梳测距将面临功率损失 Pp = 37 dB (C = 71)。最后，瞬时信号丢失不是问题。如果丢失时间足
+够短，以至于目标位置与预测 (例如卡尔曼滤波器)偏差不超过约 ±2∆R ≈ ±100µm，则跟踪可直
+接恢复。即使在 10g加速度下，约 1.5毫秒的信号丢失也是可容忍的。有时信号丢失时间过长，例
+如在强烈大气湍流 48 情况下，系统可切换至捕获模式，利用先前数据限制扫描范围，如上文所述。
+Fig. 4 | Ranging and velocity data to a moving retroreflector. a, The range (top left axis, dark blue trace) is
+measured from the summed control and error signals for X (t) in tracking mode at a 26 − kHz rate. The velocity
+(right middle axis, red trace) is calculated from summed control and error signals for dθ (t) /dt . At 150 s , the
+beam was blocked and the target moved, triggering a re-acquisition. Before and after re-acquisition, the measured
+range agrees with a commercial FMCW ranging system (black circles), to within the FMCW uncertainty driven by
+target vibrations (Methods). The relative range also agrees well with the interferometric range from the unwrapped
+carrier phase (yellow trace in the two insets), after applying an overall offset. b, Difference between the dual-
+comb range and FMCW range (black circles) and between the dual-comb range and interferometric range from the
+unwrapped carrier phase for the initial section with continuous signal (grey trace). The range deviation of this latter
+difference reaches 10 nm and 5 nm at 10− s averaging for the time periods with received powers of 3.2± 0.3pW
+and 32± 3.0pW , respectively (Extended Data Fig. 1).
+12
+图 4 |对移动反射镜的测距和速度数据。a，测距 (左上轴，深蓝色曲线)由跟踪模式下以 26− kHz速
+率对X (t)的控制信号和误差信号求和测得。速度 (右中轴，红色曲线)由对 dθ (t) /dt的控制信号和
+误差信号求和计算得出。在 150 s时，光束被阻断且目标移动，触发重新捕获。重新捕获前后，测得
+的距离与商业 FMCW测距系统 (黑色圆点)一致，误差在由目标振动引起的 FMCW不确定度范围
+内 (方法部分)。相对距离与展开载波相位的干涉测距 (两个插图中的黄色曲线)也高度吻合，应用了
+整体偏移。b，双频梳测距与 FMCW测距 (黑色圆点)以及双频梳测距与展开载波相位干涉测距 (灰
+色曲线)在连续信号初始段的差异。后者的测距偏差在接收功率分别为 3.2± 0.3pW和 32± 3.0pW
+的时间段内，经过 10−秒平均后达到 10 nm和 5 nm (扩展数据图 1)。
+Figure 4 shows range data taken while moving the rail-mounted retroreflector. The dual-comb system tracks
+the retroreflector as it reverses direction at velocities up to 20 cm s−1 . The signal is blocked at 150 s and the
+retroreflector moved, after which the absolute range was reacquired by scanning over a ±37.5 -cm window. For
+validation, we compare with a commercial frequency-modulated continuous-wave (FMCW) system at a few static
+rail positions after calibrating out differential range offsets. The two agree to within the FMCW measurement
+uncertainty of ±40µm owing to target vibrations amplified by the FMCW’s intrinsic range-Doppler coupling (Ex-
+tended Data Fig. 2). Finally, the coherent timing discriminator also outputs the relative carrier phase between the
+signal comb and TPFC, whose derivative yielded the velocity above. This phase can also be unwrapped to provide
+relative range during periods of continuous signal (Fig. 4a, yellow trace) as in ref. 7 and similar to CW interferom-
+etry (except avoiding systematic errors from spurious reflections). This unwrapped carrier phase agrees with the
+tracking range to a precision limited by the tracking range noise which follows equation (1), after accounting for
+an approximately 1.5-times chirp-induced penalty in C from the fibre-optic path to reach the rail system.
+图 4 显示了在移动轨道安装的反射镜时采集的测距数据。双梳系统能够跟踪反射镜在速度高达
+20 cm s−1 时的反向运动。信号在 150 s 处被阻断，反射镜被移动，随后通过在 ±37.5 厘米范围
+内扫描重新获取绝对距离。为了验证，我们在校准了差分距离偏移后，将结果与商业频率调制连续
+波 (FMCW)系统在几个静态轨道位置的测量进行了比较。两者在 FMCW测量不确定度 ±40µm范
+围内一致，误差源于目标振动被 FMCW固有的距离-多普勒耦合放大 (扩展数据图 2)。最后，相干
+定时鉴别器还输出了信号梳与 TPFC之间的相对载波相位，其导数得出了上述速度。该相位也可以
+展开以提供连续信号期间的相对距离 (图 4a，黄色曲线)，如参考文献 7所示，类似于连续波干涉测
+量 (但避免了伪反射引起的系统误差)。展开的载波相位与跟踪距离一致，其精度受限于跟踪距离噪
+声，噪声遵循公式 (1)，并考虑了从光纤路径到轨道系统约 1.5倍的啁啾引入的惩罚 C 。
+13
+Fig. 5 | Comparison of conventional and tracking dual-comb ranging. Precision versus received signal pho-
+tons, ns = SNR2
+S/η , for conventional dual-comb ranging at f rep = 200MHz (blue line) and f rep = 10GHz
+(green line), compared with tracking dual-comb ranging (red line) and the standard quantum limit for heterodyne
+detection (black line).The left and bottom axes are in normalized units whereas the right and top axes are scaled
+to values similar to those used in this work. For conventional dual-comb ranging, the scaling depends strongly on
+f rep and the precision is always much worse than the standard quantum limit. The tracking dual-comb ranging (red
+line) is independent of f rep and can reach the standard quantum limit, although here shown with a 10% penalty.
+We assume a system noise floor of 0.7 nm , taken from this work, for the tracking comb, and about 10 nm for the
+conventional dual-comb systems 7,42 . For all three ranging configurations, we require a minimum detection SNR
+of about 10 for reasonable detection statistics, as indicated by the SNR limit. The 37-dB improvement, however,
+is independent of this chosen limit.
+图 5 |传统与跟踪双梳测距的比较。精度与接收信号光子数 ns = SNR2
+S/η的关系，传统双梳测距在
+f rep = 200MHz (蓝线)和 f rep = 10GHz (绿线)下的表现，与跟踪双梳测距 (红线)及异频检测的标
+准量子极限 (黑线)对比。左侧和底部坐标轴为归一化单位，右侧和顶部坐标轴则按本工作中使用的
+类似数值缩放。对于传统双梳测距，缩放强烈依赖于 f rep ，且精度始终远低于标准量子极限。跟
+踪双梳测距 (红线)不受 f rep 影响，能够达到标准量子极限，尽管此处显示有 10%的惩罚。我们假
+设跟踪梳系统噪声底为 0.7 nm，取自本工作，传统双梳系统约为 10 nm 7,42。对于所有三种测距配
+置，我们要求最低检测信噪比约为 10以保证合理的检测统计，如信噪比限制所示。然而，37 dB的
+提升独立于所选的该限制。
+Broader benefits to comb-based sensing
+基于梳状光源传感的更广泛益处
+A number of existing or potential applications should benefit from the abilities illustrated in Figs. 1-3, specif-
+ically to (1) set the time and phase of the comb’s output pulses, (2) coherently scan the relative temporal spacing
+between two frequency combs over a specified limited range rather than the full inverse repetition rate, thereby
+14
+mimicking a higher-repetition-rate comb while avoiding limitations of lower pulse energy, and (3) operate as a
+precision optical tracking oscillator in time and frequency for shot-noise limited sensing. Below we discuss three
+different general application areas: LIDAR, time metrology and spectroscopic sensing.
+多个现有或潜在应用应能从图 1-3所示能力中受益，具体包括 (1)设定梳状光输出脉冲的时间和相
+位，(2)在指定的有限范围内相干扫描两个频率梳之间的相对时间间隔，而非全逆重复率，从而模拟
+更高重复率的梳状光，同时避免较低脉冲能量的限制，以及 (3)作为时间和频率上的精密光学跟踪
+振荡器，用于受散粒噪声限制的传感。以下我们讨论三个不同的通用应用领域:激光雷达 (LIDAR)、
+时间计量学和光谱传感。
+As already discussed, frequency combs have a natural connection to precision LIDAR. Figure 5 and Extended
+Data Table 1 together compare conventional dual-comb ranging 7,42−44 , tracking dual-comb ranging and FMCW
+ranging 49 , which is the standard approach to high-resolution optical ranging. For all three, the resolution is set
+by the optical bandwidth and the accuracy by the comb referencing or knowledge of the index of refraction of air.
+(Comb-assisted FMCW ranging can transfer frequency-comb accuracy to FMCWLIDAR 50 .) Both tracking dual-
+comb ranging and FMCW ranging can reach the shot-noise limit and exploit the optical carrier phase. However,
+the update rate of FMCW ranging is limited by the laser sweep time and its uncertainty can be degraded by target
+vibrations. Tracking dual-comb ranging avoids vibration-related systematics. It could
+如前所述，频率梳与精密激光雷达有天然联系。图 5和扩展数据表 1比较了传统双梳测距 7,42−44
+、跟踪双梳测距和 FMCW测距 49，后者是高分辨率光学测距的标准方法。三者的分辨率均由光学
+带宽决定，精度则由梳参考或空气折射率知识决定。(梳辅助 FMCW测距可将频率梳的精度传递至
+FMCW激光雷达 50 。)跟踪双梳测距和 FMCW测距均可达到散粒噪声极限并利用光学载波相位。
+然而，FMCW测距的更新速率受激光扫描时间限制，其不确定度可能因目标振动而恶化。跟踪双
+梳测距避免了振动相关的系统误差。它可以
+Article
+文章
+provide range-resolved vibrometry in a cluttered environment or surface imaging through turbulent media even
+with speckle-induced dropouts and high loss. (A 10-mW launch power will still provide sufficient 1− pW return
+power to enable a 26− kHz measurement rate given a -100-dB reflection.) More generally, there are strong over-
+laps with conventional radiofrequency pulse-Doppler radar and the tracking comb could therefore have interesting
+applications to high-bandwidth synthetic aperture LIDAR 51 .
+即使在杂乱环境中或通过湍流介质进行表面成像，TPFC也能提供距离分辨的振动测量，即使存在散
+斑引起的信号丢失和高损耗。(10毫瓦的发射功率仍能提供足够的 1− pW回波功率，以实现在-100
+分贝反射条件下的 26− kHz测量速率。)更广泛地说，TPFC与传统射频脉冲多普勒雷达有很强的
+重叠，因此跟踪频率梳可能在高带宽合成孔径激光雷达 (LIDAR) 51 中具有有趣的应用。
+In time-frequency metrology, a TPFC phase-locked to an optical atomic clock provides an optical timescale
+with the ability to ’adjust’ its output time to synchronize with other signals. A TPFC could also enable calibration
+of time-interval counters 45 . The time-interval standard would follow Fig. 1c, where the TPFC allows precisely
+defined variable pulse spacing from nanoseconds to femtoseconds. This offers the prospect of a time-interval
+15
+standard that spans six orders of magnitude with attosecond precision and an accuracy directly tied to a secondary
+representation of the second. For absolute optical frequency measurements, the TPFC also enables determination
+of the mode number N by applying a shift ∆θ0 = 2πN , which will lead to a time shift of exactly ∆X = f−1
+rep
+for the correct N . Any integer error in N appears as a multiple of 5 -fs offset in time, which can be resolved
+with a second comb and a timing discriminator. In secure optical communications, the programmable comb might
+enable quadrature pulse phase-position modulation if implemented with high-speed actuators. Finally, the TPFC
+has interesting applications to comb-based long-distance free-space time transfer 13−17,19,20,23,48 as it provides
+similar advantages as in dual-comb ranging 52 .
+在时频计量学中，锁相于光学原子钟的 TPFC提供了一个光学时间尺度，能够“调整”其输出时间
+以与其他信号同步。TPFC还可用于校准时间间隔计数器 45。时间间隔标准如图 1c所示，TPFC允
+许从纳秒到飞秒的精确定义的可变脉冲间隔。这为实现跨越六个数量级、具有阿秒精度且准确度直
+接关联于秒的二级表示的时间间隔标准提供了前景。对于绝对光学频率测量，TPFC还通过施加频
+率偏移 ∆θ0 = 2πN 实现模态数 N 的确定，这将导致正确的 N 对应的时间偏移恰好为 ∆X = f−1
+rep
+。任何 N 的整数误差都会表现为时间上的 5飞秒倍数偏移，可通过第二个频率梳和时间判别器加
+以解决。在安全光通信中，如果配备高速执行器，编程频率梳可能实现四相脉冲相位位置调制。最
+后，TPFC在基于频率梳的远距离自由空间时间传输 13−17,19,20,23,48 中具有有趣的应用，因为它提
+供了与双频梳测距 52 类似的优势。
+The TPFC can also break trade-offs that limit comb-based linear and nonlinear spectroscopy. Relatively
+low-repetition-rate frequency combs(100MHzto1GHz)provide the high pulse energies needed for nonlinear spec-
+troscopy or for spectrally broadening over the desired spectral band 53−55 . However, the spectral resolution set
+by these low repetition rates is often poorly matched to the application leading to significant ’dead time’ or SNR
+reduction in multi-comb-based spectroscopy 24,26−31,54,55 . The TPFC can circumvent this problem by coherently
+scanning over a limited time offset between two or more frequency combs, as demonstrated incoherently in the
+early dual-comb spectroscopic work of ref. 38 . In this way, a low-repetition-frequency TPFC can act as a fre-
+quency comb with an effectively much higher repetition rate, set by the inverse of the temporal scan window, at
+shot-noise-limited sensitivity. Going further, the ability to jump the frequency comb-pulse phase and timing could
+enable compressive sampling in dual-comb or multi-comb sensing applications with a concomitant increase in mea-
+surement rate. Recent modelling 35 and preliminary experiments 34 have highlighted the advantages of this dynamic
+control for dual-comb spectroscopy. Finally, in nonlinear spectroscopy, temporal control could enable time-ordered
+multi-photon excitation, following the comb-based spectroscopy of rubidium 33 but with programmable control.
+TPFC 还可以打破限制基于频率梳的线性和非线性光谱学的权衡。相对较低重复率的频率梳
+(100MHz至 1GHz)提供了非线性光谱学或在所需光谱带宽内实现光谱展宽所需的高脉冲能量 53−55
+。然而，这些低重复率设定的光谱分辨率通常与应用不匹配，导致多频梳光谱学中显著的“死区”
+或信噪比降低 24,26−31,54,55 。TPFC通过在两个或多个频率梳之间相干扫描有限时间偏移来规避此
+问题，正如参考文献中早期双频梳光谱学工作中非相干演示的那样 38 。通过这种方式，低重复频
+率的 TPFC可以作为具有有效更高重复率的频率梳，重复率由时间扫描窗口的倒数决定，且达到散
+粒噪声极限的灵敏度。更进一步，频率梳脉冲相位和时序跳变的能力可在双频梳或多频梳传感应用
+中实现压缩采样，同时提高测量速率。近期的建模研究 35和初步实验 34凸显了这种动态控制对双
+频梳光谱学的优势。最后，在非线性光谱学中，时间控制可实现时间有序的多光子激发，继承了基
+于频率梳的铷光谱学 33 ，但具备可编程控制。
+16
+Conclusion
+结论
+The TPFC combines the precision and accuracy of a self-referenced frequency comb with flexibility in time
+and phase and 2-as accuracy. Here the TPFC is based on a fibre frequency comb, but any self-referenced comb
+(or comb locked to widely separated optical oscillators) with control electronics capable of tracking and manipu-
+lating phase could act as a TPFC. Through a dual-comb ranging demonstration, we show the TPFC can operate as
+an optical tracking oscillator in time and frequency, yielding nearly quantum-noise-limited ranging with 0.7-nm
+precision. Finally, dual-comb ranging is just one application and the TPFC has equal promise in relaxing trade-
+offs with repetition frequency and improving SNR in other multi-comb sensing and metrology applications while
+retaining the hallmark accuracy of comb-based metrology. Online content
+TPFC结合了自参照频率梳的精密度和准确度，以及时间和相位的灵活性和 2阿秒的精度。本文中
+的 TPFC基于光纤频率梳，但任何具备跟踪和操控相位控制电子学的自参照频率梳 (或锁定于远距
+离光学振荡器的频率梳)都可作为 TPFC。通过双频梳测距演示，我们展示了 TPFC可作为时间和频
+率上的光学跟踪振荡器，实现接近量子噪声极限的测距，精度达 0.7纳米。最后，双频梳测距仅是
+其一项应用，TPFC在放宽重复频率权衡、提升其他多频梳传感和计量应用的信噪比方面同样具有
+潜力，同时保持频率梳计量的标志性准确度。在线内容
+Anymethods, additional references, Nature Research reporting summaries, source data, extended data, supple-
+mentary information, acknowledgements, peer review information; details of author contributions and competing
+interests; and statements of data and code availability are available at https://doi.org/10.1038/s41586-022-05225-8.
+任何方法、附加参考文献、Nature Research报告摘要、源数据、扩展数据、补充信息、致谢、同行评审
+信息；作者贡献和竞争利益详情；以及数据和代码可用性声明均可在 https://doi.org/10.1038/s41586-
+022-05225-8获取。
+1. Hänsch, T. W. Nobel Lecture: Passion for precision. Rev. Mod. Phys. 78, 1297-1309 (2006).
+1. Hänsch, T. W.诺贝尔讲座:对精确的热情。Rev. Mod. Phys. 78, 1297-1309 (2006)。
+2. Hall, J. L. Nobel Lecture: Defining and measuring optical frequencies. Rev. Mod. Phys. 78, 1279-1295
+(2006).
+2. Hall, J. L.诺贝尔讲座:定义和测量光学频率。Rev. Mod. Phys. 78, 1279-1295 (2006)。
+3. Newbury, N. R. Searching for applications with a fine-tooth comb. Nat. Photon. 5, 186-188 (2011).
+3. Newbury, N. R.用光频梳细致寻找应用。Nat. Photon. 5, 186-188 (2011)。
+4. Fortier, T. & Baumann, E. 20 years of developments in optical frequency comb technology and applications.
+Commun. Phys. 2, 153 (2019).
+4. Fortier, T. & Baumann, E.光学频率梳技术及其应用 20年发展。Commun. Phys. 2, 153 (2019)。
+17
+5. Diddams, S. A., Vahala, K. & Udem, T. Optical frequency combs: coherently uniting the electromagnetic
+spectrum. Science 369, eaay3676 (2020).
+5. Diddams, S. A., Vahala, K. & Udem, T.光学频率梳:相干连接电磁谱。Science 369, eaay3676 (2020)。
+6. Zhu, Z. & Wu, G. Dual-comb ranging. Engineering 4, 772-778 (2018).
+6. Zhu, Z. & Wu, G.双频梳测距。Engineering 4, 772-778 (2018)。
+7. Coddington, I., Swann, W. C., Nenadovic, L. & Newbury, N. R. Rapid and precise absolute distance
+measurements at long range. Nat. Photon. 3, 351-356 (2009).
+7. Coddington, I., Swann, W. C., Nenadovic, L. & Newbury, N. R. 长距离快速精确的绝对距离测量。
+Nat. Photon. 3, 351-356 (2009)。
+8. Kim, W. et al. Absolute laser ranging by time-of-flight measurement of ultrashort light pulses. J. Opt. Soc.
+Am. A 37, B27-B35 (2020).
+8. Kim, W.等. 通过超短光脉冲飞行时间测量实现绝对激光测距。J. Opt. Soc. Am. A 37, B27-B35
+(2020)。
+9. Minoshima, K. & Matsumoto, H. High-accuracy measurement of 240-m distance in an optical tunnel by
+use of a compact femtosecond laser. Appl. Opt. 39, 5512-5517 (2000).
+9. Minoshima, K. & Matsumoto, H. 利用紧凑型飞秒激光器在光学隧道中高精度测量 240 米距离。
+Appl. Opt. 39, 5512-5517 (2000)。
+10. Vicentini, E., Wang, Z., Van Gasse, K., Hänsch, T. W. & Picqué, N. Dual-comb hyperspectral digital
+holography. Nat. Photon. 15, 890-894 (2021).
+10. Vicentini, E., Wang, Z., Van Gasse, K., Hänsch, T. W. & Picqué, N.双频梳高光谱数字全息成像。Nat.
+Photon. 15, 890-894 (2021)。
+11. Kato, T., Uchida, M. &Minoshima, K. No-scanning 3D measurement method using ultrafast dimensional
+conversion with a chirped optical frequency comb. Sci. Rep. 7, 3670 (2017).
+11. Kato, T., Uchida, M. & Minoshima, K.利用啁啾光学频率梳的超快维度转换实现无扫描三维测量
+方法。Sci. Rep. 7, 3670 (2017)。
+12. Hase, E. et al. Scan-less confocal phase imaging based on dual-comb microscopy. Optica 5, 634-643
+(2018).
+12. Hase, E.等. 基于双频梳显微镜的无扫描共焦相位成像。Optica 5, 634-643 (2018)。
+13. Deschênes, J.-D. et al. Synchronization of distant optical clocks at the femtosecond level. Phys. Rev. X
+6, 021016 (2016).
+18
+13. Deschênes, J.-D.等. 远距离光学时钟的飞秒级同步。Phys. Rev. X 6, 021016 (2016)。
+14. Giorgetta, F. R. et al. Optical two-way time and frequency transfer over free space. Nat. Photon. 7,
+434-438 (2013).
+14. Giorgetta, F. R.等. 自由空间光学双向时间和频率传输。Nat. Photon. 7, 434-438 (2013)。
+15. Xin, M., Şafak, K. & Kärtner, F. X. Ultra-precise timing and synchronization for large-scale scientific
+instruments. Optica 5, 1564-1578 (2018).
+15. Xin, M., Şafak, K. & Kärtner, F. X.大型科学仪器的超精确定时与同步。Optica 5, 1564-1578 (2018)。
+16. Shen, Q. et al. Experimental simulation of time and frequency transfer via an optical satellite-ground link
+at 10−18 instability. Optica 8,471-476 (2021).
+16. Shen, Q. 等. 通过光学卫星地面链路在 10−18 不稳定度下的时间和频率传输实验模拟。Optica
+8,471-476 (2021)。
+17. Boulder Atomic Clock Optical Network (BACON) Collaboration Frequency ratio measurements at 18-
+digit accuracy using an optical clock network. Nature 591, 564-569 (2021).
+17. 博尔德原子钟光学网络 (BACON)合作，利用光学钟网络实现 18位数字精度的频率比测量。自
+然 591, 564-569 (2021)。
+18. Clivati, C. et al. Common-clock very long baseline interferometry using a coherent optical fiber link.
+Optica 7, 1031-1037 (2020).
+18. Clivati, C.等。利用相干光纤链路的共时钟甚长基线干涉测量。光学 7, 1031-1037 (2020)。
+19. Bergeron, H. et al. Femtosecond time synchronization of optical clocks off of a flying quadcopter. Nat.
+Commun. 10, 1819 (2019).
+19. Bergeron, H.等。利用飞行四旋翼无人机实现光学钟的飞秒级时间同步。自然通讯 10, 1819 (2019)。
+20. Bodine, M. I. et al. Optical time-frequency transfer across a free-space, three-node network. APL Photon.
+5, 076113 (2020).
+20. Bodine, M. I.等。跨越自由空间三节点网络的光学时频传输。APL光子学 5, 076113 (2020)。
+21. Dix-Matthews, B. P. et al. Point-to-point stabilized optical frequency transfer with active optics. Nat.
+Commun. 12, 515 (2021).
+21. Dix-Matthews, B. P.等。采用主动光学的点对点稳定光学频率传输。自然通讯 12, 515 (2021)。
+22. Gozzard, D. R. et al. Ultrastable free-space laser links for a global network of optical atomic clocks. Phys.
+Rev. Lett. 128, 020801 (2022).
+19
+22. Gozzard, D. R. 等。用于全球光学原子钟网络的超稳定自由空间激光链路。物理评论快报 128,
+020801 (2022)。
+23. Shen, Q. et al. 113 km free-space time-frequency dissemination at the 19th decimal instability. Preprint
+at https://arxiv.org/abs/2203.11272 (2022).
+23. Shen, Q. 等。113 公里自由空间时频传播，达到 19 位小数不稳定度。预印本
+https://arxiv.org/abs/2203.11272 (2022)。
+24. Coddington, I., Newbury, N. & Swann, W. Dual-comb spectroscopy. Optica 3, 414-426 (2016).
+24. Coddington, I., Newbury, N. & Swann, W.双梳光谱学。光学 3, 414-426 (2016)。
+25. Cossel, K. C. et al. in Advances in Spectroscopic Monitoring of the Atmosphere (eds Chen, W. et al.)
+27-93 (Elsevier, 2021); https://doi.org/10.1016/B978-0-12-815014-6.00008-7.
+25. Cossel, K. C. 等。载于《大气光谱监测进展》(主编 Chen, W. 等)27-93 (Elsevier, 2021);
+https://doi.org/10.1016/B978-0-12-815014-6.00008-7。
+26. Picqué, N. & Hänsch, T. W. Frequency comb spectroscopy. Nat. Photon. 13, 146-157 (2019).
+26. Picqué, N. & Hänsch, T. W.频率梳光谱学。自然光子学 13, 146-157 (2019)。
+27. Lomsadze, B., Smith, B. C. & Cundiff, S. T. Tri-comb spectroscopy. Nat. Photon. 12, 676-680 (2018).
+27. Lomsadze, B., Smith, B. C. & Cundiff, S. T.三梳光谱学。自然光子学 12, 676-680 (2018)。
+28. Friedlein, J. T. et al. Dual-comb photoacoustic spectroscopy. Nat. Commun. 11, 3152 (2020).
+28. Friedlein, J. T.等。双梳光声光谱学。自然通讯 11, 3152 (2020)。
+29. Wildi, T., Voumard, T., Brasch, V., Yilmaz, G. & Herr, T. Photo-acoustic dual-frequency comb spec-
+troscopy. Nat. Commun. 11, 4164 (2020).
+29. Wildi, T., Voumard, T., Brasch, V., Yilmaz, G. & Herr, T. 光声双频梳光谱学。自然通讯 11, 4164
+(2020)。
+30. Ideguchi, T. et al. Coherent Raman spectro-imaging with laser frequency combs. Nature 502, 355-358
+(2013).
+30. Ideguchi, T.等。利用激光频率梳的相干拉曼光谱成像。自然 502, 355-358 (2013)。
+31. Rieker, G. B. et al. Frequency-comb-based remote sensing of greenhouse gases over kilometer air paths.
+Optica 1, 290-298 (2014).
+31. Rieker, G. B.等。基于频率梳的千米级路径温室气体遥感。光学 1, 290-298 (2014)。
+20
+32. Voumard, T. et al. Al-enabled real-time dual-comb molecular fingerprint imaging. Opt. Lett. 45, 6583-
+6586 (2020).
+32. Voumard, T.等。基于铝的实时双梳分子指纹成像。光学快报 45, 6583-6586 (2020)。
+33. Marian, A., Stowe, M. C., Lawall, J. R., Felinto, D. & Ye, J. United time-frequency spectroscopy for
+dynamics and global structure. Science 306, 2063-2068 (2004). controlled spectral resolution. In Conference on
+Lasers and Electro-Optics (2021) AM3E.4 (Optical Society of America, 2021).
+33. Marian, A., Stowe, M. C., Lawall, J. R., Felinto, D. & Ye, J.用于动力学和全局结构的联合时频光谱
+学。Science 306, 2063-2068 (2004)。受控光谱分辨率。发表于激光与电光学会议 (2021)AM3E.4(美国
+光学学会，2021)。
+35. Kawai, A., Kageyama, T., Horisaki, R. & Ideguchi, T. Compressive dual-comb spectroscopy. Sci. Rep.
+11, 13494 (2021).
+35. Kawai, A., Kageyama, T., Horisaki, R. & Ideguchi, T.压缩双梳光谱学。Sci. Rep. 11, 13494 (2021)。
+36. Martin, B., Feneyrou, P., Dolfi, D. & Martin, A. Performance and limitations of dual-comb based ranging
+systems. Opt. Express 30, 4005 (2022).
+36. Martin, B., Feneyrou, P., Dolfi, D. &Martin, A.基于双梳的测距系统的性能与局限性。Opt. Express
+30, 4005 (2022)。
+37. Ellis, J. L. et al. Scaling up frequency-comb-based optical time transfer to long terrestrial distances. Phys.
+Rev. Appl. 15, 034002 (2021).
+37. Ellis, J. L.等。基于频率梳的光学时间传输向长距离陆地扩展。Phys. Rev. Appl. 15, 034002 (2021)。
+38. Schliesser, A., Brehm, M., Keilmann, F. & van der Weide, D. Frequency-comb infrared spectrometer for
+rapid, remote chemical sensing. Opt. Express 13, 9029-9038 (2005).
+38. Schliesser, A., Brehm, M., Keilmann, F. & van der Weide, D.用于快速远程化学传感的频率梳红外
+光谱仪。Opt. Express 13, 9029-9038 (2005)。
+39. Tourigny-Plante, A., Guay, P. &Genest, J. Apodization in dual-comb spectroscopy for rapid measurement.
+In Optical Sensors and Sensing Congress (2020) LTu3C.2 (Optical Society of America, 2020).
+39. Tourigny-Plante, A., Guay, P. & Genest, J.双梳光谱学中的加窗技术以实现快速测量。发表于光学
+传感器与传感大会 (2020)LTu3C.2(美国光学学会，2020)。
+40. Shi, Y. et al. High speed time-of-flight displacement measurement based on dual-comb electronically
+controlled optical sampling. Opt. Express 30, 8391-8398 (2022).
+40. Shi, Y.等。基于双梳电子控制光学采样的高速飞行时间位移测量。Opt. Express 30, 8391-8398
+(2022)。
+21
+41. Antonucci, L., Solinas, X., Bonvalet, A. & Joffre, M. Asynchronous optical sampling with arbitrary
+detuning between laser repetition rates. Opt. Express 20, 17928-17937 (2012).
+41. Antonucci, L., Solinas, X., Bonvalet, A. & Joffre, M.激光重复频率任意失谐的异步光学采样。Opt.
+Express 20, 17928-17937 (2012)。
+42. Trocha, P. et al. Ultrafast optical ranging using microresonator soliton frequency combs. Science 359,
+887-891 (2018).
+42. Trocha, P.等。利用微腔孤子频率梳实现超快光学测距。Science 359, 887-891 (2018)。
+43. Mitchell, T., Sun, J., Sun, J. & Reid, D. T. Dynamic measurements at up to 130-kHz sampling rates using
+Ti:sapphire dual-comb distance metrology. Opt. Express 29, 42119-42126 (2021).
+43. Mitchell, T., Sun, J., Sun, J. & Reid, D. T.使用 Ti:蓝宝石双梳距离计进行高达 130 kHz采样率的
+动态测量。Opt. Express 29, 42119-42126 (2021)。
+44. Suh, M.-G. & Vahala, K. J. Soliton microcomb range measurement. Science 359, 884-887 (2018).
+44. Suh, M.-G. & Vahala, K. J.孤子微梳测距。Science 359, 884-887 (2018)。
+45. Kalisz, J. Review of methods for time interval measurements with picosecond resolution. Metrologia 41,
+17-32 (2004).
+45. Kalisz, J.皮秒分辨率时间间隔测量方法综述。Metrologia 41, 17-32 (2004)。
+46. Fabre, C. & Treps, N. Modes and states in quantum optics. Rev. Mod. Phys. 92, 035005 (2020).
+46. Fabre, C. & Treps, N.量子光学中的模态与态。Rev. Mod. Phys. 92, 035005 (2020)。
+47. Ansari, V. et al. Achieving the ultimate quantum timing resolution. PRX Quantum 2, 010301 (2021).
+47. Ansari, V.等。实现终极量子时间分辨率。PRX Quantum 2, 010301 (2021)。
+48. Sinclair, L. C. et al. Synchronization of clocks through 12 km of strongly turbulent air over a city. Appl.
+Phys. Lett. 109, 151104 (2016).
+48. Sinclair, L. C.等。通过城市上空强湍流空气的 12 km实现时钟同步。Appl. Phys. Lett. 109, 151104
+(2016)。
+49. Barber, Z. W., Dahl, J. R., Sharpe, T. L. & Erkmen, B. I. Shot noise statistics and information theory of
+sensitivity limits in frequency-modulated continuous-wave ladar. J. Opt. Soc. Am. A 30, 1335-1341 (2013).
+49. Barber, Z. W., Dahl, J. R., Sharpe, T. L. & Erkmen, B. I.频率调制连续波激光雷达灵敏度极限的散
+粒噪声统计与信息理论。J. Opt. Soc. Am. A 30, 1335-1341 (2013)。
+22
+50. Baumann, E. et al. Comb-calibrated frequency-modulated continuous-wave ladar for absolute distance
+measurements. Opt. Lett. 38, 2026-2028 (2013).
+50. Baumann, E. 等. 采用梳状校准的频率调制连续波激光雷达用于绝对距离测量。光学快报 38,
+2026-2028 (2013)。
+51. Crouch, S. & Barber, Z. W. Laboratory demonstrations of interferometric and spotlight synthetic aperture
+ladar techniques. Opt. Express 20, 24237 (2012).
+51. Crouch, S. & Barber, Z. W.干涉和聚焦合成孔径激光雷达技术的实验室演示。光学快报 20, 24237
+(2012)。
+52. Caldwell, E. D. et al. Photon efficient optical time transfer. In 2022 Joint Conference of the European
+Frequency and Time Forum & the IEEE International Frequency Control Symposium Paris, France (2022).
+52. Caldwell, E. D.等. 光子高效光学时间传输。发表于 2022年欧洲频率与时间论坛与 IEEE国际频
+率控制研讨会联合会议，法国巴黎 (2022)。
+53. Schliesser, A., Picqué, N. & Hänsch, T. W. Mid-infrared frequency combs. Nat. Photon. 6, 440-449
+(2012).
+53. Schliesser, A., Picqué, N. & Hänsch, T. W.中红外频率梳。自然光子学 6, 440-449 (2012)。
+54. Ycas, G. et al. High-coherencemid-infrared dual-comb spectroscopy spanning 2.6 to 5.2 μm. Nat. Photon.
+12, 202-208 (2018).
+54. Ycas, G.等. 跨越 2.6至 5.2微米的高相干中红外双频梳光谱。自然光子学 12, 202-208 (2018)。
+55. Muraviev, A. V., Smolski, V. O., Loparo, Z. E. & Vodopyanov, K. L. Massively parallel sensing of trace
+molecules and their isotopologues with broadband subharmonic mid-infrared frequency combs. Nat. Photon. 12,
+209-214 (2018).
+55. Muraviev, A. V., Smolski, V. O., Loparo, Z. E. & Vodopyanov, K. L.利用宽带亚谐波中红外频率梳
+实现对痕量分子及其同位素的高并行传感。自然光子学 12, 209-214 (2018)。
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and
+institutional affiliations.
+出版者声明:施普林格自然出版社对已发布地图和机构隶属关系中的司法管辖权声明保持中立。
+(C) This is a U.S. Government work and not under copyright protection in the US; foreign copyright protection
+may apply 2022 Article
+(C)本作品为美国政府工作，且在美国不受版权保护；可能适用外国版权保护 2022年文章
+23
+Methods
+方法
+TPFC control
+TPFC控制
+The output of the frequency comb can be written as a function of time, t , in terms of a sum of pulses, labelled
+by integer k , with repetition frequency f rep
+频率梳的输出可以写成时间的函数，t，以一系列脉冲的和表示，脉冲由整数 k标记，重复频率为
+f rep
+E (t) = e−iθ
+∑
+k
+Ek (t−X) (2)
+where Ek (t) = e−ikθ ceo A
+(
+t− kf−1
+rep
+)
+where θ andX are the comb-pulse phase and time offset (to be controlled later),A is the pulse amplitude, and
+θ ceo is the carrier-to-envelope phase advance per pulse (and hence appears as kθceo ) and is not to be confused with
+θ . Alternatively, through the Poisson sum formula, the comb can be written as
+其中 θ和 X 分别是梳脉冲的相位和时间偏移 (稍后控制)，A是脉冲幅度，θ ceo 是每个脉冲的载波
+包络相位前进 (因此表现为 kθceo )，不应与 θ混淆。或者，通过泊松求和公式，梳可以写成
+E (t) = f rep e−iθ
+∑
+n
+Ãne−i2πfn(t−X), (3)
+where n is the index of the comb tooth with complex amplitude Ãn at frequency fn = nf rep + f0 and the
+carrier-envelope offset frequency f0 ≡ (2π)
+−1
+θceofrep.
+其中 n 是梳齿的索引，复振幅为 Ãn ，频率为 fn = nf rep + f0 ，载波包络偏移频率为 f0 ≡
+(2π)
+−1
+θceofrep.
+For a comb self-referenced to a reference CW laser, we stabilize the comb-tooth frequencies, f0 and fN , where
+N is the tooth nearest the reference CW laser at fCW . Each of these frequencies is stabilized with respect to the
+repetition frequency, that is, f0 = r0f rep and fN = fCW − rNfrep , where both r0 and rN are user-chosen rational
+fractions. It is noted that the repetition rate itself is determined by the two frequencies as f rep = (fN − f0) /N
+. Equivalently, f rep = fCW/ (N + r0 + rN ) . This stabilization is done through two PLLs that combined also
+set the overall phase, θ , and time offset, X , to arbitrary but fixed values. If the phase and time offset were not
+fixed, variation inX would lead to an effective variation in the repetition frequency f rep , and variation in θ would
+similarly lead to a variation in θceo .
+24
+对于自参照于参考连续波 (CW)激光器的梳，我们稳定梳齿频率 f0和 fN ，其中N是最接近参考CW
+激光器频率 fCW的梳齿。每个频率相对于重复频率稳定，即 f0 = r0f rep 和 fN = fCW−rNfrep，其中 r0
+和 rN均为用户选择的有理分数。注意，重复频率本身由这两个频率决定，表达为 f rep = (fN − f0) /N
+。等价地，f rep = fCW/ (N + r0 + rN )。该稳定通过两个锁相环 (PLL)实现，二者结合还设定整体
+相位 θ和时间偏移 X 为任意但固定的值。如果相位和时间偏移不固定，X 的变化将导致重复频率
+f rep 的有效变化，θ的变化同样会导致 θceo的变化。
+Here we alter the lock points of the two PLLs to coherently change the overall phase, θ , and time offset, X .
+Consider the phase lock of the tooth at n = 0 (that is, the carrier-envelope offset stabilization). The phases satisfy
+the equation
+这里我们改变两个 PLL的锁定点，以相干地改变整体相位 θ和时间偏移 X 。考虑位于 n = 0的梳
+齿的相位锁定 (即载波包络偏移稳定)。相位满足方程
+[θ + 2πf0t− 2πf0X]− r0 [2πf rep t− 2πf rep X]− θ0, cal = 0 (4)
+where the first term in brackets is the phase of then = 0 term in equation (3) assuming an unchirpedA (t) . The
+second term in brackets is the phase of the repetition signal, that is the digital clock signal for the digital PLL that
+directly follows the detected comb-pulse arrival times. The final term is a calibration offset related to the difference
+in the total phase delays of the two signals up to the in-phase/quadrature (IQ) demodulation (phase comparison).
+In the standard fixed comb control, feedback is applied to drive this phase difference to zero, as indicated by the
+right-hand side of the equation. With synchronous digital electronics, we can replace the right-hand side with a
+time-dependent control phase, θC0 (t) . As f0 ≡ r0f rep , equation (4) reduces to
+方括号中的第一项是方程 (3)中 n = 0项的相位，假设 A (t)无啁啾。方括号中的第二项是重复信
+号的相位，即直接跟随检测到的梳脉冲到达时间的数字锁相环的数字时钟信号。最后一项是与两个
+信号到达同相/正交 (IQ)解调 (相位比较)处的总相位延迟差异相关的校准偏移。在标准固定梳控制
+中，反馈用于驱动该相位差为零，如方程右侧所示。利用同步数字电子技术，我们可以用时间相关
+的控制相位 θC0 (t)替代右侧。随着 f0 ≡ r0f rep ，方程 (4)简化为
+θ (t) = θC0 (t) (5)
+after dropping the calibration constant for simplicity. We apply the same arguments to the phase of the n = N
+tooth, working from the stabilization of fN = fCW − rNf rep to find
+为简化起见，省略了校准常数。我们对n = N梳齿的相位应用相同的论证，从稳定 fN = fCW−rNf rep
+出发得到
+θ (t)− 2π (N + r0 + rN ) f rep X (t) = θCN (t) . (6)
+A linear combination of equations (4) and (5) (represented by the matrix M−1 in Fig. 1) gives us the simple
+relationships
+方程 (4)和 (5)的线性组合 (由图 1中的矩阵M−1 表示)给出了简单的关系
+25
+θ (t) = θC0 (t)
+X (t) =
+θC0 (t)− θCN (t)
+2πfCW
+(7)
+These equations relate changes in the time-varying control phases to the comb-pulse phase and timing. They
+hold within the feedback bandwidth of the PLL. (In practice, we can change the signal more rapidly provided
+we separately record the error signal quantifying the difference between the set point and actual values). For the
+particular locking conditions chosen here of rN = −r0 , these equations reduce to the ones given in the main text.
+To set the TPFC output, the inverse of equation (6) generates the desired values of θC0 (t) and θCN (t) , which are
+then translated to the actuator controls. (See Fig. 1 and below for details on processing).
+这些方程将时变控制相位的变化与梳状脉冲的相位和时序联系起来。它们在锁相环 (PLL)的反馈带
+宽内成立。(实际上，只要我们单独记录量化设定点与实际值差异的误差信号，就可以更快地改变
+信号)。对于此处选择的特定锁定条件 rN = −r0 ，这些方程简化为正文中给出的方程。为了设置
+TPFC输出，方程 (6)的逆运算生成所需的 θC0 (t)和 θCN (t)值，然后转换为执行器控制。(详见图 1
+及下文处理细节)。
+With appropriate choice of the control phases, we can control the comb’s time offset and phase, or the phase
+of a particular tooth through equation (7). The phase change of the n th tooth is
+通过适当选择控制相位，我们可以通过方程 (7)控制梳状频率的时间偏移和相位，或特定梳齿的相
+位。第 n个梳齿的相位变化为
+θn (t) = θ (t)− 2πfnX
+=
+(
+1− n+ r0
+N + r0 + rN
+)
+θC0 (t) +
+n+ r0
+N + r0 + rN
+θCN (t) (8)
+For the tracking comb operation, we adjust θC0 and leave θCN = 0 . This leads to a time shift of ∆X =
+∆θC0/ (2πNf ren ) when keeping the phase of theN th comb tooth to zero as the timing of the TPFC comb pulses is
+shifting. As a result, the relative phase shift of theN th comb tooth between the TPFC and signal comb reflects the
+overall additional phase shift on the signal comb alone. Therefore, in ’unwrapping’ the phase of the carrier signal
+measured during the retroreflector motion, we must use an effective carrier frequency of Nf rep .
+对于跟踪梳操作，我们调整 θC0 并保持 θCN = 0不变。当保持第N 个梳齿的相位为零时，TPFC梳状
+脉冲的时序发生变化，导致时间偏移为 ∆X = ∆θC0/ (2πNf ren )。因此，TPFC与信号梳之间第 N
+个梳齿的相对相位偏移反映了信号梳本身的整体附加相位偏移。因此，在对回射镜运动期间测量的
+载波信号相位进行“展开”时，必须使用有效载波频率 Nf rep 。
+Hardware and digital electronic system
+硬件与数字电子系统
+26
+Frequency combs. The fibre-based frequency combs used in this work operate at a repetition frequency of
+about 200MHz and are based on the design in ref. 56 . The actuator for the carrier-envelope-offset phase lock
+is the oscillator pump power and the actuators for the lock of the N th comb tooth to the optical reference are
+two piezo-electric fibre stretchers, which together adjust the oscillator cavity length. All combs are housed within
+temperature-controlled enclosures. The output of all combs are filtered with a 10.1-nm-wide Gaussian filter centred
+at 1, 560 nm , resulting in 5 mW of in-band power, which was often strongly attenuated for these experiments.
+The optical reference for all combs is a cavity-stabilized laser at 1,535.04 nm. To minimize excess residual noise
+between the frequency combs, all non-common fibre lengths between the cavity-stabilized laser and the three combs
+are as short as possible and contained within the temperature-controlled housing as much as possible.
+频率梳。本工作中使用的基于光纤的频率梳工作在约 200MHz的重复频率，基于文献 56中的设计。
+载波包络偏移相位锁定的执行器为振荡器泵浦功率，锁定第 N 个梳齿到光学参考的执行器为两个
+压电光纤拉伸器，共同调节振荡器腔长。所有频率梳均置于温控箱内。所有频率梳的输出均通过中
+心波长为 1, 560 nm、带宽为 10.1纳米的高斯滤波器滤波，得到带内功率为 5 mW，在这些实验中
+通常被强烈衰减。所有频率梳的光学参考为波长 1535.04纳米的腔稳定激光器。为最小化频率梳间
+的多余残余噪声，腔稳定激光器与三台频率梳之间所有非共用光纤长度尽可能短，并尽量置于温控
+箱内。
+To produce the required heterodyne signals between the TPFC, fixed comb and linear optical sampling (LOS)
+comb pulses, fibre-optic-based optical transceivers were constructed with polarization-maintaining fibre optics
+(PM-1550) and fibre-optic components. The fibre-optic-based timing discriminator described in Fig. 1 was con-
+structed with a differential path length of 50.5 cm of fibre, which corresponds to a 980-fs delay between the lead
+and lag arms to match the full-width at half-maximum (FWHM) of the partially chirped cross-correlation (or in-
+terferogram) signal between the tracking and signal frequency combs. Commercial 100-MHz balanced detectors
+are used throughout, including at the output of the timing discriminator, to allow for shot-noise-limited heterodyne
+detection with about 1.1-dB power penalty.
+为了产生 TPFC、固定梳和线性光学采样 (LOS)梳脉冲之间所需的外差信号，构建了基于光纤的光
+学收发器，采用保持偏振光纤 (PM-1550)和光纤组件。图 1所示的基于光纤的时序鉴别器由差分光
+纤路径长度 50.5 cm构成，对应于前导臂和滞后臂之间 980飞秒的延迟，以匹配跟踪频率梳和信号
+频率梳之间部分啁啾交叉相关 (或干涉图)信号的半高宽 (FWHM)。整个系统采用商用 100 MHz平
+衡探测器，包括时序鉴别器输出端，以实现约 1.1 dB功率损失的光子噪声极限外差检测。
+For the data in Figs. 1c and 2, we combine a fixed comb and a TPFC, both phase-locked with the same values
+of N, r0 and rN . We then adjust the TPFC pulse time or phase, and subsequently probe the relative phase and
+time between the TPFC and the fixed comb through a third LOS frequency comb. For the data in Figs. 3 and 4,
+we do not use the third frequency comb. In all cases, the LOS comb is phase-locked to the same CW reference
+laser but with its carrier frequency offset by 10MHz . The heterodyne signal between the LOS and the other two
+combs is digitized at f rep, LOS yielding an interferogram with f rep, LOS /∆f rep points. For the data in Figs. 1c
+and 2a, the LOS comb was offset in repetition frequency by about 200 Hz whereas for the data in Fig. 2b (which
+required faster averaging), the LOS comb was offset in frequency by about 6kHz , very near the Nyquist limit for
+LOS given the pulse width. For Fig. 2b, we additionally apply a matched filter before peak fitting. In these LOS
+sampled measurements, the overlap between the LOS combs and the TPFC is sufficiently short that the full timing
+jitter of the relative comb pulses is measured. For these combs, this timing jitter was about 3fs . For the data in
+Fig. 2 b , multiple measurements allow us to average down this jitter. At these longer averaging times, differential
+27
+out-of-loop fibre paths in the TPFC and LOS combs will lead to slow femtosecond-level time wander. We cancel
+some of this wander by applying the square-wave 1− Hz modulation to the TPFC time offset.
+对于图 1c 和图 2 中的数据，我们结合了一个固定梳状光源和一个 TPFC(时域脉冲频率梳)，两者
+均以相同的 N, r0 和 rN 值实现相位锁定。然后我们调整 TPFC脉冲的时间或相位，随后通过第三
+个 LOS(线性光学采样)频率梳探测 TPFC与固定梳之间的相对相位和时间。对于图 3和图 4中的
+数据，我们未使用第三个频率梳。在所有情况下，LOS梳均相位锁定于同一连续波 (CW)参考激光
+器，但其载波频率偏移了 10MHz。LOS与另外两个梳之间的外差信号以 f rep, LOS 采样，产生包含
+f rep, LOS /∆f rep 点的干涉图。对于图 1c和图 2a的数据，LOS梳的重复频率偏移约为 200 Hz，而
+对于图 2b(需要更快平均)的数据，LOS梳的频率偏移约为 6kHz，非常接近考虑脉冲宽度后的 LOS
+奈奎斯特极限。对于图 2b，我们还在峰值拟合前应用了匹配滤波器。在这些 LOS采样测量中，LOS
+梳与 TPFC的重叠时间足够短，能够测量相对梳脉冲的全部时序抖动。对于这些梳，该时序抖动约
+为 3fs。对于图 2 b中的数据，多次测量使我们能够平均降低该抖动。在较长的平均时间下，TPFC
+和 LOS梳中环外光纤路径的差异会导致缓慢的飞秒级时间漂移。我们通过对 TPFC时间偏移施加
+方波 1− Hz调制来抵消部分漂移。
+Timing discriminator. In contrast to the LOS sampling method, the combination of the TPFC and timing dis-
+criminator provides continuous measurements at each comb pulse. Low-pass filtering rejects most of the technical
+timing jitter on the comb pulses that occurs at about 50kHz (the PLL locking bandwidth). The data for Fig.3c and
+Extended Data Fig. 1 were acquired using this continuous timing comparison between the reflected signal fre-
+quency comband TPFC. For these data, the signal-comb pulses were reflected off a fibre FC/PC (ferrule connector/
+physical contact) connector end located just outside the aluminium box that housed the two combs to minimize
+temperature-induced path-length changes or the even larger atmospheric fluctuations that occur over the air path to
+the retroreflector.
+时序鉴别器。与 LOS采样方法不同，TPFC与时序鉴别器的结合能够对每个梳脉冲进行连续测量。
+低通滤波器滤除大部分发生在约 50kHz (锁相环带宽)处的技术性时序抖动。Fig.3c和扩展数据图 1
+的数据是通过反射信号频率梳与 TPFC之间的连续时序比较获得的。对于这些数据，信号梳脉冲反
+射自位于装有两个梳的铝盒外的光纤 FC/PC(插芯连接器/物理接触)连接器端，以最小化温度引起
+的光路长度变化以及空气路径到反射镜处更大的大气波动。
+Ranging set-up. For the ranging data in Fig. 4, the retroreflector on the rail was aligned with three passes so
+that the effective path-length change and Doppler shift of the comb pulses were a factor of three higher than that
+of the reflector itself. The signal-comb light was attenuated significantly before launch to reach the low-picowatt-
+power levels. The position of the retroreflector on the rail was simply adjusted by hand in an arbitrary pattern. The
+alignment of the output signal-comb light to the retroreflector was not perfect, leading to the power variations in
+the return signal observed in Fig. 4.
+测距装置。对于图 4中的测距数据，轨道上的反射镜经过三次反射对准，使得梳脉冲的有效光程变
+化和多普勒频移是反射镜本身的三倍。信号梳光在发射前被显著衰减，以达到低皮瓦级功率水平。
+轨道上反射镜的位置通过手动以任意模式调整。信号梳输出光与反射镜的对准并不完美，导致图 4
+中观察到的返回信号功率变化。
+At each static location, a commercial FMCW ranging system took 25 range profiles over a 10-s acquisition
+period. The reported FMCW range in Fig. 4 is the average of the peak values extracted by a three-point cubic spline
+fit of the peak. The uncertainty was generated by performing the same fitting routine over 10 min of static range
+28
+data and taking the standard deviation of the resultant ranges. For both the dual-comb system and FMCW system,
+the range was calculated using the group velocity calculated at the centre frequency. The large uncertainty on the
+FMCW range values is owing to the systematic coupling between range and velocity in this frequency-domain
+ranging system. For the FMCW ranging system used here with a 12.5THzs−1 sweep rate, the systematic ranging
+error is 12µm× δf Doppler , where δf Doppler is the vibration-induced Doppler shift. Although Doppler shifts slower
+than the sweep rate can be compensated through the use of up and down sweeps, vibration-induced Doppler shifts
+on timescales comparable to the sweep time cannot be similarly cancelled, leading to the uncertainty bars on the
+FMCW ranging data in Fig. 4. The tracking dual-comb ranging does not suffer from this strong Doppler-induced
+systematic error as the ambiguity function for a pulse does not have the large delay-Doppler coupling of a slow
+FMCW sweep.
+在每个静止位置，商业 FMCW测距系统在 10秒的采集期间内采集了 25个距离剖面。图 4中报告的
+FMCW距离是通过对峰值进行三点三次样条拟合后提取的峰值的平均值。通过对 10 min的静态距
+离数据执行相同的拟合程序并取结果距离的标准差，得到了不确定度。对于双梳系统和 FMCW系
+统，距离均使用在中心频率处计算的群速度计算。FMCW距离值上的较大不确定度是由于该频域
+测距系统中距离与速度之间的系统耦合所致。对于此处使用的具有 12.5THzs−1扫描速率的 FMCW
+测距系统，系统测距误差为 12µm× δf Doppler ，其中 δf Doppler 是振动引起的多普勒频移。虽然比扫
+描速率更慢的多普勒频移可以通过上下扫频补偿，但在与扫描时间尺度相当的振动引起的多普勒频
+移无法同样抵消，导致图 4中 FMCW测距数据上的不确定度条。跟踪双梳测距不受此强多普勒引
+起的系统误差影响，因为脉冲的模糊函数没有慢速 FMCW扫描中存在的大延迟-多普勒耦合。
+Digital platform. The implementation of the digital control of the TPFC was accomplished using available
+hardware and consists of two field-programmable gate arrays (FPGAs) and one digital signal processor (DSP),
+although these FPGAs and DSP could be combined into a single platform as the processing load is not significantly
+larger than fixed comb control. The FPGAs are both clocked synchronously at the comb repetition rate and the
+DSP processes samples synchronously at exactly 5,000 times slower (about 40kHz ). As the DSP is programmed
+in C + + , it provides a more flexible development environment than the FPGAs. The fixed and LOS frequency
+combs also each had a dedicated FPGA 56 for their phase-locking to the CW reference laser.
+数字平台。TPFC的数字控制实现采用现有硬件完成，包括两个现场可编程门阵列 (FPGA)和一个
+数字信号处理器 (DSP)，尽管这些 FPGA和 DSP可以合并为单一平台，因为处理负载并不比固定
+梳控制显著增加。两个 FPGA均以梳齿重复频率同步时钟，DSP以恰好慢 5000倍 (约为 40kHz )的
+速度同步处理采样。由于 DSP采用 C++编程，提供了比 FPGA更灵活的开发环境。固定和视线
+(LOS)频率梳各自拥有专用 FPGA 56 ，用于其与连续波参考激光的相位锁定。
+Timing and phase commands. To control the TPFC output, equation (6) generates the desired values of θC0 (t)
+and θCN (t) . (It is noted that these are ’unwrapped’quantities and are not restricted to a 0 to 2π range). In
+the implementation, all phase and frequencies are defined with respect to the clock cycles of the analogue-to-
+digital converters, FPGAs and DSP that are synchronous with the instantaneous comb repetition frequency. Within
+the FPGA, the values of θC0 (t) and θCN (t) can be represented as large fixed-point values such that there is no
+quantization noise variation across the full range (such as would be inevitable with floating points). Here we use a
+least-significant bit that corresponds to a comb timing step of below 1 as. All values are then otherwise exact and
+set with subcycle accuracy, assuming no cycle slips in any clock signal, which is assured by the high-SNR signal
+from the photo-detected frequency-comb-pulse train.
+29
+时序和相位指令。为了控制 TPFC输出，方程 (6)生成所需的 θC0 (t)和 θCN (t)值。(注意这些是“展
+开”的量，不受限于 0到 2π范围内)。在实现中，所有相位和频率均相对于与瞬时梳齿重复频率同
+步的模数转换器、FPGA和 DSP的时钟周期定义。在 FPGA内，θC0 (t)和 θCN (t)的值可以表示为大
+固定点数值，从而在整个范围内无量化噪声变化 (这在浮点数中是不可避免的)。这里我们使用的最
+低有效位对应于低于 1阿秒的梳齿时序步长。所有值均为精确值，并以亚周期精度设置，假设任何
+时钟信号无周期跳变，这由光电探测的频率梳脉冲列的高信噪比信号保证。
+Figure 1b shows the effective implementation for the phase trajectories for θ0 (t) and θN (t) . The imple-
+mentation is done through the numerical integration of a limited difference between desired and actual trajectories.
+This allows enforcing rate limiting to respect the limits of the physical system, for example, the maximum rate that
+the system can change pulse timing via pump power or cavity length. The phase change is done by changing the
+effective values of r0 and rN for a precisely known time period inside the FPGA. The commands for setting the
+trajectories can be sent via either a graphical user interface from a PC, via a serial port input from another real-time
+digital system for tighter control (for example, the DSP). It could also be done via a sequencer running directly on
+the control FPGA, although that approach was not used for this study. The rest of the control algorithm for the
+phase locks is a proportional-integral-integral controller (PII) with a phase extraction front-end, as in ref. 56 .
+图 1b展示了 θ0 (t)和 θN (t)相位轨迹的有效实现。该实现通过对期望轨迹与实际轨迹之间的有限
+差分进行数值积分完成。这允许施加速率限制，以遵守物理系统的限制，例如系统通过泵浦功率或
+腔长改变脉冲时序的最大速率。相位变化是通过在 FPGA内对 r0和 rN 的有效值进行精确时间段的
+调整来实现的。设置轨迹的命令可以通过 PC的图形用户界面发送，也可以通过来自另一个实时数
+字系统 (例如 DSP)的串口输入以实现更严格的控制。也可以通过直接在控制 FPGA上运行的序列
+器完成，尽管本研究未采用该方法。相位锁定的其余控制算法是带有相位提取前端的比例-积分-积
+分 (PII)控制器，如参考文献 56 所述。
+Slew rate. For large time steps, the TPFC response will be limited by the maximum slew rate. A linear slew
+of the comb-pulse time corresponds to a frequency shift of the phase-locked f0 or fN frequencies (where the latter
+is measured by its heterodyne beat signal against the CW reference laser). For a frequency shift of ∆f in either
+of these frequencies, the slew rate is dX/dt ≈ ∆f/fN . Typically, comb actuators can move either of these
+frequencies by a few modes (for example, through the pump current modulation or cavity fibre stretcher). In that
+case, ∆f ≈ ±f rep , giving a slew rate of dX/dt ≈ f rep /fN . For the frequency combs used here, this yields a
+maximum potential slew rate of dX/dt ≈ 200MHz/200THz = 1µss−1 .
+斜率速率。对于较大的时间步长，TPFC响应将受最大斜率速率限制。梳状脉冲时间的线性斜率对
+应于相位锁定的 f0或 fN 频率的频率偏移 (后者通过其与连续波参考激光的外差拍频信号测量)。对
+于任一频率的频率偏移 ∆f ，斜率速率为 dX/dt ≈ ∆f/fN 。通常，梳状激光器的驱动器可以使
+任一频率移动几个模态 (例如，通过泵浦电流调制或腔光纤拉伸器)。在这种情况下，∆f ≈ ±f rep ，
+斜率速率为 dX/dt ≈ f rep /fN 。对于此处使用的频率梳，这产生了最大潜在斜率速率为 dX/dt ≈
+200MHz/200THz = 1µss−1 。
+To maintain the full accuracy of the comb, there is a second potential constraint to the maximum slew rate.
+Namely, despite a shift in either of the beat frequencies, f0 or (fN − fCW) , the system must reliably track the
+phase of both beat signals; any cycle slip would result in a loss of accuracy for both the comb-pulse time and
+phase. The resulting limitation on the slew rate depends on a combination of the SNR of the relevant beat signal
+and sophistication of the demodulation scheme. Indeed, with very high SNR, the beats can be tracked over the full
+30
+Nyquist window of 0 to ±f rep /2 and there is no additional limitation. For a typical SNR, one could implement a
+tracking filter with feedforward to track dynamic frequency changes and avoid cycle slips evenwith large deviations
+in the beat frequency. This approach should minimize any slew-rate limitations. However, we did not implement
+such a filter here. As a result, in the current system, we limited the maximum slew rate to
+为了保持梳状激光的全部精度，最大斜率速率还有第二个潜在限制。即，尽管任一拍频 f0 或
+(fN − fCW)发生偏移，系统必须可靠地跟踪两个拍频信号的相位；任何周期跳变都会导致梳状脉冲
+时间和相位的精度丧失。斜率速率的限制取决于相关拍频信号的信噪比 (SNR)和解调方案的复杂
+程度。实际上，在非常高的 SNR下，拍频可以在 0到 ±f rep /2的奈奎斯特窗口内全程跟踪，无额
+外限制。对于典型的 SNR，可以实现带前馈的跟踪滤波器，以跟踪动态频率变化并避免即使拍频大
+幅偏移也发生周期跳变。这种方法应最大限度地减少斜率速率限制。然而，我们在此未实现该滤波
+器。因此，在当前系统中，我们将最大斜率速率限制为
+Article
+文章
+40 ns s−1 . This rate was not optimized but was chosen conservatively to avoid cycle slips, which was verified
+experimentally. The 40 ns s−1 slew rate was used for the data in Figs. 1 and 2. For the ranging data in Figs. 3 and
+4, a slower slew rate of 4 ns s−1 was chosen to match the temporal duration of the overlap between the TPFC and
+signal comb with the inverse of the 26− kHz measurement bandwidth.
+40 ns s−1。该速率未经过优化，而是保守选择以避免周期跳变，且已通过实验验证。图 1和图 2中的
+数据采用了 40 ns s−1的斜率速率。对于图 3和图 4中的测距数据，选择了较慢的斜率速率 4 ns s−1
+，以匹配 TPFC与信号梳的重叠时间与 26− kHz测量带宽的倒数。
+Control loops in ranging system. For the dual-comb ranging demonstration of Figs. 3 and 4, the system
+operates as nested PLLs. The timing discriminator demodulation is implemented in an FPGA + DSP system with
+±13kHz of bandwidth centred around a demodulation frequency. The 26 − kHz bandwidth in the demodulation
+limits the overall tracking bandwidth, but was chosen to demonstrate the high sensitivity by allowing for coherent
+integration over about (26kHz)−1
+= 38µs to detect weak return signals. A broader bandwidth would sacrifice
+some sensitivity but allow for even faster tracking bandwidths. The output of the timing discriminator provides
+both a time and phase error signal. The time error signal is sent to a PII implemented on the DSP. This PII generates
+control trajectories for the tracking comb, which are sent via serial port to that comb’s controller FPGA that runs
+the two PLLs for θ0 (t) and θN (t) at 50−kHz closed-loop bandwidth. The phase error could be similarly fed back
+directly to these PLLs controlling the TPFC. However, it is simpler, and equivalent, to instead direct the phase error
+to a PII implemented on the DSP, whose output is fed back to the direct digital synthesizer used to demodulate the
+approximately 10−MHz timing discriminator signals. The resulting frequency adjustment is time-stamped against
+the FPGA clock, which allows the accurate unwrapping of the carrier phase to determine the relative range change,
+as show in Fig. 4. With this choice of phase control, the tracking of the timing is implemented by changing only
+θ0 (t) and leaving θN (t) fixed, which avoids cross talk between the two loops.
+31
+测距系统中的控制环路。对于图 3和图 4所示的双梳测距演示，系统以嵌套锁相环 (PLL)的形式运
+行。时序鉴别解调在一个 FPGA + DSP系统中实现，带宽 ±13kHz，中心频率位于解调频率附近。
+解调中的 26− kHz带宽限制了整体跟踪带宽，但选择该带宽是为了通过约 (26kHz)−1
+= 38µs的相
+干积分来演示高灵敏度，以检测微弱的回波信号。更宽的带宽会牺牲部分灵敏度，但允许更快的跟
+踪带宽。时序鉴别器的输出同时提供时间误差信号和相位误差信号。时间误差信号被送入 DSP上
+实现的 PII控制器。该 PII生成跟踪梳的控制轨迹，通过串口发送到该梳的控制 FPGA，后者运行
+两个 PLL，分别用于 θ0 (t)和 θN (t)，闭环带宽为 50− kHz。相位误差信号也可以直接反馈给控制
+TPFC的这些 PLL。然而，更简单且等效的做法是将相位误差信号送入 DSP上实现的 PII，其输出
+反馈给用于解调约 10−MHz时序鉴别信号的直接数字合成器。由此产生的频率调整带有 FPGA时
+钟的时间戳，这使得能够准确展开载波相位以确定相对距离变化，如图 4所示。通过这种相位控制
+方式，时序跟踪仅通过改变 θ0 (t)实现，而保持 θN (t)固定，从而避免了两个环路之间的串扰。
+Shot-noise limit for ranging
+测距的光子计数噪声极限
+In Fig. 3c, we show our ranging measurements are shot-noise limited for received powers < 10nW by com-
+paring measured range deviation to the expected shot-noise limited range deviation. Here we derive that theoretical
+shot-noise-limited range deviation.
+在图 3c中，我们展示了对于接收功率为< 10nW的情况，我们的测距测量受光子计数噪声限制，通
+过将测得的距离偏差与预期的光子计数噪声极限距离偏差进行比较。这里我们推导该理论光子计
+数噪声极限的距离偏差。
+We first assume the comb pulses have zero differential chirp and are Gaussian with an FWHMof τp in intensity.
+(The comb pulses pass through a Gaussian spectral filter before ranging). Their cross-correlation then generates a
+Gaussian envelope, V , with a FWHM of 2τp (because there is a factor of
+√
+2 from the cross-correlation and the E
+-fields are also
+√
+2 broader than the intensity of the comb pulses 37 ). The detected heterodyne voltage signal has
+a carrier frequency set by the offset between the comb frequencies, but this carrier is removed in the demodulation
+to generate just the envelope signal. We assume the lock point is chosen at approximately the half-width at half-
+maximum point on this envelope. (The actual maximum slope is 1σ from the peak, but this is a minor 6% correction
+at the cost of a reduced capture range). In that case, the change in voltage for small changes in the arrival time of
+the signal pulse with respect to the tracking (local oscillator) comb, δX , will be determined by the slope at the
+half-width at half-maximum point, or
+我们首先假设梳状脉冲无差分啁啾，且强度呈高斯分布，半高宽 (FWHM)为 τp。(梳状脉冲在测距
+前通过高斯光谱滤波器)。它们的互相关产生一个高斯包络，V ，其半高宽为 2τp (因为互相关带来
+一个 √
+2因子，且 E 场的宽度也比梳状脉冲强度宽 √
+2倍 37 )。检测到的外差电压信号的载波频率
+由梳频偏移决定，但该载波在解调中被去除，仅保留包络信号。我们假设锁定点选在该包络的半高
+宽处。(实际最大斜率位于峰值的 1σ处，但这是一个较小的 6%修正，代价是捕获范围减小)。在这
+种情况下，信号脉冲相对于跟踪 (本振)梳的到达时间小幅变化 δX 引起的电压变化，将由半高宽处
+的斜率决定，即
+32
+δV
+δX
+= ln (2)
+V peak
+τp
+[
+Vs−1
+]
+(9)
+where V peak is the maximum voltage measured when the signal and tracking comb pulses perfectly overlap.
+The inverse of this slope maps changes in V to changes inX . Voltage fluctuations from shot noise with a root-mean
+squared (r.m.s.) value of V shotnoise will show up as white timing jitter with an r.m.s. value of
+其中 V peak 是信号与跟踪梳脉冲完全重叠时测得的最大电压。该斜率的倒数将 V 的变化映射为 X
+的变化。来自光子计数噪声的电压波动，其均方根 (r.m.s.)值为 V shotnoise ，将表现为均方根值为
+σt =
+δX
+δV
+V shotnoise . (10)
+In the strong local oscillator case (strong tracking comb pulses), the shot noise for the demodulated output is
+在强本振情况下 (强跟踪梳脉冲)，解调输出的光子计数噪声为
+V shotnoise = eG
+√
+2PLOηB
+hv
+(11)
+where e is the elementary charge constant, G is the transimpedance gain, PLO is the local oscillator power, h
+is Planck’s constant, v is the carrier frequency, η is the quantum efficiency and B is the single-sided bandwidth
+with a corresponding averaging time T = (2B)
+−1 (ref. 57 ). The peak signal, V peak , is
+其中 e是基本电荷常数，G是跨阻增益，PLO是本振功率，h是普朗克常数，v是载波频率，η是量
+子效率，B 是单边带宽，对应的平均时间为 T = (2B)
+−1 (参考文献 57 )。峰值信号 V peak 为
+V peak = 2eηG
+√
+PLOPs
+(hv)
+2 (12)
+where Ps is the total received signal-comb power on the detector 57 . Substitution of equations (10) and (11)
+into equation (9) using τ = (2B)
+−1 and defining the total number of integrated signal photons in eachmeasurement
+as ns = PsT/hv gives
+其中 Ps是探测器上接收的总信号梳功率 57。将方程 (10)和 (11)代入方程 (9)，利用 τ = (2B)
+−1并
+定义每次测量中积分的信号光子总数为 ns = PsT/hv，得到
+σt =
+1
+2 ln (2)
+τp√
+ηns
+. (13)
+Then, converting to range, the shot-noise contribution to the range deviation is
+然后，转换为距离，射击噪声对距离偏差的贡献为
+σR =
+( c
+2
+) 1
+ln (2)
+τp
+2
+√
+ηns
+. (14)
+33
+In the actual implementation, a single heterodyne signal is insufficient as we need two measurements to nor-
+malize out the fluctuations in the received signal power (and therefore in V peak ). Therefore, the timing discrimi-
+nator generates two time-displaced copies of the tracking comb pulses to generate the two displaced discriminator
+signals V1 and V2 , each of which has the same Gaussian shape and noise jitter as given above although with half
+the total power. The timing discriminator signal is given by the linear combination, S = (V1 − V2) / (V1 + V2)
+. An identical analysis for the shot-noise limited timing jitter and ranging jitter yields exactly the same equations
+(12) and (13), where ns is the total number of signal photons.
+在实际实现中，单一的外差信号不足以满足需求，因为我们需要两次测量来归一化接收信号功率的
+波动 (因此也包括 V peak 的波动)。因此，定时鉴别器生成两个时间错开的跟踪梳脉冲副本，以产生
+两个错开的鉴别信号 V1 和 V2 ，每个信号都具有上述相同的高斯形状和噪声抖动，但总功率减半。
+定时鉴别器信号由线性组合 S = (V1 − V2) / (V1 + V2)给出。对射击噪声限制的定时抖动和测距抖
+动进行相同分析，得到完全相同的方程 (12)和 (13)，其中 ns 是信号光子总数。
+The quantity in equation (13) is plotted in Fig. 3c as a function of Ps at a set averaging time of T = 200 ms
+for the quantum efficiency η ≈ 0.79 and τp = 355 fs , which is the time-bandwidth-limited pulse duration for the
+measured comb-pulse spectral FWHM of 10.1 nm .
+方程 (13)中的量在图 3c中以 Ps为横坐标绘制，平均时间设为 T = 200 ms，量子效率为 η ≈ 0.79，
+τp = 355 fs为测量的梳脉冲光谱全宽半高 (FWHM) 10.1 nm对应的时频积限制脉冲宽度。
+The above derivation assumed the optimal situation that the two comb pulses have no differential chirp, are
+Gaussian, have unity mixing efficiency and the additive detector noise is zero. In equation (1), we include the
+numerical factor C to account for these and any other effects that increase the noise above this quantum-limited
+floor. In our case, the FWHM of the timing discriminator signals for pulses with zero differential chirp should be
+2τp = 709fs , based on the measured spectral widths of the comb pulses, but we measure 824 fs for the data in Fig.
+3c , indicating a differential dispersion between the pulses and corresponding timing jitter penalty of (824/709)2 =
+1.35 (assuming the broadening both reduces the slope and the peak height, preserving the area). In addition, there
+is an SNR degradation of a factor of 1.39 owing to detector noise, measured non-idealities in interferogram slopes
+and spectral overlap. Finally, we measure an additional additive noise penalty of 1.065 in the radiofrequency chain.
+Combined, these imperfections give an expected value of C = (1.35)× (1.39)× (1.065) = 2.0 , to be compared
+with the value ofC = 2.16measured from the upward displacement of the data points comparedwith the theoretical
+curve in Fig. 3c. These two values agree to within 8%. For the data in Fig. 4, the additional round-trip length of
+fibre optics in the path to the rail-mounted retroreflector added chirp to the signal comb that led to an additional
+1.49 -times penalty.
+34
+上述推导假设了最优情况，即两个梳脉冲无差分啁啾，呈高斯形，混频效率为 1，且探测器的附加噪
+声为零。在方程 (1)中，我们引入数值因子 C 以考虑这些及其他任何使噪声高于量子极限底噪的效
+应。在我们的案例中，基于测量的梳脉冲光谱宽度，零差分啁啾脉冲的定时鉴别器信号 FWHM应为
+2τp = 709fs，但我们测得图 3c数据中的值为 824 fs，表明脉冲间存在差分色散，导致相应的定时抖
+动惩罚为 (824/709)
+2
+= 1.35 (假设展宽同时降低了斜率和峰值高度，但保持面积不变)。此外，由于探
+测器噪声、干涉图斜率的非理想测量和光谱重叠，信噪比降低了 1.39倍。最后，我们在射频链路中测
+得额外的附加噪声惩罚为 1.065。综合这些不完美因素，预期值为C = (1.35)×(1.39)×(1.065) = 2.0
+，与图 3c中数据点相对于理论曲线的向上偏移测得的值 C = 2.16相比较，两者相差不到 8%。对
+于图 4中的数据，通往轨道安装反射镜的光纤额外往返长度为信号梳引入了啁啾，导致额外 1.49倍
+的惩罚。
+For the conventional dual-comb ranging using linear optical sampling, a similar analysis has been provided in
+Appendix B of ref. 37 . The performance curves in Fig. 5 are based on these equations and assume no additional
+penalties.
+对于使用线性光学采样的传统双梳测距，类似的分析已在参考文献 37 的附录 B中提供。图 5中的
+性能曲线基于这些方程，且假设没有额外的损耗。
+Reporting summary
+报告摘要
+Further information on research design is available in the Nature Research Reporting Summary linked to this
+article.
+关于研究设计的更多信息，请参见本文链接的《自然》研究报告摘要。
+Data availability
+数据可用性
+The data for the figures in this paper are available for download at https://data.nist.gov/od/id/mds2-2703.
+本文图表所用数据可在 https://data.nist.gov/od/id/mds2-2703下载。
+Code availability
+代码可用性
+The mathematics and algorithms necessary to create a time-programmable frequency comb are described
+between the main text and Methods.
+35
+创建时间可编程频率梳所需的数学和算法在正文与方法部分中有描述。
+56. Sinclair, L. C. et al. Invited Article: A compact optically coherent fiber frequency comb. Rev. Sci.
+Instrum. 86, 081301 (2015).
+56. Sinclair, L. C.等. 邀请文章:紧凑型光学相干光纤频率梳。Rev. Sci. Instrum. 86, 081301 (2015)。
+57. Kingston, R. H. Detection of Optical and Infrared Radiation (Springer, 1978).
+57. Kingston, R. H.光学与红外辐射的探测 (Springer, 1978)。
+Acknowledgements We acknowledge J. Ellis, T. Fortier, K. Cossel, W. Swann, B. Stuhl and B. Washburn for
+discussions. We acknowledge funding from the National Institute of Standards and Technology.
+致谢我们感谢 J. Ellis、T. Fortier、K. Cossel、W. Swann、B. Stuhl和 B. Washburn的讨论。感谢美国
+国家标准与技术研究院的资助。
+Author contributions E.D.C., L.C.S., N.R.N. and J.-D.D. all contributed to the initial conception, the experi-
+ment design, the data acquisition, the analysis of the results and the writing of the manuscript.
+作者贡献 E.D.C.、L.C.S.、N.R.N.和 J.-D.D.均参与了最初构思、实验设计、数据采集、结果分析及
+论文撰写。
+Competing interests The authors declare no competing interests. Additional information
+利益冲突作者声明无利益冲突。附加信息
+Supplementary information The online version contains supplementarymaterial available at https://doi.org/10.1038/s41586-
+022-05225-8.
+补充信息在线版本包含补充材料，见 https://doi.org/10.1038/s41586-022-05225-8。
+Correspondence and requests for materials should be addressed to Laura C. Sinclair or Nathan R. Newbury.
+通讯及材料请求请联系 Laura C. Sinclair或 Nathan R. Newbury。
+Peer review information Nature thanks Takuro Ideguchi, Xiaoxiao Xue and the other, anonymous, reviewer(s)
+for their contribution to the peer review of this work. Peer reviewer reports are available.
+同行评审信息《自然》感谢 Takuro Ideguchi、Xiaoxiao Xue及其他匿名评审对本工作的评审贡献。同
+行评审报告可查阅。
+Reprints and permissions information is available at http://www.nature.com/reprints.
+重印及许可信息见 http://www.nature.com/reprints。
+36
+Extended Data Fig. 1 | Range deviation power comparison. Range deviation (left axis) and time deviation
+(right axis) of dual-comb range measurements from a fixed reflection for signal-comb powers from 980nW (bottom
+curve) down to 0.33pW (top curve)with the following power levels±10% : 980nW , 190nW, 86nW, 38nW, 21nW, 9.6nW, 1.8nW, 1.2nW, 390pW, 200pW, 89pW
+, 33pW, 23pW, 8.5pW, 4.1pW, 1.9pW, 990fW, 550fW and 330fW . The vertical dashed cyan line indicates the
+200−ms averaging time for the data in Fig. 3c. Beyond 200-ms, the range deviation increases due to temperature-
+induced fluctuations in the fibre path up to the fixed reflection. In addition, the deviations for the difference between
+the absolute range from the tracking comb timing and the relative range from the unwrapped carrier phase shift,
+from Fig. 4, are shown for the time periods of 60 to 100 seconds at 3.2pW (green squares) and 110 seconds to
+150 seconds at 32pW (green triangles). For these data, the differential chirp between the signal and TPFC pulses
+was larger, leading to an additional 1.5x penalty in C and thus lie slightly above the curves at the same power for
+ranging off the fixed reflection (solid circles). However, because the path-length variation is common mode, the
+difference continues to average down beyond 200 ms .
+37
+扩展数据图 1 | 距离偏差功率比较。双频梳距离测量中固定反射的距离偏差 (左轴) 和时
+间偏差 (右轴)，信号梳功率从 980nW (底部曲线) 降至 0.33pW (顶部曲线)，对应功率水平
+为 ±10% : 980nW 、190nW, 86nW, 38nW, 21nW, 9.6nW, 1.8nW, 1.2nW, 390pW, 200pW, 89pW 、
+33pW, 23pW, 8.5pW, 4.1pW, 1.9pW, 990fW, 550fW和 330fW。垂直虚线青色线表示图 3c 中数据的
+200 − ms平均时间。超过 200毫秒后，距离偏差因光纤路径至固定反射处的温度引起的波动而增
+加。此外，图 4中跟踪梳定时的绝对距离与展开载波相位移的相对距离之间差异的偏差，在 60至
+100秒期间的 3.2pW (绿色方块)和 110至 150秒期间的 32pW (绿色三角)也有所显示。对于这些数
+据，信号脉冲与 TPFC脉冲之间的差分啁啾较大，导致 C 中额外的 1.5x惩罚，因此其值略高于相
+同功率下固定反射测距的曲线 (实心圆)。然而，由于路径长度变化为共模，差异在超过 200 ms后
+仍继续平均下降。
+Extended Data Fig. 2 | Range power spectral density. Range power spectral density (PSD) for the data from
+Fig. 4 over the period of 60 s to 100 s at 3.2pW return power forX (t) from the tracking comb (blue trace) and the
+unwrapped carrier phase θ (t) (purple trace). Also shown is the noise floor for the unwrapped carrier phase (dark
+blue trace). The vibrations of the nominally immobile retroreflector can be clearly seen in the carrier-phase data.
+At the low average power of 3.2pW , the tracking dual-comb range shot-noise limited noise floor lies just above
+the minimal vibrations seen here. The vertical magenta line indicates the maximum 10 Hz update rate of FMCW
+while the vertical dark green line indicates the 13kHz cut-off imposed by the 26kHz measurement rate for the range
+data.
+38
+扩展数据图 2 |距离功率谱密度。图 4中数据在 60 s至 100 s期间，3.2pW返回功率下，跟踪梳 (蓝
+色曲线)和展开载波相位 θ (t) (紫色曲线)的距离功率谱密度 (PSD)。同时显示了展开载波相位的噪
+声底 (深蓝色曲线)。名义上静止的反射镜的振动在载波相位数据中清晰可见。在低平均功率 3.2pW
+下，跟踪双频梳测距的散粒噪声限制噪声底略高于此处观察到的最小振动。垂直品红线表示 FMCW
+的最大 10 Hz更新率，垂直深绿色线表示由 26kHz测量速率对距离数据施加的 13kHz截止频率。
+Extended Data Table 1 | Ranging modality comparison
+扩展数据表 1 |测距方式比较
+Technique Resolution,∆R Non-Ambiguity Range, RNA Power penalty, PP Max. Update Rate, T−1
+FMCW Ranginga
+c
+2B
+30µm
+∼ cC
+4B >> lcoh ∼ 1 0 dB C
+BSystem 1b, c B = 5THz (40 nm at 1550 nm) C = 5THz/s (40 nm/s) 1 Hz
+System 2b, d B = 1.3THz (10 nm 1535 nm) C = 12.5THz/s (100 nm/s) 115µm 9.6 Hz
+Conventional Dual- Comb Ranging
+c
+2B
+60µm
+c
+2frep
+0.15 cm
+∼ f rep
+B
+f2
+rep
+4B For margin, in practice this is often h f2
+r
+16B
+Microcombe: B =∼ 2.5THz frep = 100GHz ∆frep = 100MHz 14 dB 1̃ GHz
+Er:fiber combf: B = 1.2THz (10 nm at 1560 nm) frep = 200MHz ∆f rep = 2kHz 125µm 75 cm 38 dB 8.3kHz
+Ti:Sapph combg: B = 0.3THz (0.6 nm at 785 nm) f rep = 513MHz ∆frep = 130kHz 510µm 29 cm 27 dB 220kHz
+Dual-Comb Ranging with the TPFC B = 1.2THz (10 nm at 1560 nm) Acquisition scans over 0 < ∆X < f−1
+rep Update rate assumes ∆X = 1 ns (15 cm) and ∆Ẋ = 40n/s c
+2B 125µm c
+2frep
+75 cm
+Acquisition: △XB 0 to 30 dB Acquisition: S∆X 40 Hz
+Tracking: 1 0 dB Tracking: f rep
+4 50 MHz
+技术 分辨率，∆R 非歧义范围，RNA 功率损耗，PP 最大更新速率，T−1
+调频连续波测距 (FMCW Ranging)
+c
+2B
+30µm
+∼ cC
+4B >> lcoh ∼ 1 0 dB C
+B系统 1b, c B = 5THz (1550 nm处 40 nm) C = 5THz/s (40 nm/s) 1 Hz
+系统 2b, d B = 1.3THz (1535 nm处 10 nm) C = 12.5THz/s (100 nm/s) 115µm 9.6 Hz
+传统双梳测距
+c
+2B
+60µm
+c
+2frep
+0.15 cm
+∼ f rep
+B
+f2
+rep
+4B 为裕度，实际中通常为 h f2
+r
+16B
+微梳: B =∼ 2.5THz frep = 100GHz ∆frep = 100MHz 14 dB 约 1 GHz
+铒掺光纤梳 (Er:fiber comb)f: B = 1.2THz (1560 nm处 10 nm) frep = 200MHz ∆f rep = 2kHz 125µm 75 cm 38 dB 8.3kHz
+钛宝石激光梳 (Ti:Sapph comb)g: B = 0.3THz (785 nm处 0.6 nm) f rep = 513MHz ∆frep = 130kHz 510µm 29 cm 27 dB 220kHz
+基于 TPFC的双梳测距 B = 1.2THz (1560 nm处 10 nm)采集扫描超过 0 < ∆X < f−1
+rep 更新速率假设 ∆X = 1 ns(15 cm)和 ∆Ẋ = 40n/s c
+2B 125µm c
+2frep
+75 cm
+采集: △XB 0至 30 dB 采集: S∆X 40 Hz
+跟踪:1 0 dB 跟踪: f rep
+4 50 MHz
+Comparison of parameters for FCMW ranging, conventional dual-comb ranging and the current TPFC-based
+dual-comb ranging. Scaling relationships and values from the literature are used to illustrate the trade-offs. All
+systems have a maximum range set by the laser coherence length. These values related to range, power penalty and
+maximum update rate were used to construct Fig. 5 of the main text. B: 3-dB bandwidth, C: chirp rate, c : speed
+of light (for simplicity ignoring the group index of air), lcoh : laser coherence length, frep : repetition frequency of
+comb,∆frep : offset in comb repetition frequencies, S : pulse scan rate.
+FCMW测距、传统双梳测距及当前基于 TPFC的双梳测距参数比较。采用文献中的比例关系和数值
+来说明权衡。所有系统的最大测距均由激光相干长度决定。与测距、功率损耗和最大更新率相关的
+这些数值用于构建正文图 5。B:3-dB带宽，C:啁啾率，c :光速 (为简化起见忽略空气的群折射率)，
+lcoh :激光相干长度，frep :梳齿重复频率，∆frep :梳齿重复频率偏移，S :脉冲扫描速率。
+a Scaling for FMCW based on Barber, Z. W., Babbitt, Wm. R., Kaylor, B., Reibel, R. R. & Roos,. Appl Opt
+49, 213-219 (2010).
+a FMCW的比例关系基于 Barber, Z. W., Babbitt, Wm. R., Kaylor, B., Reibel, R. R. & Roos,. Appl Opt
+49, 213-219 (2010)。
+b The use of trade names in this manuscript is necessary to specify experimental results and does not imply
+endorsement by the National Institute of Standards and Technology.
+b 本文中使用的商标名称是为了明确实验结果，且不代表美国国家标准与技术研究院的认可。
+c System 1 specifications from Bridger Photonics datasheets (https://www.bridgerphotonics.com/).
+c 系统 1规格来自 Bridger Photonics数据手册 (https://www.bridgerphotonics.com/)。
+39
+d System 2 specifications fromLunaOptical Backscatter Reflectometer (OBR) 4600 datasheet (https://lunainc.com).
+d 系统 2规格来自 Luna光学背向散射反射计 (OBR)4600数据手册 (https://lunainc.com)。
+◦ Values taken from Trocha, P. et al. Science 359,887-891 (2018). FWHM bandwidth estimated to be at 2.5
+THz from the manuscript figures.
+◦数值取自 Trocha, P.等人，Science 359,887-891 (2018)。从文稿图中估计 FWHM带宽约为 2.5 THz。
+f Values taken from Er:fibre comb system used also for the dual-comb system presented here.
+f 数值取自用于本文所示双梳系统的 Er:光纤梳系统。
+9 Values taken from Mitchell, T., Sun, J., Sun, J. &Reid, D. T. Opt. Express 29,42119-42126 (2021).
+9 数值取自Mitchell, T., Sun, J., Sun, J. &Reid, D. T. Opt. Express 29,42119-42126 (2021)。
+h This expression often appears with only a factor of two in the denominator. However, if the widths are
+all FWHM and assuming a filter that is not infinitely sharp, there would be significant aliasing in the signal if
+operated under these conditions leading to systematic range errors. We have used a factor of ”4”, which is still
+overly optimistic and the factor of ”16” in the denominator is a more practical choice.
+h该表达式常见的分母仅为 2倍。然而，若宽度均为 FWHM且假设滤波器非无限锐利，信号在此条
+件下操作会产生显著混叠，导致系统性测距误差。我们采用了“4”作为因子，虽仍偏乐观，但分
+母为“16”的因子更为实际。
+natureportfolio
+natureportfolio
+Corresponding author(s): Laura Sinclair and Nathan Newbury
+通讯作者:Laura Sinclair和 Nathan Newbury
+Last updated by author(s): Jun 21, 2022
+作者最后更新日期:2022年 6月 21日
+Reporting Summary
+报告摘要
+Nature Portfolio wishes to improve the reproducibility of the work that we publish. This form provides struc-
+ture for consistency and transparency in reporting. For further information on Nature Portfolio policies, see our
+Editorial Policies and the Editorial Policy Checklist.
+40
+Nature Portfolio致力于提升我们发表工作的可重复性。本表格为报告提供结构化的统一和透明。有
+关 Nature Portfolio政策的更多信息，请参见我们的编辑政策及编辑政策检查表。
+Statistics
+统计
+For all statistical analyses, confirm that the following items are present in the figure legend, table legend, main
+text, or Methods section.
+对于所有统计分析，请确认图例、表格说明、正文或方法部分包含以下内容。
+n/a Confirmed
+The exact sample size (n) for each experimental group/condition, given as a discrete number and unit of measurement
+A statement on whether measurements were taken from distinct samples or whether the same sample was measured repeatedly
+The statistical test(s) used AND whether they are one- or two-sided ↓ Only common tests should be described solely by name; describe more complex techniques in the Methods section.
+A description of all covariates tested
+A description of any assumptions or corrections, such as tests of normality and adjustment for multiple comparisons
+8A full description of the statistical parameters including central tendency (e.g. means) or other basic estimates (e.g. regression coefficient)AND variation (e.g. standard deviation) or associated estimates of uncertainty (e.g. confidence intervals)
+¬ For null hypothesis testing, the test statistic (e.g. F, t , r ) with confidence intervals, effect sizes, degrees of freedom and P value noted Give P values as exact values whenever suitable.
+D For Bayesian analysis, information on the choice of priors and Markov chain Monte Carlo settings
+For hierarchical and complex designs, identification of the appropriate level for tests and full reporting of outcomes
+[E Estimates of effect sizes (e.g. Cohen’s d, Pearson’s r), indicating how they were calculated
+不适用 已确认
+每个实验组/条件的确切样本量 (n)，以离散数字和计量单位表示
+说明测量是来自不同样本还是对同一样本重复测量
+所用的统计检验及其单侧或双侧性质 ↓ 仅常见检验应仅以名称描述；更复杂的技术应在方法部分详细说明。
+所有协变量的描述
+任何假设或校正的描述，如正态性检验和多重比较调整
+8统计参数的完整描述，包括集中趋势 (如均值)或其他基本估计 (如回归系数)及变异性 (如标准差)或相关不确定性估计 (如置信区间)
+¬对于零假设检验，报告检验统计量 (如 F值、t、r )及其置信区间、效应量、自由度和 P 值，适用时应给出精确的 P 值。
+D对于贝叶斯分析，提供先验选择和马尔可夫链蒙特卡洛 (Markov chain Monte Carlo)设置的信息
+对于分层和复杂设计，明确检验的适当层级并完整报告结果
+[E效应量估计 (如 Cohen’s d、Pearson’s r)，并说明其计算方法
+Our web collection on statistics for biologists contains articles on many of the points above.
+我们为生物学家准备的统计学网络资源涵盖了上述许多内容。
+Software and code
+软件与代码
+Policy information about availability of computer code
+关于计算机代码可用性的政策信息
+Data collection Data analysis
+The mathematics and algorithms necessary to create a time programmable frequency comb are described between the main text and the methods section.
+The mathematics and algorithms necessary to create a time programmable frequency comb are described between the main text and the methods section.
+41
+数据收集数据分析 在正文和方法部分中描述了创建时间可编程频率梳 (frequency comb)所需的数学和算法。
+在正文和方法部分中描述了创建时间可编程频率梳 (frequency comb)所需的数学和算法。
+For manuscripts utilizing custom algorithms or software that are central to the research but not yet described
+in published literature, software must be made available to editors and reviewers. We strongly encourage code
+deposition in a community repository (e.g. GitHub). See the Nature Portfolio guidelines for submitting code &
+software for further information.
+对于使用自定义算法或软件且这些算法或软件是研究核心但尚未在已发表文献中描述的手稿，必须
+向编辑和审稿人提供软件。我们强烈建议将代码存储在社区仓库 (例如 GitHub)中。有关提交代码
+和软件的更多信息，请参阅 Nature Portfolio的相关指南。
+Data
+数据
+Policy information about availability of data
+关于数据可用性的政策信息
+All manuscripts must include a data availability statement. This statement should provide the following in-
+formation, where applicable:
+所有手稿必须包含数据可用性声明。该声明应在适用情况下提供以下信息:
+• Accession codes, unique identifiers, or web links for publicly available datasets
+• 公开可用数据集的登录代码、唯一标识符或网页链接
+• A description of any restrictions on data availability
+• 对数据可用性的任何限制说明
+• For clinical datasets or third party data, please ensure that the statement adheres to our policy
+• 对于临床数据集或第三方数据，请确保声明符合我们的政策
+The data for the figures in this manuscript are available for download at https://data.nist.gov/sdp/<to be pro-
+vided>/.
+本文图表所用数据可在 https://data.nist.gov/sdp/<to be provided>/下载。
+42
+Human research participants
+人类研究参与者
+Policy information about studies involving human research participants and Sex and Gender in Research.
+关于涉及人类研究参与者及研究中的性别与性别认同的政策信息。
+Reporting on sex and gender Use the terms sex (biological attribute) and gender (shaped by social and cultural circumstances) carefully in order to avoid confusing both terms. Indicate if findings apply to only one sex or gender; describe whether sex and gender were considered in study design whether sex and/or gender was determined based on self-reporting or assigned and methods used. Provide in the source data disaggregated sex and gender data where this information has been collected, and consent has been obtained for sharing of individual-level data; provide overall numbers in this Reporting Summary. Please state if this information has not been collected. Report sex- and gender-based analyses where performed, justify reasons for lack of sex- and gender-based analysis.
+Population characteristics Describe the covariate-relevant population characteristics of the human research participants (e.g. age, genotypic information, past and current diagnosis and treatment categories). If you filled out the behavioural & social sciences study design questions and have nothing to add here, write ”See above.”
+Recruitment Describe how participants were recruited. Outline any potential self-selection bias or other biases that may be present and how these are likely to impact results.
+Ethics oversight Identify the organization(s) that approved the study protocol.
+关于性别和性别的报告 谨慎使用“sex”(生物属性)和“gender”(由社会和文化环境塑造)这两个术语，以避免混淆。说明研究结果是否仅适用于某一性别或性别群体；描述在研究设计中是否考虑了性别和性别，性别和/或性别是基于自我报告还是被指定，以及所用的方法。在原始数据中提供按性别和性别分解的数据 (如果已收集此信息且已获得共享个体级数据的同意)；在本报告摘要中提供总体数字。如未收集此信息，请说明。报告已进行的基于性别和性别的分析，说明未进行此类分析的理由。
+人群特征 描述人类研究参与者的协变量相关人群特征 (例如年龄、基因型信息、过去和当前的诊断及治疗类别)。如果您已填写行为与社会科学研究设计问题且此处无补充，请写“见上文”。
+招募 描述参与者的招募方式。概述可能存在的自我选择偏差或其他偏差及其可能对结果产生的影响。
+伦理监督 说明批准研究方案的组织机构。
+Note that full information on the approval of the study protocol must also be provided in the manuscript.
+请注意，手稿中还必须提供关于研究方案批准的完整信息。
+Field-specific reporting
+领域特定报告
+Please select the one below that is the best fit for your research. If you are not sure, read the appropriate
+sections before making your selection. Life sciences L Behavioural & social sciences L Ecological, evolutionary
+& environmental sciences
+请选择以下最适合您研究的选项。如果不确定，请先阅读相关部分再做选择。生命科学 L行为与社
+会科学 L生态学、进化学与环境科学
+For a reference copy of the document with all sections, see nature.com/documents/nr-reporting-summary-
+flat.pdf
+完整章节的参考文档请见 nature.com/documents/nr-reporting-summary-flat.pdf
+Life sciences study design
+生命科学研究设计
+All studies must disclose on these points even when the disclosure is negative.
+所有研究即使披露为否定结果，也必须在这些方面进行说明。
+Sample size Describe how sample size was determined, detailing any statistical methods used to predetermine sample size OR if no sample-size calculation was performed, describe how sample sizes were chosen and provide a rationale for why these sample sizes are sufficient.
+Data exclusions Describe any data exclusions. If no data were excluded from the analyses, state so OR if data were excluded, describe the exclusions and the rationale behind them, indicating whether exclusion criteria were pre-established.
+Replication Describe the measures taken to verify the reproducibility of the experimental findings. If all attempts at replication were successful, confirm this OR if there are any findings that were not replicated or cannot be reproduced, note this and describe why.
+Randomization Describe how samples/organisms/participants were allocated into experimental groups. If allocation was not random, describe how covariates were controlled OR if this is not relevant to your study, explain why.
+Blinding Describe whether the investigators were blinded to group allocation during data collection and/or analysis. If blinding was not possible, describe why OR explain why blinding was not relevant to your study.
+43
+样本量 描述样本量的确定方法，详细说明用于预先确定样本量的任何统计方法；如果未进行样本量计算，描述样本量的选择方式并提供这些样本量足够的理由。
+数据排除 描述任何数据排除情况。如果分析中未排除任何数据，请说明；如果有数据被排除，描述排除情况及其理由，并指出排除标准是否预先设定。
+重复实验 描述为验证实验结果可重复性所采取的措施。如果所有重复尝试均成功，请确认；如果存在未能重复或无法复现的结果，请说明并描述原因。
+随机分组 描述样本/生物体/参与者如何分配到实验组中。如果分配非随机，描述如何控制协变量；如果此项与您的研究无关，请说明原因。
+盲法 描述研究人员在数据收集和/或分析过程中是否对组别分配保持盲法。如果盲法不可行，请说明原因；或解释盲法为何与您的研究无关。
+Behavioural & social sciences study design
+行为与社会科学研究设计
+All studies must disclose on these points even when the disclosure is negative.
+所有研究必须在这些方面进行披露，即使披露结果为否定。
+Study description Briefly describe the study type including whether data are quantitative, qualitative, or mixed-methods (e.g. qualitative cross-sectional, quantitative experimental, mixed-methods case study).
+Research sample State the research sample (e.g. Harvard university undergraduates, villagers in rural India) and provide relevant demographic information (e.g. age, sex) and indicate whether the sample is representative. Provide a rationale for the study sample chosen. For studies involving existing datasets, please describe the dataset and source.
+Sampling strategy Describe the sampling procedure (e.g. random, snowball, stratified, convenience). Describe the statistical methods that were used to predetermine sample size OR if no sample-size calculation was performed, describe how sample sizes were chosen and provide a rationale for why these sample sizes are sufficient. For qualitative data, please indicate whether data saturation was considered, and what criteria were used to decide that no further sampling was needed.
+研究描述 简要描述研究类型，包括数据是定量、定性还是混合方法 (例如定性横断面研究、定量实验研究、混合方法案例研究)。
+研究样本 说明研究样本 (例如哈佛大学本科生、印度农村村民)，并提供相关人口统计信息 (例如年龄、性别)，指出样本是否具有代表性。说明选择该研究样本的理由。对于涉及现有数据集的研究，请描述数据集及其来源。
+抽样策略 描述抽样程序 (例如随机抽样、滚雪球抽样、分层抽样、便利抽样)。描述用于预先确定样本量的统计方法，或者如果未进行样本量计算，请说明样本量的选择依据及其充分性的理由。对于定性数据，请说明是否考虑了数据饱和度，以及用以决定无需进一步抽样的标准。
+Data collection Provide details about the data collection procedure, including the instruments or devices used to record the data (e.g. pen and paper, computer, eye tracker, video or audio equipment) whether anyone was present besides the participant(s) and the researcher, and whether the researcher was blind to experimental condition and/or the study hypothesis during data collection.
+Timing Indicate the start and stop dates of data collection. If there is a gap between collection periods, state the dates for each sample cohort.
+Data exclusions If no data were excluded from the analyses, state so OR if data were excluded, provide the exact number of exclusions and the rationale behind them, indicating whether exclusion criteria were pre-established.
+Non-participation State how many participants dropped out/declined participation and the reason(s) given OR provide response rate OR state that no participants dropped out/declined participation.
+Randomization If participants were not allocated into experimental groups, state so OR describe how participants were allocated to groups, and if allocation was not random, describe how covariates were controlled.
+数据收集 提供有关数据收集程序的详细信息，包括用于记录数据的仪器或设备 (例如笔和纸、计算机、眼动仪、视频或音频设备)，是否除参与者和研究人员外还有其他人在场，以及研究人员在数据收集期间是否对实验条件和/或研究假设保持盲态。
+时间安排 注明数据收集的开始和结束日期。如果收集期间存在间隔，请说明每个样本队列的具体日期。
+数据排除 如果分析中未排除任何数据，请说明；如果排除了数据，请提供排除的具体数量及其理由，并说明排除标准是否事先设定。
+未参与情况 说明有多少参与者退出或拒绝参与及其原因，或者提供响应率，或者说明没有参与者退出或拒绝参与。
+随机分组 如果参与者未被分配到实验组，请说明；如果分配了，请描述分组方法；如果分配非随机，请说明如何控制协变量。
+Ecological, evolutionary & environmental sciences study design
+生态学、进化学与环境科学研究设计
+All studies must disclose on these points even when the disclosure is negative.
+所有研究必须在这些方面进行披露，即使披露内容是否定的。
+Study description Briefly describe the study. For quantitative data include treatment factors and interactions, design structure (e.g. factorial, nested, hierarchical), nature and number of experimental units and replicates.
+Research sample Describe the research sample (e.g. a group of tagged Passer domesticus, all Stenocereus thurberi within Organ Pipe Cactus National Monument), and provide a rationale for the sample choice. When relevant, describe the organism taxa, source, sex, age range and any manipulations. State what population the sample is meant to represent when applicable. For studies involving existing datasets, describe the data and its source.
+Sampling strategy Note the sampling procedure. Describe the statistical methods that were used to predetermine sample size OR if no sample-size calculation was performed, describe how sample sizes were chosen and provide a rationale for why these sample sizes are sufficient.
+Data collection Describe the data collection procedure, including who recorded the data and how.
+Timing and spatial scale Indicate the start and stop dates of data collection, noting the frequency and periodicity of sampling and providing a rationale for these choices. If there is a gap between collection periods, state the dates for each sample cohort. Specify the spatial scale from which the data are taken
+Data exclusions If no data were excluded from the analyses, state so OR if data were excluded, describe the exclusions and the rationale behind them, indicating whether exclusion criteria were pre-established.
+Reproducibility Describe the measures taken to verify the reproducibility of experimental findings. For each experiment, note whether any attempts to repeat the experiment failed OR state that all attempts to repeat the experiment were successful.
+Randomization Describe how samples/organisms/participants were allocated into groups. If allocation was not random, describe how covariates were controlled. If this is not relevant to your study, explain why.
+Blinding Describe the extent of blinding used during data acquisition and analysis. If blinding was not possible, describe why OR explain why blinding was not relevant to your study.
+研究描述 简要描述研究内容。对于定量数据，包括处理因素及其交互作用、设计结构 (如因子设计、嵌套设计、层级设计)、实验单元的性质和数量以及重复次数。
+研究样本 描述研究样本 (例如，一组带标记的家麻雀 (Passer domesticus)，或 Organ Pipe Cactus国家纪念区内所有的 Stenocereus thurberi)，并说明选择该样本的理由。相关时，描述生物分类、来源、性别、年龄范围及任何操作。说明样本所代表的总体 (如适用)。对于涉及现有数据集的研究，描述数据及其来源。
+抽样策略 说明抽样程序。描述用于预先确定样本量的统计方法，或者如果未进行样本量计算，说明样本量的选择方法并提供这些样本量足够的理由。
+数据收集 描述数据收集过程，包括由谁以及如何记录数据。
+时间和空间尺度 指出数据收集的起止日期，说明采样的频率和周期性，并提供选择这些时间安排的理由。如采样期间存在间隔，说明各样本组的具体日期。明确数据采集的空间尺度。
+数据排除 如果分析中未排除任何数据，请说明；若有排除，描述排除内容及其理由，并指出排除标准是否预先设定。
+可重复性 描述为验证实验结果可重复性所采取的措施。针对每个实验，说明是否有重复实验失败的情况，或声明所有重复实验均成功。
+随机化 描述样本/生物体/参与者如何分组。如果分组非随机，说明如何控制协变量。如与研究无关，请说明原因。
+盲法 描述数据采集和分析过程中盲法的实施程度。如无法实施盲法，说明原因，或解释盲法为何与研究无关。
+Did the study involve field work? D Yes D No
+该研究是否涉及实地工作？□是 □否
+44
+Field work, collection and transport
+实地工作、采集与运输
+Field conditions Describe the study conditions for field work, providing relevant parameters (e.g. temperature, rainfall).
+Location State the location of the sampling or experiment, providing relevant parameters (e.g. latitude and longitude, elevation, water depth).
+Access & import/export Describe the efforts you have made to access habitats and to collect and import/export your samples in a responsible manner and in compliance with local, national and international laws, noting any permits that were obtained (give the name of the issuing authority. the date of issue, and any identifying information).
+Disturbance Describe any disturbance caused by the study and how it was minimized.
+现场条件 描述现场工作的研究条件，提供相关参数 (例如温度、降雨量)。
+地点 说明采样或实验地点，提供相关参数 (例如纬度和经度、海拔、水深)。
+通行与进出口 描述您为进入栖息地及负责任地采集和进出口样本所做的努力，并遵守当地、国家及国际法律，注明所获得的许可 (包括发证机关名称、发证日期及任何识别信息)。
+干扰 描述研究所造成的任何干扰及其最小化措施。
+Reporting for specific materials, systems and methods
+关于特定材料、系统和方法的报告
+We require information from authors about some types of materials, experimental systems and methods used
+in many studies. Here, indicate whether each material, system or method listed is relevant to your study. If you are
+not sure if a list item applies to your research, read the appropriate section before selecting a response.
+我们需要作者提供有关某些类型材料、实验系统和方法的信息，这些在许多研究中都会使用。在此，
+请指出所列的每种材料、系统或方法是否与您的研究相关。如果您不确定某项内容是否适用于您的
+研究，请在选择回答前阅读相应部分。
+Materials & experimental systems
+材料与实验系统
+n/a Involved in the study
+8 Antibodies
+8 2Eukaryotic cell lines
+8 2Palaeontology and archaeology
+8 Animals and other organisms
+8 Clinical data
+8 Dual use research of concern
+不适用 参与研究
+8 抗体
+8 2真核细胞系
+8 2古生物学和考古学
+8 动物及其他生物体
+8 临床数据
+8 关注的双重用途研究
+Methods
+45
+方法
+n/a Involved in the study
+–ChIP-seq
+8 2Flow cytometry
+8 MRI-based neuroimaging
+不适用 参与研究
+–染色质免疫沉淀测序 (ChIP-seq)
+8 2流式细胞术
+8 基于磁共振成像 (MRI)的神经影像学
+46

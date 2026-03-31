@@ -161,7 +161,6 @@ class LinienApp(QtWidgets.QApplication):
 def main():
     app = LinienApp(sys.argv)
     logger.info("Starting Linien GUI")
-
     # catch ctrl-c and shutdown
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec_())
