@@ -404,6 +404,16 @@ class Registers:
         """
         return self.read_csr("err_calc_power_signal_out")
 
+    def read_power_signal_a(self) -> int:
+        """Return the latest fast-channel-A power sample from its FPGA CSR."""
+
+        return self.read_csr("err_calc_power_a_out")
+
+    def read_power_signal_b(self) -> int:
+        """Return the latest fast-channel-B power sample from its FPGA CSR."""
+
+        return self.read_csr("err_calc_power_b_out")
+
     def read_scan_tracker_fsm_state(self) -> int:
         """Return the current scan-tracking FSM state."""
 

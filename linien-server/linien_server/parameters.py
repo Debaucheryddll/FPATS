@@ -142,8 +142,8 @@ class Parameters:
           - `power_signal`:
               Power signal derived from the error-signal calculator.
           - `power_signal_a` and `power_signal_b`:
-              Power estimates for fast channel A and B derived from the error signal
-              and total power.
+              Independent power readings for fast channel A and B read directly from
+              dedicated FPGA registers.
           - `control_signal`:
               Output of the PID controller.
           - `scan_tracker_state`, `scan_tracker_time_command_out`,

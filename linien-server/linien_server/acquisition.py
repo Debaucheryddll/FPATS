@@ -41,7 +41,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 POWER_FRAC_BITS = 10
-POWER_DENOM_THRESHOLD = 4
 DEMOD_IIR_NOISE_GATE_THRESHOLD = 32
 
 
@@ -60,43 +59,8 @@ def _fixed_to_float(
 def _phase_to_degrees(value: int, width: int) -> float:
     return (value * 180.0) / (1 << (width - 1))
 
-def _clamp_unsigned(value: int, width: int) -> int:
-    mask = (1 << width) - 1
-    return max(0, min(value, mask))
-
 def _clamp_signed(value: int, limit: int) -> int:
     return max(-limit, min(value, limit))
-
-def _split_power_by_error_raw(
-    power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
-) -> tuple[int, int]:
-    power_width = csrmap.csr["err_calc_power_signal_out"][2]
-    power_raw = power_raw & ((1 << power_width) - 1)
-    if power_raw <= POWER_DENOM_THRESHOLD:
-        return 0, 0
-    error_limit = 1 << fractional_bits
-    error_raw = max(-error_limit, min(error_raw, error_limit))
-    scaled_error_power = (power_raw * error_raw) >> fractional_bits
-    power_a_raw = _clamp_unsigned((power_raw + scaled_error_power) // 2, power_width)
-    power_b_raw = _clamp_unsigned((power_raw - scaled_error_power) // 2, power_width)
-    return power_a_raw, power_b_raw
-
-
-def _split_power_by_error(
-    power_raw: int, error_raw: int, fractional_bits: int = POWER_FRAC_BITS
-) -> tuple[float, float]:
-    power_width = csrmap.csr["err_calc_power_signal_out"][2]
-    power_a_raw, power_b_raw = _split_power_by_error_raw(
-        power_raw, error_raw, fractional_bits
-    )
-    return (
-        FixedPointConverter.fixed_to_unsigned_float(
-            power_a_raw, power_width, fractional_bits
-        ),
-        FixedPointConverter.fixed_to_unsigned_float(
-            power_b_raw, power_width, fractional_bits
-        ),
-    )
 
 
 def _has_csr(name: str) -> bool:
@@ -221,7 +185,7 @@ class AcquisitionService(Service):
                 self.data_was_raw = is_raw
                 self.data_hash = random()
 
-    def _read_slow_data(self, power_a_raw: int, power_b_raw: int) -> dict[str, int | float | None]:
+    def _read_slow_data(self) -> dict[str, int | float | None]:
         slow_keys = [
             "scan_tracker_fsm_state",
             "scan_tracker_power_level",
@@ -267,6 +231,8 @@ class AcquisitionService(Service):
         fast_keys = [
             "err_calc_out_e",
             "err_calc_power_signal_out",
+            "err_calc_power_a_out",
+            "err_calc_power_b_out",
             "logic_control_signal",
             # "scan_tracker_time_command_out",
             "kalman_targets_x_target_cmd",
@@ -283,11 +249,13 @@ class AcquisitionService(Service):
         power_signal = FixedPointConverter.fixed_to_unsigned_float(
             power_signal_raw, csrmap.csr["err_calc_power_signal_out"][2], POWER_FRAC_BITS
         )
-        power_a_raw, power_b_raw = _split_power_by_error_raw(
-            power_signal_raw, error_signal
+        power_a_raw = int(raw_values["err_calc_power_a_out"])
+        power_b_raw = int(raw_values["err_calc_power_b_out"])
+        power_signal_a = FixedPointConverter.fixed_to_unsigned_float(
+            power_a_raw, csrmap.csr["err_calc_power_a_out"][2], POWER_FRAC_BITS
         )
-        power_signal_a, power_signal_b = _split_power_by_error(
-            power_signal_raw, error_signal
+        power_signal_b = FixedPointConverter.fixed_to_unsigned_float(
+            power_b_raw, csrmap.csr["err_calc_power_b_out"][2], POWER_FRAC_BITS
         )
         control_signal = _get_signed_from_raw("logic_control_signal", raw_values)
         if control_signal is None:
@@ -300,7 +268,7 @@ class AcquisitionService(Service):
         kalman_f = _get_signed_from_raw("kalman_targets_f_target_cmd", raw_values)
         kalman_t = _get_signed_from_raw("kalman_targets_t_target_cmd", raw_values)
         if self.slow_data_dirty or not self.slow_data_cache:
-            self.slow_data_cache = self._read_slow_data(power_a_raw, power_b_raw)
+            self.slow_data_cache = self._read_slow_data()
             self.slow_data_dirty = False
         data = {
             "error_signal": error_signal,

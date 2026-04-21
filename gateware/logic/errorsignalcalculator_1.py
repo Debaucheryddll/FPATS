@@ -20,6 +20,8 @@ class ErrorSignalCalculator(Module, AutoCSR):
         self.q_b = Signal((width, True))
         self.out_e = Signal((width, True))
         self.power_signal_out = Signal(width, name="power_signal_out")
+        self.power_a_out = Signal(width, name="power_a_out")
+        self.power_b_out = Signal(width, name="power_b_out")
         self.power_signal_full_out = Signal((2 * width + 1), name="power_signal_full_out")
 
         self.signal_in = []
@@ -29,6 +31,8 @@ class ErrorSignalCalculator(Module, AutoCSR):
 
         self.csr_out_e = CSRStatus(width, name="out_e")
         self.csr_power_signal_out = CSRStatus(width, name="power_signal_out")
+        self.csr_power_a_out = CSRStatus(width, name="power_a_out")
+        self.csr_power_b_out = CSRStatus(width, name="power_b_out")
         self.csr_power_signal_full_out = CSRStatus(
             (2 * width + 1), name="power_signal_full_out"
         )
@@ -167,6 +171,10 @@ class ErrorSignalCalculator(Module, AutoCSR):
             self.csr_out_e.status.eq(self.out_e),
             self.csr_power_signal_out.status.eq(denominator_reg),
             self.power_signal_out.eq(denominator_reg),
+            self.csr_power_a_out.status.eq(mag_a_scaled),
+            self.power_a_out.eq(mag_a_scaled),
+            self.csr_power_b_out.status.eq(mag_b_scaled),
+            self.power_b_out.eq(mag_b_scaled),
             self.csr_power_signal_full_out.status.eq(power_full_reg),
             self.power_signal_full_out.eq(power_full_reg),
         ]

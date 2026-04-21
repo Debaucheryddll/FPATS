@@ -1,4 +1,4 @@
-# 文件: linien-server/linien_server/tracking/tpfc_tracker.py
+# 鏂囦欢: linien-server/linien_server/tracking/tpfc_tracker.py
 
 import logging
 import threading
@@ -6,9 +6,9 @@ import time
 import numpy as np
 
 
-# 公共的工具函数用于定点数转换
+# 鍏叡鐨勫伐鍏峰嚱鏁扮敤浜庡畾鐐规暟杞崲
 from linien_server.tracking.fixed_point_utils import FixedPointConverter
-# 导入您的卡尔曼滤波器类
+# 瀵煎叆鎮ㄧ殑鍗″皵鏇兼护娉㈠櫒绫?
 from linien_server.kalman_filter import KalmanFilterTimeFrequency
 
 logger = logging.getLogger(__name__)
@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 
 class TPFCTrackerService(threading.Thread):
     """
-    独立的 TPFC 跟踪服务，周期性执行卡尔曼滤波并更新 PID 目标。
+    鐙珛鐨?TPFC 璺熻釜鏈嶅姟锛屽懆鏈熸€ф墽琛屽崱灏旀浖婊ゆ尝骞舵洿鏂?PID 鐩爣銆?
     """
     def __init__(self, device, kalman_params, loop_interval_s=0.001):
-        # loop_interval_s 决定了 Kalman Filter 的更新频率（例如 1000 Hz）
+        # loop_interval_s 鍐冲畾浜?Kalman Filter 鐨勬洿鏂伴鐜囷紙渚嬪 1000 Hz锛?
         super().__init__()
         self.device = device
         self.loop_interval = loop_interval_s
@@ -27,20 +27,20 @@ class TPFCTrackerService(threading.Thread):
         self.params.setdefault("dt", self.loop_interval)
 
         self._stop_event = threading.Event()
-        # 关于寄存器读写操作在registers中进行定义，在卡尔曼线程中只需要调用即可
+        # 鍏充簬瀵勫瓨鍣ㄨ鍐欐搷浣滃湪registers涓繘琛屽畾涔夛紝鍦ㄥ崱灏旀浖绾跨▼涓彧闇€瑕佽皟鐢ㄥ嵆鍙?
         self.registers = device
 
-        # --- III. 卡尔曼滤波器实例化 ---
+        # --- III. 鍗″皵鏇兼护娉㈠櫒瀹炰緥鍖?---
         self.kf = KalmanFilterTimeFrequency(
-            **self.params             # 使用参数传递来配置
+            **self.params             # 浣跨敤鍙傛暟浼犻€掓潵閰嶇疆
         )
 
-        # --- IV. 定点数转换参数 (需与 FPGA 位宽一致) ---
+        # --- IV. 瀹氱偣鏁拌浆鎹㈠弬鏁?(闇€涓?FPGA 浣嶅涓€鑷? ---
         self.FP_WIDTH = 25
         self.FP_FRAC_BITS = 10
-        # 实际校准因子应通过实验确定
-        self.scale_factor_E = 1.0  # 误差信号定点数到时间(s)的转换因子
-        self.scale_factor_P = 1.0  # 功率定点数到功率(W)的转换因子
+        # 瀹為檯鏍″噯鍥犲瓙搴旈€氳繃瀹為獙纭畾
+        self.scale_factor_E = 1.0  # 璇樊淇″彿瀹氱偣鏁板埌鏃堕棿(s)鐨勮浆鎹㈠洜瀛?
+        self.scale_factor_P = 1.0  # 鍔熺巼瀹氱偣鏁板埌鍔熺巼(W)鐨勮浆鎹㈠洜瀛?
         self._initialized_from_fpga = False
 
     def stop(self):
@@ -59,22 +59,22 @@ class TPFCTrackerService(threading.Thread):
 
 
     def run(self):
-        logger.info(f"TPFC 跟踪服务启动，更新频率: {1 / self.loop_interval} Hz")
+        logger.info(f"TPFC 璺熻釜鏈嶅姟鍚姩锛屾洿鏂伴鐜? {1 / self.loop_interval} Hz")
         while not self._stop_event.is_set():
             start_time = time.time()
             try:
                 self.process_tracking_step()
             except Exception as e:
-                logger.error(f"TPFC 跟踪循环中发生错误: {e}")
+                logger.error(f"TPFC 璺熻釜寰幆涓彂鐢熼敊璇? {e}")
 
-            # 控制循环速率
+            # 鎺у埗寰幆閫熺巼
             elapsed_time = time.time() - start_time
             sleep_time = self.loop_interval - elapsed_time
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
     def _read_measurements(self):
-        """从 CSR 读取并转换误差/功率测量值，返回浮点物理量。"""
+        """浠?CSR 璇诲彇骞惰浆鎹㈣宸?鍔熺巼娴嬮噺鍊硷紝杩斿洖娴偣鐗╃悊閲忋€?"""
 
         raw_e = self.registers.read_error_signal()
         raw_p = self.registers.read_power_signal()
@@ -90,62 +90,62 @@ class TPFCTrackerService(threading.Thread):
 
 
     def process_tracking_step(self):
-        """执行一次完整的读-滤波-写循环"""
-        # 1. 读取 FPGA 输入
+        """鎵ц涓€娆″畬鏁寸殑璇?婊ゆ尝-鍐欏惊鐜?"""
+        # 1. 璇诲彇 FPGA 杈撳叆
         # raw_e = self.csr_error_signal.read()
         try:
             z_measurement, P_received_power = self._read_measurements()
-        except Exception:  # 读取或转换异常时跳过本周期
-            logger.exception("读取误差/功率寄存器失败，跳过本周期。")
+        except Exception:  # 璇诲彇鎴栬浆鎹㈠紓甯告椂璺宠繃鏈懆鏈?
+            logger.exception("璇诲彇璇樊/鍔熺巼瀵勫瓨鍣ㄥけ璐ワ紝璺宠繃鏈懆鏈熴€?)
             return
         logger.debug(
-            "TPFC 测量读取: z=%s, P=%s",
+            "TPFC 娴嬮噺璇诲彇: z=%s, P=%s",
             z_measurement,
             P_received_power,
         )
 
-        # 保护：如果测量或功率值为 NaN/Inf，则不更新滤波器，避免破坏状态矩阵
+        # 淇濇姢锛氬鏋滄祴閲忔垨鍔熺巼鍊间负 NaN/Inf锛屽垯涓嶆洿鏂版护娉㈠櫒锛岄伩鍏嶇牬鍧忕姸鎬佺煩闃?
         if not np.isfinite(z_measurement) or not np.isfinite(P_received_power):
             logger.warning(
-                "检测到非有限测量值(z=%s, P=%s)，跳过本周期。",
+                "妫€娴嬪埌闈炴湁闄愭祴閲忓€?z=%s, P=%s)锛岃烦杩囨湰鍛ㄦ湡銆?,
                 z_measurement,
                 P_received_power,
             )
             return
         if not self._initialized_from_fpga:
-            # 使用 FPGA 误差信号作为初始时间偏移估计，等待下一周期再预测/更新
+            # 浣跨敤 FPGA 璇樊淇″彿浣滀负鍒濆鏃堕棿鍋忕Щ浼拌锛岀瓑寰呬笅涓€鍛ㄦ湡鍐嶉娴?鏇存柊
             self.kf.x[0, 0] = z_measurement
             self._initialized_from_fpga = True
             logger.info(
-                "TPFC Kalman 初始状态已根据 FPGA 误差信号初始化: z=%s",
+                "TPFC Kalman 鍒濆鐘舵€佸凡鏍规嵁 FPGA 璇樊淇″彿鍒濆鍖? z=%s",
                 z_measurement,
             )
             return
 
-        # 3. 卡尔曼滤波运算
+        # 3. 鍗″皵鏇兼护娉㈣繍绠?
         self.kf.predict()
         self.kf.update(z_measurement, P_received_power)
 
-        # 4. 提取 PID 所需的最优估计值
-        estimated_X_offset = self.kf.x[0, 0]  # 最优时间偏移估计 (s)
-        estimated_F_offset = self.kf.x[1, 0]  # 最优频率偏移估计 (Hz)
+        # 4. 鎻愬彇 PID 鎵€闇€鐨勬渶浼樹及璁″€?
+        estimated_X_offset = self.kf.x[0, 0]  # 鏈€浼樻椂闂村亸绉讳及璁?(s)
+        estimated_F_offset = self.kf.x[1, 0]  # 鏈€浼橀鐜囧亸绉讳及璁?(Hz)
 
-        time_variance = max(self.kf.P[0, 0], 0)  # 提取时间偏移的方差并裁剪负值
-        time_uncertainty = np.sqrt(time_variance)  # 单位：秒
+        time_variance = max(self.kf.P[0, 0], 0)  # 鎻愬彇鏃堕棿鍋忕Щ鐨勬柟宸苟瑁佸壀璐熷€?
+        time_uncertainty = np.sqrt(time_variance)  # 鍗曚綅锛氱
         if time_uncertainty > 0:
             min_time_uncertainty = 1 / (1 << self.FP_FRAC_BITS)
             time_uncertainty = max(time_uncertainty, min_time_uncertainty)
         power_threshold = self.kf.power_threshold
         logger.debug(
-            "TPFC 估计值: x_offset=%s, f_offset=%s, time_uncertainty=%s, power_threshold=%s",
+            "TPFC 浼拌鍊? x_offset=%s, f_offset=%s, time_uncertainty=%s, power_threshold=%s",
             estimated_X_offset,
             estimated_F_offset,
             time_uncertainty,
             power_threshold,
         )
 
-        # 5. 转换为 FPGA 定点数 (写入目标值)
-        # 确保输出的定点数能被 PID 正确解析
+        # 5. 杞崲涓?FPGA 瀹氱偣鏁?(鍐欏叆鐩爣鍊?
+        # 纭繚杈撳嚭鐨勫畾鐐规暟鑳借 PID 姝ｇ‘瑙ｆ瀽
         raw_x_target = FixedPointConverter.float_to_fixed(
             estimated_X_offset, self.FP_WIDTH, self.FP_FRAC_BITS
         )
@@ -171,13 +171,13 @@ class TPFCTrackerService(threading.Thread):
             raw_power_threshold_target, self.FP_WIDTH
         )
         logger.debug(
-            "TPFC 定点数目标: x=%s, f=%s, time_uncertainty=%s, power_threshold=%s",
+            "TPFC 瀹氱偣鏁扮洰鏍? x=%s, f=%s, time_uncertainty=%s, power_threshold=%s",
             signed_x_target,
             signed_f_target,
             signed_time_uncertain_target,
             signed_power_threshold_target,
         )
-        # 6. 写入 CSR Storage，更新 PID 的目标设定值
+        # 6. 鍐欏叆 CSR Storage锛屾洿鏂?PID 鐨勭洰鏍囪瀹氬€?
         self.registers.write_kalman_targets(
             raw_x_target,
             raw_f_target,
